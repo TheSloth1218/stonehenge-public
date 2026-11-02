@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head('Administration')}"></head>
+<body><div th:replace="~{common/nav :: nav}"></div>
+<main class="container-fluid">
+    <h1 class="h4">Operations Administration</h1>
+    <div class="row g-3 mb-3">
+        <div class="col-sm-3"><div class="metric"><strong th:text="${partCount}"></strong>Catalog parts</div></div>
+        <div class="col-sm-3"><div class="metric"><strong th:text="${adjustmentCount}"></strong>Inventory adjustments</div></div>
+        <div class="col-sm-3"><div class="metric"><strong th:text="${syncCount}"></strong>Sync events</div></div>
+        <div class="col-sm-3"><div class="metric"><strong th:text="${jobCount}"></strong>Shipment jobs</div></div>
+    </div>
+    <table class="table table-hover">
+        <thead><tr><th>Area</th><th>Purpose</th><th></th></tr></thead>
+        <tbody>
+        <tr><td>Catalog</td><td>Create, edit, activate, and deactivate Stonehenge service parts.</td><td><a href="/admin/parts">Open</a></td></tr>
+        <tr><td>Shipment jobs</td><td>Review compatibility processing and replay eligible payloads.</td><td><a href="/admin/shipment-jobs">Open</a></td></tr>
+        <tr><td>Synchronization</td><td>Inspect redacted completion diagnostics and retry failed completion updates.</td><td><a href="/admin/sync">Open</a></td></tr>
+        <tr><td>Inventory history</td><td>Review complete operational adjustment history.</td><td><a href="/admin/inventory-adjustments">Open</a></td></tr>
+        <tr><td>Health and connectivity</td><td>Review application, database, worker, and API configuration state.</td><td><a href="/admin/health">Open</a></td></tr>
+        </tbody>
+    </table>
+</main></body></html>

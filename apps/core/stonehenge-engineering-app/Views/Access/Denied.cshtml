@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<section class="access-denied-page">
+    <div class="access-denied-panel">
+        <p class="eyebrow">ACCESS CONTROL</p>
+        <h1>Access Denied</h1>
+        <p>This area requires a higher Stonehenge Engineering Console access level.</p>
+
+        <dl>
+            <div>
+                <dt>User</dt>
+                <dd>@ViewData["DisplayName"]</dd>
+            </div>
+            <div>
+                <dt>Access</dt>
+                <dd>@ViewData["AccessLevel"]</dd>
+            </div>
+            <div>
+                <dt>Groups</dt>
+                <dd>@ViewData["Groups"]</dd>
+            </div>
+        </dl>
+
+        <a class="access-return-link" asp-controller="Engineering" asp-action="Overview">Return to Dashboard</a>
+    </div>
+</section>

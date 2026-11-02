@@ -1,0 +1,100 @@
+services:
+  astro-app:
+    build: .
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+      STONEHENGE_API_BASE_URL: ${STONEHENGE_API_BASE_URL:?Set STONEHENGE_API_BASE_URL in .env}
+      STONEHENGE_ASTRO_API_KEY: ${STONEHENGE_ASTRO_API_KEY:?Set STONEHENGE_ASTRO_API_KEY in .env}
+      ASTRO_PUBLIC_ORIGIN: ${ASTRO_PUBLIC_ORIGIN:?Set ASTRO_PUBLIC_ORIGIN in .env}
+      OIDC_ISSUER: ${DEX_ISSUER:?Set DEX_ISSUER in .env}
+      OIDC_INTERNAL_ISSUER: ${DEX_INTERNAL_ISSUER:?Set DEX_INTERNAL_ISSUER in .env}
+      OIDC_CLIENT_ID: stonehenge-astro
+      OIDC_CLIENT_SECRET: ${ASTRO_OIDC_CLIENT_SECRET:?Set ASTRO_OIDC_CLIENT_SECRET in .env}
+      AUTH_SESSION_SECRET: ${ASTRO_SESSION_SECRET:?Set ASTRO_SESSION_SECRET in .env}
+      AUTH_SESSION_COOKIE: sca_astro_session
+      ASTRO_REVIEW_DB_PATH: /data/astro-review.sqlite
+    volumes:
+      - astro-review-data:/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+    restart: unless-stopped
+    networks:
+      - default
+      - edge
+
+  astro-reviewer:
+    build:
+      context: .
+      dockerfile: Dockerfile.reviewer
+      network: host
+    ports:
+      - "127.0.0.1:3001:8080"
+    environment:
+      NODE_ENV: production
+      NODE_EXTRA_CA_CERTS: /usr/local/share/ca-certificates/fcu-lab-pki-root-ca.crt
+      ASTRO_PUBLIC_ORIGIN: ${ASTRO_PUBLIC_ORIGIN:?Set ASTRO_PUBLIC_ORIGIN in .env}
+      ASTRO_REVIEW_DB_PATH: /data/astro-review.sqlite
+      ASTRO_REVIEWER_WORKER_ID: astro-reviewer-1
+      ASTRO_REVIEWER_HEALTH_PORT: 8080
+      ASTRO_REVIEWER_POLL_MS: ${ASTRO_REVIEWER_POLL_MS:-1000}
+      ASTRO_REVIEWER_LEASE_MS: ${ASTRO_REVIEWER_LEASE_MS:-15000}
+      ASTRO_REVIEWER_NAVIGATION_TIMEOUT_MS: ${ASTRO_REVIEWER_NAVIGATION_TIMEOUT_MS:-10000}
+      ASTRO_REVIEWER_TOTAL_TIMEOUT_MS: ${ASTRO_REVIEWER_TOTAL_TIMEOUT_MS:-20000}
+      ASTRO_REVIEWER_WINDOW_MS: ${ASTRO_REVIEWER_WINDOW_MS:-2000}
+      ASTRO_REVIEWER_ARTIFACT_DIR: /artifacts
+      ASTRO_REVIEWER_TRACE_ON_FAILURE: ${ASTRO_REVIEWER_TRACE_ON_FAILURE:-true}
+    volumes:
+      - astro-review-data:/data
+      - astro-review-artifacts:/artifacts
+    depends_on:
+      astro-app:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+    restart: unless-stopped
+
+  astro-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.reviewer
+      target: test
+      network: host
+    profiles: ["test"]
+    environment:
+      NODE_EXTRA_CA_CERTS: /usr/local/share/ca-certificates/fcu-lab-pki-root-ca.crt
+      ASTRO_PUBLIC_ORIGIN: ${ASTRO_PUBLIC_ORIGIN:?Set ASTRO_PUBLIC_ORIGIN in .env}
+      ASTRO_REVIEW_DB_PATH: /data/astro-review.sqlite
+      ASTRO_REVIEWER_HEALTH_URL: http://astro-reviewer:8080/health
+      ASTRO_TRAINING_REPORT_DIR: /reports
+      ASTRO_REVIEWER_SHARED_ARTIFACT_DIR: /reviewer-artifacts
+      PLAYWRIGHT_BASE_URL: http://astro-app:3000
+      PLAYWRIGHT_SKIP_WEBSERVER: "true"
+    volumes:
+      - astro-review-data:/data
+      - astro-review-artifacts:/reviewer-artifacts
+      - ./artifacts/training/astro-reviewer:/reports
+    depends_on:
+      astro-app:
+        condition: service_healthy
+      astro-reviewer:
+        condition: service_healthy
+    command: ["npm", "run", "test:unit"]
+
+volumes:
+  astro-review-data:
+  astro-review-artifacts:
+
+networks:
+  edge:
+    name: stonehenge-edge
+    external: true

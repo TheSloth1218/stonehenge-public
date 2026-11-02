@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head(${request.externalRequestId})}"></head>
+<body>
+<div th:replace="~{common/nav :: nav}"></div>
+<main class="container-fluid">
+    <div class="workspace">
+        <section class="panel">
+            <h1 class="h5" th:text="${request.externalRequestId}"></h1>
+            <p class="fw-semibold" th:text="${request.title}"></p>
+            <p th:text="${request.description}"></p>
+            <dl class="row small">
+                <dt class="col-5">Asset</dt><dd class="col-7" th:text="${request.sourceAsset}"></dd>
+                <dt class="col-5">Panel</dt><dd class="col-7" th:text="${request.sourcePanel}"></dd>
+                <dt class="col-5">Priority</dt><dd class="col-7" th:text="${request.priority}"></dd>
+                <dt class="col-5">Local status</dt><dd class="col-7"><span th:class="'status status-' + ${request.localStatus}" th:text="${request.localStatus}"></span></dd>
+                <dt class="col-5">Remote status</dt><dd class="col-7" th:text="${request.remoteStatus}"></dd>
+                <dt class="col-5">Acknowledged</dt><dd class="col-7" th:text="${request.remoteAcknowledged ? 'Yes' : 'No'}"></dd>
+                <dt class="col-5">Operator</dt><dd class="col-7" th:text="${request.assignedUser != null ? request.assignedUser.displayName : 'Unassigned'}"></dd>
+            </dl>
+            <form th:if="${order == null and request.localStatus.name() != 'CANCELLED'}" method="post" th:action="@{/requests/{id}/begin(id=${request.id})}">
+                <button class="btn btn-primary w-100" type="submit">Begin Fulfillment</button>
+            </form>
+            <a th:if="${order != null and order.itemEditable()}" class="btn btn-primary w-100" th:href="@{/orders/{id}/review(id=${order.id})}">Resume Fulfillment</a>
+            <a th:if="${order != null and order.terminal()}" class="btn btn-outline-primary w-100" th:href="@{/orders/{id}/review(id=${order.id})}">View Order</a>
+        </section>
+        <section class="panel" th:if="${order != null and order.itemEditable()}">
+            <h2 class="h5">Parts Search</h2>
+            <form class="row g-2 mb-3" method="get">
+                <div class="col-md-6"><input class="form-control" name="partSearch" th:value="${partSearch}" placeholder="SKU, name, description"></div>
+                <div class="col-md-4">
+                    <select class="form-select" name="category">
+                        <option value="">All categories</option>
+                        <option th:each="c : ${categories}" th:value="${c}" th:selected="${c == category}" th:text="${c}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2"><button class="btn btn-outline-primary w-100">Search</button></div>
+            </form>
+            <table class="table table-sm align-middle">
+                <thead><tr><th></th><th>Part</th><th>Category</th><th>Asset</th><th>Add</th></tr></thead>
+                <tbody>
+                <tr th:each="p : ${catalog.content}">
+                    <td><span class="part-icon" th:text="${#strings.substring(p.name,0,1)}"></span></td>
+                    <td><a th:href="@{/catalog/{id}(id=${p.id})}" th:text="${p.sku}"></a><div th:text="${p.name}"></div><div class="text-muted small" th:text="${p.description}"></div></td>
+                    <td th:text="${p.category}"></td>
+                    <td th:text="${p.compatibleAssetClass}"></td>
+                    <td>
+                        <form th:if="${request.localStatus.name() != 'CANCELLED'}" class="d-flex gap-1 add-part-form" method="post" th:action="@{/requests/{id}/items(id=${request.id})}">
+                            <input type="hidden" name="partId" th:value="${p.id}">
+                            <input class="form-control form-control-sm" type="number" min="1" name="quantity" value="1" style="width:5rem">
+                            <button class="btn btn-sm btn-primary">Add</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+        <section class="panel" th:if="${order == null}">
+            <h2 class="h5">Fulfillment Not Started</h2>
+            <p class="text-muted">Begin fulfillment to create the request order before selecting parts.</p>
+            <form th:if="${request.localStatus.name() != 'CANCELLED'}" method="post" th:action="@{/requests/{id}/begin(id=${request.id})}">
+                <button class="btn btn-primary" type="submit">Begin Fulfillment</button>
+            </form>
+        </section>
+        <section class="panel" th:if="${order != null and order.terminal()}">
+            <h2 class="h5" th:text="${order.status.name() == 'COMPLETION_FAILED' ? 'Shipment Recorded' : 'Fulfillment Complete'}"></h2>
+            <p th:if="${order.status.name() == 'COMPLETION_FAILED'}">The truck shipment is complete. Engineering completion synchronization requires administrator review.</p>
+            <p th:if="${order.status.name() == 'COMPLETION_PENDING'}">The truck shipment is complete and engineering synchronization is processing.</p>
+            <p th:if="${order.status.name() == 'COMPLETION_SENT'}">The truck shipment and engineering completion synchronization are complete.</p>
+            <a class="btn btn-outline-primary" th:href="@{/orders/{id}/review(id=${order.id})}">View Order</a>
+        </section>
+        <section class="panel">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="h5 mb-0">Current Request Order</h2>
+                <form th:if="${order != null and order.itemEditable() and !order.items.empty}" method="post"
+                      th:action="@{/requests/{requestId}/orders/{orderId}/clear(requestId=${request.id},orderId=${order.id})}">
+                    <button class="btn btn-sm btn-outline-danger" type="submit">Clear Order</button>
+                </form>
+            </div>
+            <div th:if="${order == null}">Begin fulfillment to create a persisted order cart.</div>
+            <div th:if="${order != null}">
+                <p><strong th:text="${order.orderNumber}"></strong> <span th:class="'status status-' + ${order.status}" th:text="${order.status}"></span></p>
+                <table class="table table-sm align-middle">
+                    <thead><tr><th>Part</th><th>Qty</th><th th:if="${order.itemEditable()}">Action</th></tr></thead>
+                    <tbody>
+                    <tr th:each="i : ${order.items}">
+                        <td><span th:text="${i.part.sku}"></span><div class="small text-muted" th:text="${i.part.name}"></div></td>
+                        <td th:text="${i.quantity}"></td>
+                        <td th:if="${order.itemEditable()}">
+                            <form method="post" th:action="@{/requests/{requestId}/orders/{orderId}/items/{itemId}/remove(requestId=${request.id},orderId=${order.id},itemId=${i.id})}">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${order.items.empty}"><td colspan="3">No parts selected.</td></tr>
+                    </tbody>
+                </table>
+                <a class="btn btn-primary w-100" th:if="${order.itemEditable() and !order.items.empty}" th:href="@{/orders/{id}/review(id=${order.id})}">Prepare Shipment</a>
+                <button class="btn btn-primary w-100" th:if="${order.itemEditable() and order.items.empty}" disabled>Choose Parts First</button>
+                <a class="btn btn-outline-primary w-100" th:if="${order.terminal()}" th:href="@{/orders/{id}/review(id=${order.id})}">View Order</a>
+            </div>
+        </section>
+    </div>
+</main>
+</body>
+</html>

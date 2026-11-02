@@ -1,0 +1,29 @@
+@model Stonehenge.Engineering.App.Models.FuxaPanelFrameViewModel
+
+<div class="fuxa-panel-shell @(Model.Enabled ? "is-enabled" : "is-disabled")" data-fuxa-panel-id="@Model.PanelId" data-fuxa-view-id="@Model.FuxaViewId">
+    <div class="fuxa-panel-header">
+        <div>
+            <span>@Model.PanelType</span>
+            <strong>@Model.PanelName</strong>
+        </div>
+        <small>@(Model.GunId is null ? "Fleet" : $"Gun {Model.GunId}")</small>
+    </div>
+
+    @if (Model.Enabled && !string.IsNullOrWhiteSpace(Model.IframeUrl))
+    {
+        <iframe class="fuxa-panel-frame"
+                src="@Model.IframeUrl"
+                title="@Model.Title"
+                loading="lazy"
+                scrolling="no"
+                referrerpolicy="no-referrer"></iframe>
+    }
+    else
+    {
+        <div class="fuxa-panel-disabled" style="min-height: @(Math.Min(Model.Height, 420))px">
+            <span>FUXA Panel</span>
+            <strong>@Model.PanelName</strong>
+            <p>@Model.DisabledReason</p>
+        </div>
+    }
+</div>

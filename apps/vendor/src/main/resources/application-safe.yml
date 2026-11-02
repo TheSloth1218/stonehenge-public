@@ -1,0 +1,12 @@
+sca:
+  training:
+    enabled: false
+  shipment:
+    compatibility:
+      format: strict-json
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

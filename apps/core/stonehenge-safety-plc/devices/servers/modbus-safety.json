@@ -1,0 +1,27 @@
+{
+  "name": "modbus-safety",
+  "protocol": "modbus-tcp",
+  "modbusSlaveConfig": {
+    "enabled": true,
+    "networkInterface": "0.0.0.0",
+    "port": 502,
+    "bufferMapping": {
+      "holdingRegisters": {
+        "qwCount": 80,
+        "mwCount": 128,
+        "mdCount": 0,
+        "mlCount": 0
+      },
+      "coils": {
+        "qxBits": 0,
+        "mxBits": 0
+      },
+      "discreteInputs": {
+        "ixBits": 0
+      },
+      "inputRegisters": {
+        "iwCount": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,59 @@
+issuer: '{{ getenv "DEX_ISSUER" }}'
+
+storage:
+  type: sqlite3
+  config:
+    file: /var/dex/dex.db
+
+web:
+  http: 0.0.0.0:5556
+
+telemetry:
+  http: 0.0.0.0:5558
+
+oauth2:
+  skipApprovalScreen: true
+  responseTypes: ["code"]
+
+expiry:
+  idTokens: 8h
+
+signer:
+  type: local
+  config:
+    keysRotationPeriod: 6h
+
+staticClients:
+  - id: login-portal
+    name: FCU Central Access Portal
+    secret: '{{ getenv "LOGIN_PORTAL_OIDC_CLIENT_SECRET" }}'
+    redirectURIs:
+      - '{{ getenv "LOGIN_PORTAL_PUBLIC_ORIGIN" }}/api/auth/callback'
+  - id: stonehenge-astro
+    name: Stonehenge Astro Public Interface
+    secret: '{{ getenv "ASTRO_OIDC_CLIENT_SECRET" }}'
+    redirectURIs:
+      - '{{ getenv "ASTRO_PUBLIC_ORIGIN" }}/api/auth/callback'
+  - id: stonehenge-vendor
+    name: SCA Parts Fulfillment Portal
+    secret: '{{ getenv "VENDOR_OIDC_CLIENT_SECRET" }}'
+    redirectURIs:
+      - '{{ getenv "VENDOR_PUBLIC_ORIGIN" }}/login/oauth2/code/dex'
+  - id: stonehenge-engineering
+    name: Stonehenge Engineering Console
+    secret: '{{ getenv "ENGINEERING_OIDC_CLIENT_SECRET" }}'
+    redirectURIs:
+      - '{{ getenv "ENGINEERING_PUBLIC_ORIGIN" }}/signin-oidc'
+
+enablePasswordDB: true
+staticPasswords:
+  # Local mock directory only. Username: employee@sca.local / Password: stonehenge-dev
+  - email: employee@sca.local
+    hash: $2b$10$qjMrvFxodwHN82lHXbectenwYHNvsA0Qehlv.cUjSKijZIfUNeytC
+    username: FCU Test Employee
+    userID: 32c528a5-8f4b-49d2-b1ad-d19b056cd71d
+
+frontend:
+  dir: /srv/dex/web
+  issuer: Federation of Central Usea
+  theme: stonehenge

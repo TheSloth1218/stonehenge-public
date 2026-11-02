@@ -1,0 +1,22 @@
+#!/usr/bin/python3
+import json
+import os
+import pwd
+from pathlib import Path
+
+evidence_directory = Path(os.environ["VENDOR_SUPPORT_EVIDENCE_DIRECTORY"])
+evidence_directory.mkdir(parents=True, exist_ok=True)
+marker = evidence_directory / "root-execution.json"
+payload = {
+    "vulnerability": "SCA-VENDOR-008",
+    "effectiveUid": os.geteuid(),
+    "effectiveUser": pwd.getpwuid(os.geteuid()).pw_name,
+    "invokedBy": os.environ.get("SUDO_USER", "unknown"),
+    "operation": "controlled-training-marker",
+    "persistentChange": False,
+}
+descriptor = os.open(marker, os.O_WRONLY | os.O_CREAT | os.O_TRUNC | os.O_NOFOLLOW, 0o644)
+with os.fdopen(descriptor, "w", encoding="utf-8") as output:
+    json.dump(payload, output, sort_keys=True)
+    output.write("\n")
+print(json.dumps({"marker": str(marker), "recorded": True}))

@@ -1,0 +1,5 @@
+/stonehenge-target-feed
+/stonehenge-target-feed.exe
+*.log
+tmp/
+.env

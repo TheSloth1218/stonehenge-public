@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head(${order.orderNumber})}"></head>
+<body>
+<div th:replace="~{common/nav :: nav}"></div>
+<main class="container-fluid">
+    <div class="panel">
+        <h1 class="h5">Prepare Shipment</h1>
+                <p><strong th:text="${order.orderNumber}"></strong> for <span th:text="${order.maintenanceRequest.externalRequestId}"></span>
+                    <span th:class="'status status-' + ${order.status}" th:text="${order.status}"></span></p>
+                <table class="table align-middle">
+                    <thead><tr><th>SKU</th><th>Part</th><th>Quantity</th><th th:if="${order.itemEditable()}">Actions</th></tr></thead>
+                    <tbody>
+                    <tr th:each="i : ${order.items}">
+                        <td th:text="${i.part.sku}"></td>
+                        <td th:text="${i.part.name}"></td>
+                        <td>
+                            <form th:if="${order.itemEditable()}" method="post" th:action="@{/orders/{id}/items/{itemId}(id=${order.id},itemId=${i.id})}">
+                                <input class="form-control form-control-sm quantity-input" name="quantity" type="number" min="1" required
+                                       th:max="${availableStock[i.part.id]}" th:value="${i.quantity}"
+                                       th:attr="data-available=${availableStock[i.part.id]}" style="width:6rem">
+                                <div class="invalid-feedback" th:text="'Only ' + ${availableStock[i.part.id]} + ' available.'"></div>
+                            </form>
+                            <span th:if="${!order.itemEditable()}" th:text="${i.quantity}"></span>
+                        </td>
+                        <td th:if="${order.itemEditable()}">
+                            <form method="post" th:action="@{/orders/{id}/items/{itemId}/remove(id=${order.id},itemId=${i.id})}">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${order.items.empty}"><td colspan="4">No parts are selected.</td></tr>
+                    </tbody>
+                </table>
+                <div class="border-top mt-3 pt-3">
+                <h2 class="h5">Truck Shipment</h2>
+                <form id="ship-order-form" method="post" th:action="@{/orders/{id}/ship(id=${order.id})}" th:object="${shipOrderForm}">
+                    <input type="hidden" th:field="*{carrier}">
+                    <input type="hidden" th:field="*{shippingMethod}">
+                    <input type="hidden" th:field="*{externalRequestId}">
+                    <div class="mb-2">
+                        <label class="form-label">Transport</label>
+                        <div class="readonly-field">SCA Motor Pool / Truck Transport</div>
+                    </div>
+                    <div class="row g-2">
+                    <div class="col-md-7"><label class="form-label">Destination label</label><input class="form-control" th:field="*{destinationLabel}" th:disabled="${order.terminal()}"></div>
+                    <div class="col-md-5"><label class="form-label">Notes</label><input class="form-control" th:field="*{notes}" th:disabled="${order.terminal()}"></div>
+                    </div>
+                    <div class="form-check mt-3 mb-3">
+                        <input class="form-check-input" type="checkbox" th:field="*{confirmed}" th:disabled="${order.terminal()}" required>
+                        <label class="form-check-label">I reviewed the selected parts and confirm this order is packed and ready to ship.</label>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                    <a class="btn btn-link" th:if="${order.itemEditable()}" th:href="@{/requests/{id}(id=${order.maintenanceRequest.id})}">Add More Parts</a>
+                    <button id="ship-order-button" class="btn btn-primary" th:if="${order.itemEditable()}" th:disabled="${order.items.empty or hasInsufficientStock}" type="submit"><span class="spinner-border spinner-border-sm me-2 d-none" aria-hidden="true"></span><span class="button-label">Ship Order</span></button>
+                    <button class="btn btn-primary w-100" type="button" th:if="${order.terminal()}" disabled>Order Already Shipped</button>
+                    </div>
+                </form>
+                </div>
+    </div>
+</main>
+<script>
+    const shipForm = document.getElementById('ship-order-form');
+    const shipButton = document.getElementById('ship-order-button');
+    const quantityInputs = [...document.querySelectorAll('.quantity-input')];
+    const refreshStockState = () => {
+        const insufficient = quantityInputs.some(input => {
+            const invalid = Number(input.value) > Number(input.dataset.available);
+            input.classList.toggle('is-invalid', invalid);
+            return invalid;
+        });
+        if (shipButton) shipButton.disabled = quantityInputs.length === 0 || insufficient;
+    };
+    quantityInputs.forEach(input => input.addEventListener('input', refreshStockState));
+    refreshStockState();
+    if (shipForm && shipButton) {
+        shipForm.addEventListener('submit', () => {
+            if (!shipForm.checkValidity()) return;
+            shipButton.disabled = true;
+            shipButton.querySelector('.spinner-border').classList.remove('d-none');
+            shipButton.querySelector('.button-label').textContent = 'Submitting shipment';
+        });
+    }
+</script>
+</body>
+</html>

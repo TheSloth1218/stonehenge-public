@@ -1,0 +1,25 @@
+@{
+    Layout = null;
+}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Signed Out - Stonehenge Engineering Console</title>
+    <link rel="icon" type="image/png" href="~/images/stonehenge-mark.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
+</head>
+<body class="signed-out-body">
+    <main class="signed-out-panel">
+        <img class="signed-out-logo" src="~/images/stonehenge-mark.png" alt="Stonehenge">
+        <p class="eyebrow">STONEHENGE ENGINEERING CONSOLE</p>
+        <h1>Signed Out</h1>
+        <p>Your Engineering Console session has ended.</p>
+        <a class="signed-out-login" href="/auth/login?fresh=true&amp;returnUrl=%2F">Sign In</a>
+    </main>
+</body>
+</html>

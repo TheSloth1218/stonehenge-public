@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head('Application Error')}"></head>
+<body>
+<div th:replace="~{common/nav :: nav}"></div>
+<main class="container">
+    <div class="panel">
+        <h1 class="h4">Application Error</h1>
+        <p>The request could not be completed.</p>
+        <p class="text-muted" th:if="${status}">HTTP status: <span th:text="${status}"></span></p>
+        <p class="text-muted" th:if="${error}" th:text="${error}"></p>
+        <a class="btn btn-outline-primary" href="/">Return to dashboard</a>
+    </div>
+</main>
+</body>
+</html>

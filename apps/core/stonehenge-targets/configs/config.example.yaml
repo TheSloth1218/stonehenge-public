@@ -1,0 +1,28 @@
+# Runtime configuration is read from environment variables.
+# This YAML is a deployment reference for /opt/stonehenge-targets.
+target_endpoint: "http://127.0.0.1:8080/api/v1/ingest/fragments"
+target_interval_seconds: 10
+target_jitter_seconds: 4
+target_request_timeout_seconds: 5
+target_source_id: "USEA-TRACKING-NET"
+target_auth_token: ""
+target_seed: ""
+target_max_retries: 5
+target_retry_delay_seconds: 1
+target_retry_max_delay_seconds: 15
+target_retry_jitter: true
+target_mode: "continuous"
+target_burst_count: 10
+target_readiness_poll_seconds: 30
+target_startup_stabilization_seconds: 30
+target_max_outstanding_targets: 30
+target_max_pending_queue_threshold: 25
+target_ttl_seconds: 600
+target_queue_full_backoff_seconds: 30
+target_transient_error_backoff_seconds: 10
+target_run_duration_seconds: ""
+target_graceful_shutdown_timeout_seconds: 5
+target_log_path: ""
+target_status_output_path: ""
+target_dry_run: false
+feed_listen_address: "0.0.0.0:8090"

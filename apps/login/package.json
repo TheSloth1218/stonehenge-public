@@ -1,0 +1,33 @@
+{
+  "name": "stonehenge-login-portal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 0.0.0.0 --port 3002",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0 --port 3002",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test:dex-profiles": "node tests/validate-dex-profiles.mjs",
+    "dex:hash-password": "node scripts/hash-local-password.mjs"
+  },
+  "dependencies": {
+    "next": "^15.1.3",
+    "postcss": "^8.5.19",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "bcryptjs": "^3.0.3",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.1.3",
+    "typescript": "^5.7.2"
+  },
+  "overrides": {
+    "postcss": "$postcss"
+  }
+}

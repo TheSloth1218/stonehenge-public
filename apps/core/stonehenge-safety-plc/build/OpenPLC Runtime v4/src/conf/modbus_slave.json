@@ -1,0 +1,24 @@
+{
+  "network_configuration": {
+    "host": "0.0.0.0",
+    "port": 502
+  },
+  "buffer_mapping": {
+    "holding_registers": {
+      "qw_count": 80,
+      "mw_count": 128,
+      "md_count": 0,
+      "ml_count": 0
+    },
+    "coils": {
+      "qx_bits": 0,
+      "mx_bits": 0
+    },
+    "discrete_inputs": {
+      "ix_bits": 0
+    },
+    "input_registers": {
+      "iw_count": 0
+    }
+  }
+}

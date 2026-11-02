@@ -1,0 +1,679 @@
+@model Stonehenge.Engineering.App.Models.AdminPanelViewModel
+
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<div class="admin-page">
+    <section class="page-heading admin-heading">
+        <div>
+            <p class="eyebrow">RESTRICTED ADMIN WORKSPACE</p>
+            <h1>Admin Panel</h1>
+            <p class="page-subtitle">Administrative HMI, maintenance approvals, and reset toolbox.</p>
+        </div>
+        <div class="runtime-proof">Dev admin enabled. Portal claims later.</div>
+    </section>
+
+    <section class="admin-hmi-panel">
+        <div class="admin-hmi-viewport">
+            <div class="admin-hmi-grid">
+                <div class="admin-hmi-content">
+                    <form class="admin-hmi-selector" method="get" asp-controller="Engineering" asp-action="Admin" aria-label="Admin HMI gun selection">
+                        <label for="adminHmiGunNumber">HMI Gun</label>
+                        <select id="adminHmiGunNumber" name="hmiGunNumber">
+                            @for (var gunNumber = 1; gunNumber <= 8; gunNumber++)
+                            {
+                                <option value="@gunNumber" selected="@(gunNumber == Model.SelectedHmiGunNumber)">Gun @gunNumber</option>
+                            }
+                        </select>
+                    </form>
+                    <strong id="adminHmiTitle">Stonehenge Gun @Model.SelectedHmiGunNumber Admin HMI</strong>
+                    @await Html.PartialAsync("_FuxaPanelFrame", Model.FuxaPanel)
+                </div>
+
+                <section class="admin-safety-panel" aria-label="Global Safety PLC">
+                    <div class="admin-safety-header">
+                        <div>
+                            <p class="eyebrow">Safety PLC</p>
+                            <h3>Global Safety</h3>
+                        </div>
+                        <span class="status-badge @(Model.SafetyStatus.GlobalInhibitActive ? "warning" : "online")">
+                            @(Model.SafetyStatus.GlobalInhibitActive ? "Inhibited" : "Permissive")
+                        </span>
+                    </div>
+
+                    <dl class="admin-safety-status">
+                        <div>
+                            <dt>State</dt>
+                            <dd>@Model.SafetyStatus.State</dd>
+                        </div>
+                        <div>
+                            <dt>Reason</dt>
+                            <dd>@Model.SafetyStatus.GlobalInhibitReason</dd>
+                        </div>
+                        <div>
+                            <dt>Safety PLC</dt>
+                            <dd>@(Model.SafetyStatus.Connected && Model.SafetyStatus.Fresh ? "Connected" : "Not ready")</dd>
+                        </div>
+                        <div>
+                            <dt>Guns</dt>
+                            <dd>@Model.SafetyStatus.PermissiveGunCount permitted / @Model.SafetyStatus.InhibitedGunCount blocked</dd>
+                        </div>
+                    </dl>
+
+                    <div class="admin-safety-actions">
+                        <form method="post" asp-controller="Engineering" asp-action="SetGlobalSafety">
+                            <input type="hidden" name="action" value="safety-on">
+                            <button class="safety-action-on" type="submit">Block Firing</button>
+                        </form>
+                        <form method="post" asp-controller="Engineering" asp-action="SetGlobalSafety">
+                            <input type="hidden" name="action" value="safety-off">
+                            <button class="safety-action-off" type="submit">Permit Firing</button>
+                        </form>
+                        <form method="post" asp-controller="Engineering" asp-action="SetFleetGunSafety">
+                            <input type="hidden" name="action" value="enable-all">
+                            <button class="safety-action-enable-wide" type="submit">Enable All Guns</button>
+                        </form>
+                        <form method="post" asp-controller="Engineering" asp-action="SetFleetGunSafety">
+                            <input type="hidden" name="action" value="disable-all">
+                            <button class="safety-action-danger" type="submit">Disable All Guns</button>
+                        </form>
+                    </div>
+
+                    <div class="admin-safety-guns">
+                        <div class="admin-safety-guns-header">
+                            <strong>Gun Safety</strong>
+                            <span>@Model.SafetyStatus.Guns.Count guns</span>
+                        </div>
+                        <div class="admin-safety-gun-list">
+                            @foreach (var gun in Model.SafetyStatus.Guns.OrderBy(gun => gun.GunNumber))
+                            {
+                                <article class="admin-safety-gun-row @(gun.Enabled ? "is-enabled" : "is-disabled") @(gun.InhibitActive ? "is-inhibited" : "")">
+                                    <div class="admin-safety-gun-summary">
+                                        <strong>G@(gun.GunNumber)</strong>
+                                        <span>@(gun.MaintenanceInhibit ? "Maintenance" : gun.Enabled && gun.FirePermissive ? "Permitted" : "Blocked")</span>
+                                        <small>@gun.InhibitReason</small>
+                                    </div>
+                                    <div class="admin-safety-gun-actions">
+                                        <form method="post" asp-controller="Engineering" asp-action="SetGunSafety" asp-route-gunNumber="@gun.GunNumber">
+                                            <input type="hidden" name="action" value="enable">
+                                            <button class="safety-action-enable" type="submit">Enable</button>
+                                        </form>
+                                        <form method="post" asp-controller="Engineering" asp-action="SetGunSafety" asp-route-gunNumber="@gun.GunNumber">
+                                            <input type="hidden" name="action" value="disable">
+                                            <button class="safety-action-danger" type="submit">Disable</button>
+                                        </form>
+                                        <form method="post" asp-controller="Engineering" asp-action="SetGunSafety" asp-route-gunNumber="@gun.GunNumber">
+                                            <input type="hidden" name="action" value="maintenance-on">
+                                            <button class="safety-action-inhibit" type="submit" disabled="@gun.MaintenanceInhibit">Maint</button>
+                                        </form>
+                                        <form method="post" asp-controller="Engineering" asp-action="SetGunSafety" asp-route-gunNumber="@gun.GunNumber">
+                                            <input type="hidden" name="action" value="maintenance-off">
+                                            <button class="safety-action-clear" type="submit" disabled="@(!gun.MaintenanceInhibit)">Clear</button>
+                                        </form>
+                                    </div>
+                                </article>
+                            }
+                            <div class="admin-safety-scroll-spacer" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <section class="admin-bottom-grid">
+        <section class="admin-request-panel">
+            <div class="admin-panel-header compact">
+                <div>
+                    <h2>Admin Requests</h2>
+                    <p>Maintenance and part requests awaiting admin review.</p>
+                </div>
+                <span>@Model.PendingMaintenanceCount pending</span>
+            </div>
+
+            <div class="admin-request-list">
+                @if (!string.IsNullOrWhiteSpace(Model.VendorSyncMessage))
+                {
+                    <article class="admin-request-card">
+                        <strong>Vendor Sync</strong>
+                        <p>@Model.VendorSyncMessage</p>
+                    </article>
+                }
+                @{
+                    var pendingRequests = Model.MaintenanceRequests.Where(request => request.Status == "Pending").Take(6).ToList();
+                }
+                @if (pendingRequests.Count == 0)
+                {
+                    <article class="admin-request-card empty">
+                        <strong>No pending requests</strong>
+                        <p>Operator maintenance and part requests will appear here.</p>
+                    </article>
+                }
+                @foreach (var request in pendingRequests)
+                {
+                    <article class="admin-request-card @request.Status.ToLowerInvariant()" data-maintenance-request-id="@request.Id">
+                        <div>
+                            <time>@request.RequestedAt.ToString("HH:mm:ss")</time>
+                            <strong>@request.GunName</strong>
+                            <em>@request.RequestType request</em>
+                            <span>@request.Status by @(request.Status == "Pending" ? request.RequestedBy : request.ReviewedBy ?? "admin")</span>
+                            <p>@request.Notes</p>
+                        </div>
+                        @if (request.Status == "Pending")
+                        {
+                            <div class="admin-request-actions">
+                                <form method="post" asp-controller="Engineering" asp-action="ApproveMaintenanceRequest" asp-route-requestId="@request.Id">
+                                    <button type="submit">@(request.RequestType == "Part" ? "Approve Part" : "Allow + Maintenance")</button>
+                                </form>
+                                <form method="post" asp-controller="Engineering" asp-action="DenyMaintenanceRequest" asp-route-requestId="@request.Id">
+                                    <button type="submit">Deny</button>
+                                </form>
+                            </div>
+                        }
+                    </article>
+                }
+            </div>
+
+            <form class="admin-sync-form" method="post" asp-controller="Engineering" asp-action="SyncVendorCompletions">
+                <button type="submit">Sync Vendor Completions</button>
+            </form>
+        </section>
+
+        <section class="admin-log-panel">
+            <div class="admin-panel-header compact">
+                <div>
+                    <h2>Admin Logs</h2>
+                    <p>Recent admin events.</p>
+                </div>
+                <span>Events</span>
+            </div>
+
+            <div class="admin-log-list admin-event-strip">
+                @foreach (var entry in Model.AdminEvents)
+                {
+                    var actionText = entry.Action is "Reset toolbox command accepted" or "Reset/startup started"
+                        ? "Reset accepted"
+                        : entry.Action;
+                    <article data-log-id="@entry.Id">
+                        <time>@entry.Timestamp.ToString("HH:mm:ss")</time>
+                        <strong>@actionText</strong>
+                        <span>@entry.Source - @entry.Result</span>
+                        <p>@entry.Notes</p>
+                    </article>
+                }
+            </div>
+        </section>
+
+        <section class="admin-toolbox-panel @(Model.ResetToolboxReauthorized ? "is-reauthorized" : "requires-reauth")">
+            <div class="admin-toolbox-header">
+                <div>
+                    <p class="eyebrow">Protected admin action</p>
+                    <h2>Reset Toolbox</h2>
+                </div>
+                <span id="resetReauthBadge">@(Model.ResetToolboxReauthorized ? "Reauth active" : "Portal reauth required")</span>
+            </div>
+
+            <div class="admin-reset-chain"
+                 data-reset-reauthorized="@Model.ResetToolboxReauthorized.ToString().ToLowerInvariant()"
+                 data-reset-reauth-token="@Model.ResetToolboxReauthToken"
+                 data-reset-reauth-expires-utc="@(Model.ResetToolboxReauthExpiresUtc?.ToString("O") ?? "")">
+                @if (!Model.ResetToolboxReauthorized)
+                {
+                    <div class="admin-reset-reauth-gate">
+                        <div>
+                            <p class="eyebrow">Step-up required</p>
+                            <strong>Reset Toolbox Locked</strong>
+                            <span>Reauthenticate to unlock this panel for one active minute.</span>
+                        </div>
+                        <a asp-controller="Engineering"
+                           asp-action="ReauthorizeResetToolbox"
+                           asp-route-hmiGunNumber="@Model.SelectedHmiGunNumber">Reauth Reset Toolbox</a>
+                    </div>
+                }
+                <div class="admin-prereq-strip">
+                    <span>Admin Session</span>
+                    <strong id="resetReauthStateText">@(Model.ResetToolboxReauthorized ? "Reset reauth active" : "Dev admin verified - reset reauth required")</strong>
+                    <time id="resetReauthTimer" datetime="@(Model.ResetToolboxReauthExpiresUtc?.ToString("O") ?? "")">@(Model.ResetToolboxReauthorized ? "01:00" : "Locked")</time>
+                </div>
+
+                <div class="admin-key-switch-row">
+                    <div class="admin-key-stage">
+                        <span>Config Reset Key</span>
+                        <button class="admin-rotary-key" id="configResetKey" type="button" aria-pressed="false" aria-label="Toggle mock config reset key">
+                            <i></i>
+                        </button>
+                        <strong id="configResetKeyState">Locked</strong>
+                    </div>
+                    <div class="admin-key-stage">
+                        <span>Startup Key</span>
+                        <button class="admin-rotary-key" id="startupKey" type="button" aria-pressed="false" aria-label="Toggle mock startup key">
+                            <i></i>
+                        </button>
+                        <strong id="startupKeyState">Locked</strong>
+                    </div>
+                </div>
+
+                <label class="admin-phrase-label" for="adminCommandPhrase">Command phrase</label>
+                <input id="adminCommandPhrase" type="text" autocomplete="off" spellcheck="false">
+
+                <div class="admin-execute-bay">
+                    <div class="admin-execute-cover" id="adminExecuteCover">
+                        <span>Locked - prerequisites required</span>
+                    </div>
+                    <button class="admin-execute-button" id="adminExecuteButton" type="button" disabled>RUN RESET</button>
+                </div>
+
+                <div class="admin-toolbox-note" id="adminResetStatus">
+                    Reset/startup is routed through the protected middleware maintenance API.
+                </div>
+            </div>
+        </section>
+    </section>
+</div>
+
+<div class="admin-video-overlay" id="adminVideoOverlay" hidden aria-hidden="true">
+    <div class="admin-video-modal" role="dialog" aria-modal="true" aria-label="Stonehenge ready video">
+        <button class="admin-video-close" type="button" id="closeAdminVideo" aria-label="Close video">Close</button>
+        <video id="adminReadyVideo" src="~/media/stonehenge-ready.mp4" muted playsinline preload="auto"></video>
+    </div>
+</div>
+
+<script>
+(() => {
+    const csrfToken = document.querySelector('meta[name="stonehenge-csrf"]')?.content;
+    const executeButton = document.getElementById("adminExecuteButton");
+    const configKey = document.getElementById("configResetKey");
+    const startupKey = document.getElementById("startupKey");
+    const configKeyState = document.getElementById("configResetKeyState");
+    const startupKeyState = document.getElementById("startupKeyState");
+    const phraseInput = document.getElementById("adminCommandPhrase");
+    const executeCover = document.getElementById("adminExecuteCover");
+    const resetStatus = document.getElementById("adminResetStatus");
+    const closeButton = document.getElementById("closeAdminVideo");
+    const overlay = document.getElementById("adminVideoOverlay");
+    const video = document.getElementById("adminReadyVideo");
+    const adminLogList = document.querySelector(".admin-log-list");
+    const toolboxPanel = document.querySelector(".admin-toolbox-panel");
+    const resetReauthBadge = document.getElementById("resetReauthBadge");
+    const resetReauthStateText = document.getElementById("resetReauthStateText");
+    const resetReauthTimer = document.getElementById("resetReauthTimer");
+    const adminHmiGunSelect = document.getElementById("adminHmiGunNumber");
+    const adminHmiTitle = document.getElementById("adminHmiTitle");
+    const requiredPhrase = "TITAN_GUNS";
+    const resetChain = document.querySelector(".admin-reset-chain");
+    const resetReauthorized = resetChain?.dataset.resetReauthorized === "true";
+    const resetReauthToken = resetChain?.dataset.resetReauthToken || "";
+    const resetReauthExpiresUtc = resetChain?.dataset.resetReauthExpiresUtc || "";
+    const resetStorageKey = "stonehenge.admin.resetToolbox";
+    const resetStatusStorageKey = "stonehenge.admin.resetToolbox.status";
+    let configUnlocked = false;
+    let startupUnlocked = false;
+    let activeReset = loadResetState();
+    let readinessPoll = null;
+    let reauthTimerInterval = null;
+
+    function openOverlay() {
+        overlay.hidden = false;
+        overlay.setAttribute("aria-hidden", "false");
+        video.currentTime = 0;
+        video.play().catch(() => {});
+    }
+
+    function closeOverlay() {
+        video.pause();
+        overlay.hidden = true;
+        overlay.setAttribute("aria-hidden", "true");
+    }
+
+    function loadResetState() {
+        try {
+            return JSON.parse(localStorage.getItem(resetStorageKey) || "null");
+        } catch {
+            return null;
+        }
+    }
+
+    function saveResetState(state) {
+        activeReset = state;
+        if (state) {
+            localStorage.setItem(resetStorageKey, JSON.stringify(state));
+        } else {
+            localStorage.removeItem(resetStorageKey);
+        }
+    }
+
+    function saveLastResetStatus(text) {
+        if (text) {
+            localStorage.setItem(resetStatusStorageKey, text);
+        }
+    }
+
+    function loadLastResetStatus() {
+        return localStorage.getItem(resetStatusStorageKey);
+    }
+
+    function setResetStatus(text) {
+        resetStatus.textContent = text;
+        saveLastResetStatus(text);
+        if (activeReset) {
+            saveResetState({ ...activeReset, statusText: text });
+        }
+    }
+
+    function formatRemaining(milliseconds) {
+        const totalSeconds = Math.max(0, Math.ceil(milliseconds / 1000));
+        const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+        const seconds = (totalSeconds % 60).toString().padStart(2, "0");
+        return `${minutes}:${seconds}`;
+    }
+
+    function ensureReauthGate(message) {
+        let gate = resetChain.querySelector(".admin-reset-reauth-gate");
+        if (!gate) {
+            gate = document.createElement("div");
+            gate.className = "admin-reset-reauth-gate";
+            gate.innerHTML = `
+                <div>
+                    <p class="eyebrow">Step-up required</p>
+                    <strong>Reset Toolbox Locked</strong>
+                    <span></span>
+                </div>
+                <a href="/Engineering/Admin/ResetToolbox/Reauth?hmiGunNumber=@Model.SelectedHmiGunNumber">Reauth Reset Toolbox</a>
+            `;
+            resetChain.prepend(gate);
+        }
+
+        gate.querySelector("span").textContent = message || "Reauthenticate to unlock this panel for one active minute.";
+    }
+
+    function updateAdminHmiSelection(gunNumber, options = {}) {
+        const normalizedGun = Math.min(8, Math.max(1, Number.parseInt(gunNumber, 10) || 1));
+        const frame = document.querySelector(".admin-hmi-content .fuxa-panel-frame");
+        const shell = document.querySelector(".admin-hmi-content .fuxa-panel-shell");
+        adminHmiTitle.textContent = `Stonehenge Gun ${normalizedGun} Admin HMI`;
+        if (frame) {
+            const nextSrc = new URL(`/fuxa/embed/v_stonehenge_gun${normalizedGun}_admin_manual`, window.location.origin).toString();
+            if (frame.src !== nextSrc) {
+                frame.src = nextSrc;
+            }
+            frame.title = `Stonehenge FUXA - Gun ${normalizedGun} Admin Manual Panel`;
+        }
+        if (shell) {
+            shell.dataset.fuxaPanelId = String(300 + normalizedGun);
+            shell.dataset.fuxaViewId = `v_stonehenge_gun${normalizedGun}_admin_manual`;
+            shell.querySelector(".fuxa-panel-header strong")?.replaceChildren(`Gun ${normalizedGun} Admin Manual Panel`);
+            shell.querySelector(".fuxa-panel-header small")?.replaceChildren(`Gun ${normalizedGun}`);
+        }
+        document.querySelectorAll(".admin-reset-reauth-gate a").forEach(link => {
+            link.href = `/Engineering/Admin/ResetToolbox/Reauth?hmiGunNumber=${normalizedGun}`;
+        });
+
+        if (!options.skipHistory) {
+            const url = new URL(window.location.href);
+            url.searchParams.set("hmiGunNumber", String(normalizedGun));
+            window.history.replaceState({}, "", url);
+        }
+    }
+
+    function prependAdminLog(action, result, notes) {
+        if (!adminLogList) return;
+        const entry = document.createElement("article");
+        const now = new Date();
+        const timestamp = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+        entry.innerHTML = `
+            <time>${timestamp}</time>
+            <strong></strong>
+            <span></span>
+            <p></p>
+        `;
+        entry.querySelector("strong").textContent = action;
+        entry.querySelector("span").textContent = `Engineering App - ${result}`;
+        entry.querySelector("p").textContent = notes;
+        adminLogList.prepend(entry);
+    }
+
+    function clearResetWorkflow(message) {
+        if (readinessPoll) {
+            clearTimeout(readinessPoll);
+            readinessPoll = null;
+        }
+        saveResetState(null);
+        configUnlocked = false;
+        startupUnlocked = false;
+        phraseInput.value = "";
+        updateResetState({ preserveStatus: true });
+        setResetStatus(message || "Reset/startup is routed through the protected middleware maintenance API.");
+    }
+
+    function updateResetState(options = {}) {
+        const normalizedPhrase = phraseInput.value.trim().toUpperCase().replace(/[\s-]+/g, "_");
+        const phraseMatches = normalizedPhrase === requiredPhrase;
+        const isReady = configUnlocked && startupUnlocked && phraseMatches;
+        configKey.classList.toggle("is-unlocked", configUnlocked);
+        startupKey.classList.toggle("is-unlocked", startupUnlocked);
+        configKey.setAttribute("aria-pressed", String(configUnlocked));
+        startupKey.setAttribute("aria-pressed", String(startupUnlocked));
+        configKeyState.textContent = configUnlocked ? "Unlocked" : "Locked";
+        startupKeyState.textContent = startupUnlocked ? "Unlocked" : "Locked";
+
+        if (activeReset?.phase === "pending") {
+            executeButton.disabled = true;
+            executeButton.classList.remove("is-ready");
+            executeCover.classList.add("is-open");
+            executeCover.querySelector("span").textContent = "Reset command sent";
+            return;
+        }
+
+        executeButton.disabled = !isReady;
+        executeButton.classList.toggle("is-ready", isReady);
+        executeCover.classList.toggle("is-open", isReady);
+        executeCover.querySelector("span").textContent = isReady ? "Unlocked - reset armed" : "Locked - prerequisites required";
+        if (!options.preserveStatus && !activeReset) {
+            resetStatus.textContent = isReady
+                ? "Ready to request protected reset/startup."
+                : "Reset/startup is routed through the protected middleware maintenance API.";
+        }
+    }
+
+    function lockResetToolbox(message) {
+        if (reauthTimerInterval) {
+            clearInterval(reauthTimerInterval);
+            reauthTimerInterval = null;
+        }
+        saveResetState(null);
+        configUnlocked = false;
+        startupUnlocked = false;
+        configKey.disabled = true;
+        startupKey.disabled = true;
+        phraseInput.disabled = true;
+        executeButton.disabled = true;
+        executeCover.classList.remove("is-open");
+        executeCover.querySelector("span").textContent = "Reauth required";
+        resetStatus.textContent = message || "Reset toolbox requires step-up reauthentication.";
+        toolboxPanel.classList.remove("is-reauthorized");
+        toolboxPanel.classList.add("requires-reauth");
+        resetReauthBadge.textContent = "Portal reauth required";
+        resetReauthStateText.textContent = "Dev admin verified - reset reauth required";
+        resetReauthTimer.textContent = "Locked";
+        resetReauthTimer.removeAttribute("datetime");
+        ensureReauthGate(message);
+    }
+
+    function startReauthCountdown(expiresAt) {
+        const tick = () => {
+            const remaining = expiresAt - Date.now();
+            if (remaining <= 0) {
+                lockResetToolbox("Reset toolbox reauth expired. Reauthenticate to unlock again.");
+                return;
+            }
+
+            resetReauthTimer.textContent = formatRemaining(remaining);
+            resetReauthTimer.setAttribute("datetime", resetReauthExpiresUtc);
+            resetReauthBadge.textContent = "Reauth active";
+            resetReauthStateText.textContent = remaining <= 15000
+                ? "Reset reauth expiring"
+                : "Reset reauth active";
+        };
+
+        tick();
+        reauthTimerInterval = window.setInterval(tick, 1000);
+    }
+
+    async function waitForStonehengeReady(action) {
+        if (!activeReset) return;
+        const started = activeReset.acceptedAt || Date.now();
+        const minimumWaitMs = action === "startup" ? 90000 : 45000;
+        const describeReadiness = payload => {
+            if (!payload || typeof payload !== "object") {
+                return "Waiting for Stonehenge runtime...";
+            }
+
+            const readyGunCount = Number.isFinite(payload.readyGunCount) ? payload.readyGunCount : null;
+            const gunCount = Number.isFinite(payload.gunCount) ? payload.gunCount : 0;
+            const blockers = Array.isArray(payload.blockingGuns) ? payload.blockingGuns.slice(0, 3) : [];
+            const blockerText = blockers.length > 0 ? ` (${blockers.join(", ")}${payload.blockingGuns.length > 3 ? ", ..." : ""})` : "";
+
+            if (readyGunCount !== null) {
+                return `Waiting for guns: ${readyGunCount}/8 ready${blockerText}.`;
+            }
+
+            if (gunCount > 0) {
+                return `Waiting for gun snapshot: ${gunCount}/8 present.`;
+            }
+
+            return `Waiting for Stonehenge runtime... ${payload.status || "checking"}.`;
+        };
+        const check = async () => {
+            if (!activeReset) return;
+            try {
+                const response = await fetch("/Engineering/Admin/ResetToolbox/Readiness", { cache: "no-store" });
+                const payload = await response.json().catch(() => ({}));
+                if (Date.now() - started >= minimumWaitMs && response.ok && payload.ok) {
+                    await fetch("/Engineering/Admin/ResetToolbox/ReadyLog", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            ...(csrfToken ? { "X-Stonehenge-CSRF": csrfToken } : {})
+                        },
+                        body: JSON.stringify({ action })
+                    }).catch(() => {});
+                    prependAdminLog(
+                        "Reset/startup complete",
+                        "Ready",
+                        `${action}: Stonehenge up. Middleware and gun runtime snapshot are available.`);
+                    clearResetWorkflow("Stonehenge up. Middleware and gun runtime snapshot are available.");
+                    return;
+                }
+
+                const remainingSeconds = Math.max(0, Math.ceil((minimumWaitMs - (Date.now() - started)) / 1000));
+                setResetStatus(remainingSeconds > 0
+                    ? `Reset accepted. Waiting for reload window: ${remainingSeconds}s.`
+                    : describeReadiness(payload));
+            } catch {
+                setResetStatus("Waiting for Stonehenge runtime...");
+            }
+
+            if (Date.now() - started >= 180000) {
+                setResetStatus("Reset accepted, but Stonehenge readiness was not confirmed before timeout.");
+                return;
+            }
+
+            readinessPoll = setTimeout(check, 5000);
+        };
+
+        readinessPoll = setTimeout(check, 5000);
+    }
+
+    adminHmiGunSelect?.addEventListener("change", event => {
+        updateAdminHmiSelection(event.target.value);
+    });
+
+    if (!resetReauthorized || !resetReauthToken) {
+        lockResetToolbox("Reset toolbox locked. Reauthenticate to unlock for one active minute.");
+        return;
+    }
+    const reauthExpiresAt = Date.parse(resetReauthExpiresUtc);
+    if (!Number.isFinite(reauthExpiresAt) || reauthExpiresAt <= Date.now()) {
+        lockResetToolbox("Reset toolbox reauth expired.");
+        return;
+    }
+
+    startReauthCountdown(reauthExpiresAt);
+
+    configKey.addEventListener("click", () => {
+        configUnlocked = !configUnlocked;
+        updateResetState();
+    });
+    startupKey.addEventListener("click", () => {
+        startupUnlocked = !startupUnlocked;
+        updateResetState();
+    });
+    phraseInput.addEventListener("input", updateResetState);
+    executeButton.addEventListener("click", async event => {
+        event.preventDefault();
+        if (executeButton.disabled) return;
+        executeButton.disabled = true;
+        setResetStatus("Submitting reset/startup request to middleware...");
+        try {
+            const response = await fetch("/Engineering/Admin/ResetToolbox", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(csrfToken ? { "X-Stonehenge-CSRF": csrfToken } : {})
+                },
+                body: JSON.stringify({
+                    action: "auto",
+                    confirm: phraseInput.value.trim().toUpperCase().replace(/[\s-]+/g, "_"),
+                    reauthToken: resetReauthToken
+                })
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload.ok === false) {
+                setResetStatus(payload.error || "Startup reset request failed.");
+                updateResetState();
+                return;
+            }
+
+            const action = payload.action || "reset";
+            saveResetState({
+                phase: "pending",
+                action,
+                acceptedAt: Date.now(),
+                videoPlayed: true,
+                statusText: `${action} command sent. Waiting for reload confirmation.`
+            });
+            setResetStatus(activeReset.statusText);
+            prependAdminLog("Reset accepted", "Accepted", `${action}: ${payload.status || "started"}`);
+            openOverlay();
+            waitForStonehengeReady(action);
+        } catch {
+            setResetStatus("Reset/startup request failed.");
+        } finally {
+            updateResetState({ preserveStatus: Boolean(activeReset) });
+        }
+    });
+    closeButton.addEventListener("click", closeOverlay);
+    video.addEventListener("ended", closeOverlay);
+    overlay.addEventListener("click", event => {
+        if (event.target === overlay) {
+            closeOverlay();
+        }
+    });
+    if (activeReset?.phase === "pending") {
+        configUnlocked = true;
+        startupUnlocked = true;
+        resetStatus.textContent = activeReset.statusText || "Reset command sent. Waiting for reload confirmation.";
+        updateResetState({ preserveStatus: true });
+        waitForStonehengeReady(activeReset.action || "reset");
+    } else {
+        const lastStatus = loadLastResetStatus();
+        if (lastStatus) {
+            resetStatus.textContent = lastStatus;
+            updateResetState({ preserveStatus: true });
+        } else {
+            updateResetState();
+        }
+    }
+})();
+</script>

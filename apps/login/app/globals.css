@@ -1,0 +1,93 @@
+@font-face { font-family: "ACES04"; src: url("/ACES04.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "ACES04 Heavy"; src: url("/ACES04_Heavy.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "ACES04 PA"; src: url("/ACES04_PA.ttf") format("truetype"); font-display: swap; }
+
+:root {
+  color-scheme: dark;
+  --fcu-void: #01030c;
+  --fcu-navy: #19284d;
+  --fcu-blue: #053783;
+  --fcu-panel: #071432;
+  --fcu-cyan: #79eaff;
+  --fcu-silver: #b8c8ce;
+  --fcu-red: #e21d2b;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; margin: 0; }
+body {
+  background:
+    linear-gradient(90deg, rgba(121, 234, 255, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 50% 14%, rgba(5, 55, 131, 0.54), transparent 30rem),
+    linear-gradient(180deg, var(--fcu-navy) 0%, var(--fcu-panel) 38%, var(--fcu-void) 100%);
+  background-size: 72px 72px, 100% 100%, 100% 100%;
+  color: #d9f8ff;
+  font-family: "ACES04", Arial Narrow, sans-serif;
+  letter-spacing: 0;
+}
+a { color: inherit; }
+main { min-height: 100vh; }
+.authority-bar {
+  position: relative;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px clamp(18px, 4vw, 56px);
+  border-bottom: 1px solid rgba(121, 234, 255, 0.42);
+  background: rgba(2, 8, 28, 0.9);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.24);
+}
+.authority-bar::after { position: absolute; bottom: -1px; left: clamp(18px, 4vw, 56px); width: 52px; height: 2px; content: ""; background: var(--fcu-red); box-shadow: 58px 0 0 rgba(255, 255, 255, 0.82); }
+.authority-bar img { width: 48px; height: 32px; object-fit: cover; border: 1px solid rgba(184, 200, 206, 0.58); }
+.authority-bar span { display: grid; min-width: 0; }
+.authority-bar small, .eyebrow, dt, footer { color: var(--fcu-cyan); font-family: "ACES04 PA", monospace; text-transform: uppercase; }
+.authority-bar strong { color: white; font-family: "ACES04 Heavy", sans-serif; text-transform: uppercase; }
+.authority-bar b { margin-left: auto; color: rgba(184, 230, 255, 0.62); font-family: "ACES04 PA", monospace; font-size: 13px; text-transform: uppercase; }
+.login-shell { width: min(560px, calc(100% - 32px)); margin: clamp(28px, 6vh, 76px) auto; text-align: center; }
+.identity-mark {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto 22px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(184, 200, 206, 0.52);
+  border-bottom-color: var(--fcu-cyan);
+  background: rgba(1, 3, 12, 0.54);
+  box-shadow: inset 0 0 28px rgba(5, 55, 131, 0.28), 0 0 50px rgba(5, 55, 131, 0.36);
+}
+.identity-mark::after { position: absolute; right: -1px; bottom: -1px; width: 42px; height: 3px; content: ""; background: var(--fcu-red); }
+.identity-mark img { width: 124px; height: 124px; object-fit: contain; }
+.eyebrow { margin: 0 0 8px; font-size: 13px; }
+h1 { margin: 0; color: white; font-family: "ACES04 Heavy", sans-serif; font-size: clamp(38px, 8vw, 64px); line-height: 0.95; text-transform: uppercase; }
+.intro { margin: 18px auto 24px; max-width: 440px; color: var(--fcu-silver); font-family: "ACES04 PA", monospace; font-size: 17px; line-height: 1.5; }
+.notice { margin: 16px 0; padding: 10px 12px; border: 1px solid rgba(121, 234, 255, 0.35); background: rgba(9, 33, 72, 0.72); font-family: "ACES04 PA", monospace; }
+.notice.error { border-color: rgba(255, 100, 110, 0.58); color: #ffb6bd; }
+.session-panel { border: 1px solid rgba(121, 234, 255, 0.42); border-left: 3px solid var(--fcu-red); background: rgba(2, 8, 31, 0.86); padding: 24px; text-align: left; box-shadow: inset 0 0 38px rgba(5, 55, 131, 0.2), 0 18px 48px rgba(0, 0, 0, 0.22); }
+.session-heading { display: flex; align-items: center; gap: 12px; padding-bottom: 18px; border-bottom: 1px solid rgba(121, 234, 255, 0.22); }
+.session-heading span:last-child { display: grid; }
+.session-heading small { color: #79eaff; font-family: "ACES04 PA", monospace; text-transform: uppercase; }
+.session-heading strong { margin-top: 4px; color: white; font-family: "ACES04 Heavy", sans-serif; font-size: 24px; text-transform: uppercase; }
+.status-light { width: 10px; height: 10px; border-radius: 50%; background: var(--fcu-cyan); box-shadow: 0 0 14px var(--fcu-cyan); }
+dl { display: grid; gap: 0; margin: 16px 0 22px; }
+dl div { display: grid; grid-template-columns: 135px 1fr; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(121, 234, 255, 0.12); }
+dt { font-size: 12px; }
+dd { margin: 0; overflow-wrap: anywhere; color: white; font-family: "ACES04 PA", monospace; }
+.signed-out p { margin: 0 0 20px; color: var(--fcu-silver); font-family: "ACES04 PA", monospace; font-size: 17px; line-height: 1.5; }
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.primary, .secondary { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--fcu-cyan); padding: 10px 16px; font-family: "ACES04 Heavy", sans-serif; text-align: center; text-decoration: none; text-transform: uppercase; }
+.primary { background: linear-gradient(90deg, rgba(5, 55, 131, 0.82), rgba(25, 40, 77, 0.82)); color: white; box-shadow: inset 3px 0 0 var(--fcu-red), 0 0 20px rgba(121, 234, 255, 0.1); }
+.secondary { border-color: rgba(184, 200, 206, 0.42); color: var(--fcu-silver); }
+.primary:hover, .primary:focus-visible, .secondary:hover, .secondary:focus-visible { background: rgba(121, 234, 255, 0.14); outline: 1px solid #79eaff; outline-offset: 2px; }
+footer { display: flex; justify-content: space-between; gap: 16px; margin-top: 16px; color: rgba(121, 234, 255, 0.52); font-size: 11px; }
+.crt-mask { position: fixed; inset: 0; z-index: 50; pointer-events: none; background: linear-gradient(rgba(255,255,255,.026) 50%, rgba(0,0,0,.08) 50%); background-size: 100% 4px; opacity: .62; }
+@media (max-width: 640px) {
+  .authority-bar b { display: none; }
+  .authority-bar strong { font-size: 13px; }
+  .login-shell { margin-top: 28px; }
+  .identity-mark { width: 116px; height: 116px; }
+  .identity-mark img { width: 94px; height: 94px; }
+  .actions { grid-template-columns: 1fr; }
+  dl div { grid-template-columns: 1fr; gap: 4px; }
+  footer { flex-direction: column; }
+}

@@ -1,0 +1,5 @@
+<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{common/head :: head('Shipment Job')}"></head>
+<body><div th:replace="~{common/nav :: nav}"></div><main class="container-fluid"><div class="panel"><h1 class="h4">Shipment Job <span th:text="${job.id}"></span></h1>
+<dl class="row"><dt class="col-sm-3">Status</dt><dd class="col-sm-9" th:text="${job.status}"></dd><dt class="col-sm-3">Payload format</dt><dd class="col-sm-9" th:text="${job.payloadFormat}"></dd><dt class="col-sm-3">Attempts</dt><dd class="col-sm-9" th:text="${job.attemptCount}"></dd><dt class="col-sm-3">Last processing result</dt><dd class="col-sm-9" th:text="${job.lastError ?: 'No processing error recorded'}"></dd></dl>
+<a class="btn btn-outline-primary" th:href="@{/admin/shipment-jobs/{id}/export(id=${job.id})}">Export compatibility payload</a> <a class="btn btn-link" href="/admin/shipment-jobs">Back</a>
+</div></main></body></html>

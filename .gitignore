@@ -1,0 +1,11 @@
+.env
+.venv/
+secrets/
+apps/login/dex/config.public-local.yaml
+**/.generated/
+**/node_modules/
+**/.next/
+**/target/
+**/bin/
+**/obj/
+**/__pycache__/

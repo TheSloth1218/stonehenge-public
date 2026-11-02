@@ -1,0 +1,19 @@
+{
+  "pouOffsets": {
+    "FB_GlobalSafety": {
+      "kind": "FUNCTION_BLOCK",
+      "startLine": 1,
+      "endLine": 165
+    },
+    "FB_GunSafety": {
+      "kind": "FUNCTION_BLOCK",
+      "startLine": 167,
+      "endLine": 215
+    },
+    "main": {
+      "kind": "PROGRAM",
+      "startLine": 217,
+      "endLine": 457
+    }
+  }
+}

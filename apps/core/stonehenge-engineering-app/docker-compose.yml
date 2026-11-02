@@ -1,0 +1,50 @@
+services:
+  engineering-app:
+    build: .
+    image: stonehenge-engineering-app:latest
+    container_name: stonehenge-engineering-app
+    env_file:
+      - path: ../stonehenge-middleware/.env
+        required: false
+    environment:
+      STONEHENGE_MIDDLEWARE_URL: ${STONEHENGE_MIDDLEWARE_URL:-http://middleware:8080}
+      STONEHENGE_APP_DB_PATH: /data/stonehenge-engineering.db
+      STONEHENGE_SHOW_DEV_AUTH: "true"
+      Fuxa__Enabled: ${FUXA_EMBED_ENABLED:-true}
+      Fuxa__BaseUrl: ${FUXA_BASE_URL:-}
+      Fuxa__InternalBaseUrl: ${FUXA_INTERNAL_BASE_URL:-http://fuxa:1881}
+      Fuxa__EmbedPathTemplate: ${FUXA_EMBED_PATH_TEMPLATE:-/stonehenge/embed/{fuxaViewId}}
+      Fuxa__LocalProxyPathTemplate: ${FUXA_LOCAL_PROXY_PATH_TEMPLATE:-/fuxa/embed/{fuxaViewId}}
+      Fuxa__DefaultPanelHeight: ${FUXA_DEFAULT_PANEL_HEIGHT:-720}
+      Fuxa__AllowDirectExternalFuxaLinks: "false"
+    ports:
+      - "${ENGINEERING_APP_HOST_IP:-0.0.0.0}:${ENGINEERING_APP_PORT:-8088}:8080"
+    volumes:
+      - engineering-app-data:/data
+    networks:
+      - default
+      - stonehenge-control
+
+  playwright:
+    profiles:
+      - tools
+    build:
+      context: ./tools/playwright
+    image: stonehenge-engineering-playwright:latest
+    working_dir: /work
+    environment:
+      BASE_URL: http://engineering-app:8080
+    volumes:
+      - ./tools/playwright:/work
+      - playwright-node-modules:/work/node_modules
+    depends_on:
+      - engineering-app
+
+volumes:
+  engineering-app-data:
+  playwright-node-modules:
+
+networks:
+  stonehenge-control:
+    external: true
+    name: stonehenge-middleware_stonehenge-control

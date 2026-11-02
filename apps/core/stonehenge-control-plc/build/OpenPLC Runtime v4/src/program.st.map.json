@@ -1,0 +1,14 @@
+{
+  "pouOffsets": {
+    "FB_GunControl": {
+      "kind": "FUNCTION_BLOCK",
+      "startLine": 1,
+      "endLine": 414
+    },
+    "main": {
+      "kind": "PROGRAM",
+      "startLine": 416,
+      "endLine": 571
+    }
+  }
+}

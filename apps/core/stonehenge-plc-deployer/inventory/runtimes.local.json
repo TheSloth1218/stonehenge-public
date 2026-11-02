@@ -1,0 +1,84 @@
+{
+  "runtimes": {
+    "gun1": {
+      "project_type": "gun",
+      "gun_id": 1,
+      "url": "https://127.0.0.1:8443",
+      "service": "openplc-control-gun1",
+      "modbus_host": "openplc-control-gun1",
+      "docker_ip": "172.28.0.10",
+      "modbus_port": 502
+    },
+    "gun2": {
+      "project_type": "gun",
+      "gun_id": 2,
+      "url": "https://127.0.0.1:8444",
+      "service": "openplc-control-gun2",
+      "modbus_host": "openplc-control-gun2",
+      "docker_ip": "172.28.0.12",
+      "modbus_port": 502
+    },
+    "gun3": {
+      "project_type": "gun",
+      "gun_id": 3,
+      "url": "https://127.0.0.1:8445",
+      "service": "openplc-control-gun3",
+      "modbus_host": "openplc-control-gun3",
+      "docker_ip": "172.28.0.13",
+      "modbus_port": 502
+    },
+    "gun4": {
+      "project_type": "gun",
+      "gun_id": 4,
+      "url": "https://127.0.0.1:8446",
+      "service": "openplc-control-gun4",
+      "modbus_host": "openplc-control-gun4",
+      "docker_ip": "172.28.0.14",
+      "modbus_port": 502
+    },
+    "gun5": {
+      "project_type": "gun",
+      "gun_id": 5,
+      "url": "https://127.0.0.1:8447",
+      "service": "openplc-control-gun5",
+      "modbus_host": "openplc-control-gun5",
+      "docker_ip": "172.28.0.15",
+      "modbus_port": 502
+    },
+    "gun6": {
+      "project_type": "gun",
+      "gun_id": 6,
+      "url": "https://127.0.0.1:8448",
+      "service": "openplc-control-gun6",
+      "modbus_host": "openplc-control-gun6",
+      "docker_ip": "172.28.0.16",
+      "modbus_port": 502
+    },
+    "gun7": {
+      "project_type": "gun",
+      "gun_id": 7,
+      "url": "https://127.0.0.1:8449",
+      "service": "openplc-control-gun7",
+      "modbus_host": "openplc-control-gun7",
+      "docker_ip": "172.28.0.17",
+      "modbus_port": 502
+    },
+    "gun8": {
+      "project_type": "gun",
+      "gun_id": 8,
+      "url": "https://127.0.0.1:8451",
+      "service": "openplc-control-gun8",
+      "modbus_host": "openplc-control-gun8",
+      "docker_ip": "172.28.0.18",
+      "modbus_port": 502
+    },
+    "safety": {
+      "project_type": "safety",
+      "url": "https://127.0.0.1:8450",
+      "service": "openplc-safety",
+      "modbus_host": "openplc-safety",
+      "docker_ip": "172.28.0.11",
+      "modbus_port": 502
+    }
+  }
+}

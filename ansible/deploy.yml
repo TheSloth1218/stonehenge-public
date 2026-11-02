@@ -1,0 +1,56 @@
+---
+- name: Start the public Stonehenge stack on an existing Linux Docker host
+  hosts: stonehenge
+  become: true
+  gather_facts: true
+  vars:
+    stonehenge_checkout: /opt/stonehenge-public
+  tasks:
+    - name: Require a Debian or Ubuntu Docker host
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.os_family == 'Debian'
+          - ansible_facts.distribution_major_version | int >= 12
+
+    - name: Install the local account bootstrap dependency
+      ansible.builtin.apt:
+        name: [python3, python3-bcrypt]
+        state: present
+
+    - name: Require the checked-out public stack
+      ansible.builtin.stat:
+        path: "{{ stonehenge_checkout }}/compose.yml"
+      register: stonehenge_compose
+
+    - name: Stop if the source has not been cloned on this host
+      ansible.builtin.assert:
+        that: stonehenge_compose.stat.isreg | default(false)
+
+    - name: Verify Docker Compose is available
+      ansible.builtin.command: docker compose version
+      changed_when: false
+
+    - name: Create private local accounts and runtime values once
+      ansible.builtin.command:
+        argv: [python3, scripts/bootstrap.py]
+        chdir: "{{ stonehenge_checkout }}"
+      register: stonehenge_bootstrap
+      changed_when: "'Created .env' in stonehenge_bootstrap.stdout"
+      no_log: true
+
+    - name: Validate the single-host Compose model
+      ansible.builtin.command:
+        argv: [docker, compose, -f, compose.yml, config, --quiet]
+        chdir: "{{ stonehenge_checkout }}"
+      changed_when: false
+
+    - name: Build and start the training stack
+      ansible.builtin.command:
+        argv: [docker, compose, -f, compose.yml, up, -d, --build]
+        chdir: "{{ stonehenge_checkout }}"
+
+    - name: Load the PLC programs on first deployment
+      ansible.builtin.command:
+        argv: [./scripts/setup-plc.sh]
+        chdir: "{{ stonehenge_checkout }}"
+        creates: "{{ stonehenge_checkout }}/secrets/plc-loaded"

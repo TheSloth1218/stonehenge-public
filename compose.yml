@@ -1,0 +1,318 @@
+# Single-host Stonehenge training stack. Run scripts/bootstrap.py before Compose.
+name: stonehenge-public
+include:
+- path: ./apps/core/stonehenge-middleware/docker-compose.yml
+services:
+  caddy:
+    image: caddy:2.10.2-alpine
+    container_name: stonehenge-caddy
+    restart: unless-stopped
+    environment:
+      ENGINEERING_HOSTNAME: ${ENGINEERING_HOSTNAME:-engineering.stonehenge.test}
+      API_HOSTNAME: ${STONEHENGE_API_HOSTNAME:-api.stonehenge.test}
+      LOGIN_HOSTNAME: ${LOGIN_HOSTNAME:-login.stonehenge.test}
+      ASTRO_HOSTNAME: ${ASTRO_HOSTNAME:-sca.stonehenge.test}
+      VENDOR_HOSTNAME: ${VENDOR_HOSTNAME:-vendor.stonehenge.test}
+      TARGET_FEED_AUTH_TOKEN: ${STONEHENGE_INGEST_TOKEN:-}
+    ports:
+    - ${STONEHENGE_EDGE_HOST_IP:-127.0.0.1}:80:80
+    volumes:
+    - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    - caddy-data:/data
+    - caddy-config:/config
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.5
+        aliases:
+        - ${LOGIN_HOSTNAME:-login.stonehenge.test}
+        - ${ENGINEERING_HOSTNAME:-engineering.stonehenge.test}
+        - ${STONEHENGE_API_HOSTNAME:-api.stonehenge.test}
+        - ${ASTRO_HOSTNAME:-sca.stonehenge.test}
+        - ${VENDOR_HOSTNAME:-vendor.stonehenge.test}
+  stonehenge-api:
+    build:
+      context: ./apps/core/stonehenge-api
+    image: stonehenge-api:latest
+    container_name: stonehenge-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${STONEHENGE_API_ENVIRONMENT:-Development}
+      Swagger__Enabled: ${STONEHENGE_API_SWAGGER_ENABLED:-false}
+      Stonehenge__MiddlewareBaseUrl: ${STONEHENGE_MIDDLEWARE_URL:-http://middleware:8080}
+      Stonehenge__UseLiveMiddlewareAstroData: ${STONEHENGE_API_USE_LIVE_ASTRO_DATA:-true}
+      Stonehenge__AllowSeededAstroFallback: ${STONEHENGE_API_ALLOW_SEEDED_ASTRO_FALLBACK:-false}
+      ApiKeyAuth__Pepper: ${STONEHENGE_API_KEY_PEPPER:?Run scripts/bootstrap.py}
+      ApiKeyAuth__AllowLegacyDevKeys: ${STONEHENGE_API_ALLOW_LEGACY_DEV_KEYS:-true}
+      TrainingVulnerabilities__Enabled: ${STONEHENGE_TRAINING_VULNS_ENABLED:-true}
+      Operational__MaintenanceShotThreshold: ${STONEHENGE_MAINTENANCE_SHOT_THRESHOLD:-200}
+    ports:
+    - ${STONEHENGE_API_HOST_IP:-127.0.0.1}:${STONEHENGE_API_PORT:-8092}:8080
+    healthcheck:
+      test:
+      - CMD
+      - wget
+      - -qO-
+      - http://127.0.0.1:8080/api/v1/system/health
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      middleware:
+        condition: service_started
+    networks:
+    - stonehenge-control
+  engineering-app:
+    build:
+      context: ./apps/core/stonehenge-engineering-app
+    image: stonehenge-engineering-app:latest
+    container_name: stonehenge-engineering-app
+    restart: unless-stopped
+    env_file:
+    - path: ./apps/core/stonehenge-middleware/.env
+      required: false
+    - path: ./apps/core/stonehenge-api/.generated/stonehenge-api-keys.env
+      required: false
+    environment:
+      Authentication__Mode: ${STONEHENGE_AUTH_MODE:-Dev}
+      TrainingVulnerabilities__Enabled: ${STONEHENGE_TRAINING_VULNS_ENABLED:-true}
+      Operational__MaintenanceShotThreshold: ${STONEHENGE_MAINTENANCE_SHOT_THRESHOLD:-200}
+      Authentication__DataProtectionKeysPath: /data/data-protection-keys
+      Authentication__Oidc__Authority: ${STONEHENGE_OIDC_AUTHORITY:-http://login.stonehenge.test/dex}
+      Authentication__Oidc__ClientId: ${STONEHENGE_OIDC_CLIENT_ID:-stonehenge-engineering}
+      Authentication__Oidc__ClientSecret: ${ENGINEERING_OIDC_CLIENT_SECRET:?Run scripts/bootstrap.py}
+      Authentication__Oidc__CallbackPath: ${STONEHENGE_OIDC_CALLBACK_PATH:-/signin-oidc}
+      Authentication__Oidc__SignedOutCallbackPath: ${STONEHENGE_OIDC_SIGNED_OUT_CALLBACK_PATH:-/signout-callback-oidc}
+      Authentication__Oidc__RequireHttpsMetadata: ${STONEHENGE_OIDC_REQUIRE_HTTPS_METADATA:-false}
+      Authentication__Oidc__EngineeringBoundary__ClaimTypes__0: ${STONEHENGE_ENGINEERING_CLAIM_TYPE:-groups}
+      Authentication__Oidc__EngineeringBoundary__Values__0: ${STONEHENGE_ENGINEERING_CLAIM_VALUE:-SCA-Engineering-Users}
+      Authentication__Oidc__EngineeringBoundary__Values__1: ${STONEHENGE_ENGINEERING_ADMIN_CLAIM_VALUE:-SCA-Engineering-Admins}
+      Authentication__Oidc__AdminBoundary__ClaimTypes__0: ${STONEHENGE_ADMIN_CLAIM_TYPE:-groups}
+      Authentication__Oidc__AdminBoundary__Values__0: ${STONEHENGE_ADMIN_CLAIM_VALUE:-SCA-Engineering-Admins}
+      Authentication__ForwardedHeaders__KnownProxies__0: ${STONEHENGE_TRUSTED_PROXY_IP:-172.28.0.5}
+      Authentication__ForwardedHeaders__KnownNetworks__0: ${STONEHENGE_TRUSTED_PROXY_NETWORK:-}
+      STONEHENGE_MIDDLEWARE_URL: ${STONEHENGE_MIDDLEWARE_URL:-http://middleware:8080}
+      STONEHENGE_CONTROL_TOKEN: ${STONEHENGE_CONTROL_TOKEN:-}
+      STONEHENGE_FUXA_PROXY_TOKEN: ${STONEHENGE_FUXA_PROXY_TOKEN:-}
+      STONEHENGE_APP_DB_PATH: /data/stonehenge-engineering.db
+      STONEHENGE_SHOW_DEV_AUTH: ${STONEHENGE_SHOW_DEV_AUTH:-true}
+      Fuxa__Enabled: ${FUXA_EMBED_ENABLED:-true}
+      Fuxa__BaseUrl: ${FUXA_BASE_URL:-}
+      Fuxa__InternalBaseUrl: ${FUXA_INTERNAL_BASE_URL:-http://fuxa:1881}
+      Fuxa__EmbedPathTemplate: ${FUXA_EMBED_PATH_TEMPLATE:-/stonehenge/embed/{fuxaViewId}}
+      Fuxa__LocalProxyPathTemplate: ${FUXA_LOCAL_PROXY_PATH_TEMPLATE:-/fuxa/embed/{fuxaViewId}}
+      Fuxa__DefaultPanelHeight: ${FUXA_DEFAULT_PANEL_HEIGHT:-720}
+      Fuxa__AllowDirectExternalFuxaLinks: 'false'
+      StonehengeApi__Enabled: ${STONEHENGE_API_SYNC_ENABLED:-true}
+      StonehengeApi__BaseUrl: ${STONEHENGE_API_BASE_URL:-http://stonehenge-api:8080/api/v1}
+      StonehengeApi__ApiKey: ${STONEHENGE_ENGINEERING_API_KEY:-engineering-dev-key}
+    ports:
+    - ${ENGINEERING_APP_HOST_IP:-127.0.0.1}:${ENGINEERING_APP_PORT:-8088}:8080
+    volumes:
+    - engineering-app-data:/data
+    depends_on:
+      middleware:
+        condition: service_started
+      stonehenge-api:
+        condition: service_healthy
+      fuxa:
+        condition: service_healthy
+    networks:
+    - stonehenge-control
+  stonehenge-target-feed:
+    build:
+      context: ./apps/core/stonehenge-targets
+    image: stonehenge-target-feed:latest
+    restart: unless-stopped
+    env_file:
+    - path: ./apps/core/stonehenge-targets/.env
+      required: false
+    environment:
+      TARGET_ENDPOINT: ${TARGET_ENDPOINT:-http://middleware:8080/api/v1/ingest/fragments}
+      TARGET_AUTH_TOKEN: ${STONEHENGE_INGEST_TOKEN:-}
+      TARGET_MODE: ${TARGET_MODE:-continuous}
+      TARGET_READINESS_POLL_SECONDS: ${TARGET_READINESS_POLL_SECONDS:-30}
+      TARGET_STARTUP_STABILIZATION_SECONDS: ${TARGET_STARTUP_STABILIZATION_SECONDS:-30}
+      FEED_LISTEN_ADDRESS: ${FEED_LISTEN_ADDRESS:-0.0.0.0:8090}
+    ports:
+    - ${TARGET_FEED_HOST_IP:-127.0.0.1}:${TARGET_FEED_PORT:-8090}:8090
+    depends_on:
+      middleware:
+        condition: service_started
+    healthcheck:
+      test:
+      - CMD
+      - wget
+      - -qO-
+      - http://127.0.0.1:8090/health
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks:
+    - stonehenge-control
+  playwright:
+    profiles:
+    - tools
+    build:
+      context: ./apps/core/stonehenge-engineering-app/tools/playwright
+    image: stonehenge-engineering-playwright:latest
+    working_dir: /work
+    environment:
+      BASE_URL: http://engineering-app:8080
+      API_BASE_URL: http://stonehenge-api:8080/api/v1
+      TRAINING_PROFILE: ${TRAINING_PROFILE:-training}
+      MAINTENANCE_SHOT_THRESHOLD: ${STONEHENGE_MAINTENANCE_SHOT_THRESHOLD:-200}
+    volumes:
+    - ./apps/core/stonehenge-engineering-app/tools/playwright:/work
+    - ./apps/core/stonehenge-engineering-app/Controllers:/work/Controllers:ro
+    - ./apps/core/stonehenge-engineering-app/Security:/work/Security:ro
+    - playwright-node-modules:/work/node_modules
+    depends_on:
+    - engineering-app
+    networks:
+    - stonehenge-control
+  dex:
+    image: ghcr.io/dexidp/dex:v2.45.1
+    restart: unless-stopped
+    command:
+    - dex
+    - serve
+    - /etc/dex/config.yaml
+    environment:
+      DEX_ISSUER: ${DEX_ISSUER:?Run scripts/bootstrap.py}
+      LOGIN_PORTAL_PUBLIC_ORIGIN: ${LOGIN_PORTAL_PUBLIC_ORIGIN:?Run scripts/bootstrap.py}
+      LOGIN_PORTAL_OIDC_CLIENT_SECRET: ${LOGIN_PORTAL_OIDC_CLIENT_SECRET:?Run scripts/bootstrap.py}
+      ASTRO_PUBLIC_ORIGIN: ${ASTRO_PUBLIC_ORIGIN:?Run scripts/bootstrap.py}
+      ASTRO_OIDC_CLIENT_SECRET: ${ASTRO_OIDC_CLIENT_SECRET:?Run scripts/bootstrap.py}
+      VENDOR_PUBLIC_ORIGIN: ${VENDOR_PUBLIC_ORIGIN:?Run scripts/bootstrap.py}
+      VENDOR_OIDC_CLIENT_SECRET: ${VENDOR_OIDC_CLIENT_SECRET:?Run scripts/bootstrap.py}
+      ENGINEERING_PUBLIC_ORIGIN: ${ENGINEERING_PUBLIC_ORIGIN:?Run scripts/bootstrap.py}
+      ENGINEERING_OIDC_CLIENT_SECRET: ${ENGINEERING_OIDC_CLIENT_SECRET:?Run scripts/bootstrap.py}
+      DEX_LDAP_HOST: ${DEX_LDAP_HOST:-}
+      DEX_LDAP_BIND_DN: ${DEX_LDAP_BIND_DN:-}
+      DEX_LDAP_BIND_PASSWORD: ${DEX_LDAP_BIND_PASSWORD:-}
+      DEX_LDAP_USER_BASE_DN: ${DEX_LDAP_USER_BASE_DN:-}
+      DEX_LDAP_GROUP_BASE_DN: ${DEX_LDAP_GROUP_BASE_DN:-}
+    volumes:
+    - ./apps/login/dex/${DEX_CONFIG_FILE:-config.public-local.yaml}:/etc/dex/config.yaml:ro
+    - ./apps/login/dex/theme:/srv/dex/web/themes/stonehenge:ro
+    - dex-data:/var/dex
+    networks:
+    - stonehenge-control
+  login-portal:
+    build:
+      context: ./apps/login
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: '3002'
+      APP_PUBLIC_ORIGIN: ${LOGIN_PORTAL_PUBLIC_ORIGIN:?Run scripts/bootstrap.py}
+      ASTRO_PUBLIC_ORIGIN: ${ASTRO_PUBLIC_ORIGIN:?Run scripts/bootstrap.py}
+      OIDC_ISSUER: ${DEX_ISSUER:?Run scripts/bootstrap.py}
+      OIDC_INTERNAL_ISSUER: http://dex:5556/dex
+      OIDC_CLIENT_ID: login-portal
+      OIDC_CLIENT_SECRET: ${LOGIN_PORTAL_OIDC_CLIENT_SECRET:?Run scripts/bootstrap.py}
+      AUTH_SESSION_SECRET: ${LOGIN_PORTAL_SESSION_SECRET:?Run scripts/bootstrap.py}
+      AUTH_SESSION_COOKIE: sca_login_session
+    depends_on:
+    - dex
+    networks:
+    - stonehenge-control
+  astro-app:
+    build:
+      context: ./apps/astro
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: '3000'
+      STONEHENGE_API_BASE_URL: http://stonehenge-api:8080/api/v1
+      STONEHENGE_ASTRO_API_KEY: ${STONEHENGE_ASTRO_API_KEY:-astro-dev-key}
+      ASTRO_PUBLIC_ORIGIN: ${ASTRO_PUBLIC_ORIGIN:?Run scripts/bootstrap.py}
+      OIDC_ISSUER: ${DEX_ISSUER:?Run scripts/bootstrap.py}
+      OIDC_INTERNAL_ISSUER: http://dex:5556/dex
+      OIDC_CLIENT_ID: stonehenge-astro
+      OIDC_CLIENT_SECRET: ${ASTRO_OIDC_CLIENT_SECRET:?Run scripts/bootstrap.py}
+      AUTH_SESSION_SECRET: ${ASTRO_SESSION_SECRET:?Run scripts/bootstrap.py}
+      AUTH_SESSION_COOKIE: sca_astro_session
+      ASTRO_REVIEW_DB_PATH: /data/astro-review.sqlite
+    volumes:
+    - astro-review-data:/data
+    depends_on:
+    - dex
+    networks:
+    - stonehenge-control
+  astro-reviewer:
+    build:
+      context: ./apps/astro
+      dockerfile: Dockerfile.reviewer
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      ASTRO_PUBLIC_ORIGIN: ${ASTRO_PUBLIC_ORIGIN:?Run scripts/bootstrap.py}
+      ASTRO_REVIEW_DB_PATH: /data/astro-review.sqlite
+      ASTRO_REVIEWER_WORKER_ID: astro-reviewer-1
+      ASTRO_REVIEWER_HEALTH_PORT: '8080'
+      ASTRO_REVIEWER_ARTIFACT_DIR: /artifacts
+    volumes:
+    - astro-review-data:/data
+    - astro-review-artifacts:/artifacts
+    depends_on:
+    - astro-app
+    networks:
+    - stonehenge-control
+  vendor-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: stonehenge_vendor
+      POSTGRES_USER: stonehenge_vendor
+      POSTGRES_PASSWORD: ${VENDOR_DB_PASSWORD:?Run scripts/bootstrap.py}
+    volumes:
+    - vendor-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -U stonehenge_vendor -d stonehenge_vendor
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+    - stonehenge-control
+  vendor-app:
+    build:
+      context: ./apps/vendor
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: ${VENDOR_PROFILE:-dev,training}
+      SERVER_ADDRESS: 0.0.0.0
+      SERVER_PORT: '8089'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://vendor-db:5432/stonehenge_vendor
+      SPRING_DATASOURCE_USERNAME: stonehenge_vendor
+      SPRING_DATASOURCE_PASSWORD: ${VENDOR_DB_PASSWORD:?Run scripts/bootstrap.py}
+      STONEHENGE_API_BASE_URL: http://stonehenge-api:8080/api/v1
+      STONEHENGE_VENDOR_API_KEY: ${STONEHENGE_VENDOR_API_KEY:-vendor-dev-key}
+      SCA_DEV_USER: ${VENDOR_DEV_USER:-operator}
+      OIDC_ISSUER: ${DEX_ISSUER:?Run scripts/bootstrap.py}
+      OIDC_CLIENT_ID: stonehenge-vendor
+      OIDC_CLIENT_SECRET: ${VENDOR_OIDC_CLIENT_SECRET:?Run scripts/bootstrap.py}
+      APP_PUBLIC_ORIGIN: ${VENDOR_PUBLIC_ORIGIN:?Run scripts/bootstrap.py}
+      AUTH_SESSION_SECRET: ${VENDOR_SESSION_SECRET:?Run scripts/bootstrap.py}
+      SERVER_FORWARD_HEADERS_STRATEGY: framework
+      SESSION_COOKIE_SECURE: 'false'
+    depends_on:
+      vendor-db:
+        condition: service_healthy
+    networks:
+    - stonehenge-control
+volumes:
+  caddy-data: null
+  caddy-config: null
+  engineering-app-data: null
+  playwright-node-modules: null
+  dex-data: null
+  astro-review-data: null
+  astro-review-artifacts: null
+  vendor-db-data: null

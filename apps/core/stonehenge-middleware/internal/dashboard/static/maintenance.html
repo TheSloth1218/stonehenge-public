@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stonehenge Maintenance</title>
+    <link rel="stylesheet" href="/dashboard/static/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Maintenance Console</h1>
+        <p id="summary">Protected stack reset and PLC deployment controls</p>
+      </div>
+      <a class="nav-link" href="/dashboard">Dashboard</a>
+    </header>
+
+    <main class="maintenance-main">
+      <section class="panel maintenance-controls">
+        <div class="panel-header">
+          <h2>Controls</h2>
+        </div>
+        <div class="form-grid">
+          <label>
+            Token
+            <input id="token" type="password" autocomplete="off">
+          </label>
+          <label>
+            Mode
+            <select id="mode">
+              <option value="dry-run">Dry run</option>
+              <option value="execute">Execute</option>
+            </select>
+          </label>
+          <label>
+            Soft Target
+            <select id="target">
+              <option value="all-guns">All guns</option>
+              <option value="gun1">Gun 1</option>
+              <option value="gun2">Gun 2</option>
+              <option value="gun3">Gun 3</option>
+              <option value="gun4">Gun 4</option>
+              <option value="gun5">Gun 5</option>
+              <option value="gun6">Gun 6</option>
+              <option value="gun7">Gun 7</option>
+              <option value="gun8">Gun 8</option>
+              <option value="safety">Safety</option>
+              <option value="middleware">Middleware</option>
+              <option value="fuxa">FUXA</option>
+            </select>
+          </label>
+          <label>
+            Confirmation
+            <input id="confirm" type="text" autocomplete="off" placeholder="STONEHENGE_MAINTENANCE_RESET">
+          </label>
+        </div>
+        <div class="button-row">
+          <button data-action="status">Status</button>
+          <button data-action="soft-reset">Soft Reset</button>
+          <button data-action="startup">Startup</button>
+          <button data-action="hard-reset">Hard Reset</button>
+          <button data-action="complete-reset">Complete Reset</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Result</h2>
+        </div>
+        <pre id="result" class="result-box">{}</pre>
+      </section>
+    </main>
+
+    <script>
+      const result = document.querySelector("#result");
+      const token = document.querySelector("#token");
+      const mode = document.querySelector("#mode");
+      const target = document.querySelector("#target");
+      const confirmText = document.querySelector("#confirm");
+
+      function render(value) {
+        result.textContent = JSON.stringify(value, null, 2);
+      }
+
+      async function run(action) {
+        const execute = mode.value === "execute";
+        const payload = { action, execute, confirm: confirmText.value };
+        if (action === "soft-reset") payload.target = target.value;
+        const endpoint = action === "status" ? "/api/v1/maintenance" : "/api/v1/maintenance/actions";
+        const response = await fetch(endpoint, {
+          method: action === "status" ? "GET" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Stonehenge-Maintenance-Token": token.value
+          },
+          body: action === "status" ? undefined : JSON.stringify(payload)
+        });
+        const data = await response.json().catch(() => ({ error: "non-json response" }));
+        render({ http_status: response.status, ...data });
+      }
+
+      document.querySelectorAll("button[data-action]").forEach((button) => {
+        button.addEventListener("click", () => run(button.dataset.action).catch((error) => render({ error: String(error) })));
+      });
+    </script>
+  </body>
+</html>

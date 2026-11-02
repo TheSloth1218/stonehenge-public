@@ -1,0 +1,105 @@
+version: 1
+application: stonehenge-vendor
+profiles:
+  vulnerable: training
+  corrected: safe
+vulnerabilities:
+  - identifier: SCA-VENDOR-001
+    title: Actuator information exposure
+    affected_component: management endpoints
+    training_behavior: Authenticated employees can inspect mappings, environment metadata, and configuration properties.
+    safe_behavior: Employees are denied and only minimal health and info endpoints are exposed.
+    prerequisite: Authenticated EMPLOYEE
+    intended_impact: Discovery of bounded internal routes and operational clues
+    expected_evidence: Successful employee request to actuator mappings without secret values
+    remediation: Restrict management endpoints to administrators or a separate localhost listener.
+    relevant_automated_tests: TrainingRouteProfileTest
+    participates_in_shell_chain: true
+  - identifier: SCA-VENDOR-002
+    title: Shipment job authorization gap
+    affected_component: shipment job export and replay
+    training_behavior: An employee who discovers the routes can export and queue compatibility payloads.
+    safe_behavior: Controller and service operations require ADMIN.
+    prerequisite: Authenticated EMPLOYEE and a legitimate shipment job
+    intended_impact: Access to the legacy compatibility worker input
+    expected_evidence: Employee receives an exported payload and accepted replay job reference
+    remediation: Enforce ADMIN at route and method layers.
+    relevant_automated_tests: TrainingRouteProfileTest, AuthorizationServiceTest
+    participates_in_shell_chain: true
+  - identifier: SCA-VENDOR-003
+    title: Unsafe Java deserialization
+    affected_component: background shipment job worker
+    training_behavior: The worker Base64-decodes and passes queued bytes to ObjectInputStream.readObject. The training classpath intentionally retains Apache Commons Collections 3.2.1 so a stock CommonsCollections6 payload can reach the sink without Vendor application classes.
+    safe_behavior: Native serialization is rejected and strict JSON is parsed into a fixed DTO.
+    prerequisite: Ability to queue a modified compatibility payload
+    intended_impact: Command execution as the unprivileged application service account
+    expected_evidence: A controlled one-shot callback or local marker records command execution as stonevendor
+    remediation: Use strict JSON, fixed enums, and persisted relationship validation.
+    relevant_automated_tests: ShipmentPayloadCodecTest, trainingNativePayloadSupportsCommonsCollections6Gadget
+    participates_in_shell_chain: true
+  - identifier: SCA-VENDOR-004
+    title: External request ID confusion
+    affected_component: completion checkout target selection
+    training_behavior: A submitted external request ID overrides the persisted request relationship.
+    safe_behavior: The external ID is always derived from the persisted order and maintenance request.
+    prerequisite: Authenticated employee and legitimate local order
+    intended_impact: Completion notification is sent for a different request identifier
+    expected_evidence: API mock receives the submitted ID with no duplicate shipment or stock deduction
+    remediation: Ignore client identity fields and derive the completion target from storage.
+    relevant_automated_tests: CompletionTargetProfileTest
+    participates_in_shell_chain: false
+  - identifier: SCA-VENDOR-005
+    title: Completion retry authorization gap
+    affected_component: failed completion retry
+    training_behavior: An employee who discovers the route can retry an eligible failed completion.
+    safe_behavior: Route and service require ADMIN.
+    prerequisite: Authenticated employee and eligible failed sync event
+    intended_impact: Unauthorized but bounded replay of the fixed completion operation
+    expected_evidence: A new audited retry event without new shipment or inventory deduction
+    remediation: Require ADMIN at controller and service boundaries.
+    relevant_automated_tests: TrainingRouteProfileTest, AuthorizationServiceTest
+    participates_in_shell_chain: false
+  - identifier: SCA-VENDOR-006
+    title: Sync diagnostic overexposure
+    affected_component: detailed sync event page
+    training_behavior: An employee with an event ID can view bounded operational diagnostics.
+    safe_behavior: Detailed diagnostics require ADMIN; employees receive generic state.
+    prerequisite: Authenticated employee and known sync event ID
+    intended_impact: Disclosure of host, route, identifiers, and service metadata without secrets
+    expected_evidence: Detail page renders redacted metadata and no API key
+    remediation: Apply object and role authorization to diagnostic records.
+    relevant_automated_tests: TrainingRouteProfileTest, AuthorizationServiceTest
+    participates_in_shell_chain: false
+  - identifier: SCA-VENDOR-007
+    title: Fulfillment order IDOR
+    affected_component: not implemented
+    training_behavior: Optional scenario intentionally omitted because assignment ownership is not yet a stable domain rule.
+    safe_behavior: Existing request-to-order item validation remains enforced.
+    prerequisite: Not applicable
+    intended_impact: None
+    expected_evidence: Manifest records omission
+    remediation: Add a single bounded scenario only after assignment semantics are defined.
+    relevant_automated_tests: none
+    participates_in_shell_chain: false
+  - identifier: SCA-VENDOR-008
+    title: Privileged support plugin loading
+    affected_component: root support collection utility and plugin directory
+    training_behavior: The stonevendor service account can invoke a root-owned support collector through sudo. The collector loads diagnostic plugins from a directory writable by the vendor-support group, and stonevendor is a member of that group.
+    safe_behavior: The support collector loads only root-owned allowlisted plugins from a non-writable directory, and attacker-controlled plugin paths or files are rejected.
+    prerequisite: Command execution as the stonevendor application service account
+    intended_impact: Deterministic local privilege escalation sufficient to access root-only Vendor host integration material
+    expected_evidence: A controlled training marker records effective UID 0 without persistence, user creation, service modification, or destructive host changes
+    remediation: Remove broad sudo access, use a fixed trusted plugin directory, require root ownership and non-writable permissions, and verify plugin hashes or an allowlist.
+    relevant_automated_tests: VendorSupportPrivilegeBoundaryTest, VendorSupportIntegrationTest
+    participates_in_shell_chain: true
+  - identifier: SCA-VENDOR-009
+    title: Live OIDC session retained in Vendor recovery backup
+    affected_component: root-only encrypted Vendor OIDC recovery snapshot
+    training_behavior: An authenticated AES-256-GCM snapshot retains one live swordsman record after the controlled 008 root transition; recovery remains a root/instructor-only explicit operation.
+    safe_behavior: Live artifacts are revoked or excluded, the runtime key and recovery command are removed, and the encrypted archive is unusable on the host.
+    prerequisite: Controlled SCA-VENDOR-008 root evidence and separately supplied protected instructor seed
+    intended_impact: Bounded recovery of the target Vendor session without importing any Engineering administrator identity
+    expected_evidence: Sanitized metadata and audit records containing only record ID, status/expiry, finding/correlation ID, and token hash prefix
+    remediation: Revoke sessions before archival, exclude live tokens, separate encryption keys, and disable recovery tooling.
+    relevant_automated_tests: SessionSnapshotToolTest, SessionRecoveryDeploymentTest
+    participates_in_shell_chain: true

@@ -1,0 +1,15 @@
+.idea/
+.vscode/
+*.exe
+*.test
+__pycache__/
+*.pyc
+/stonehenge-control
+coverage.out
+dist/
+tmp/
+backups/
+deployment-history/
+.env
+runtime-secrets/
+*.credentials.json

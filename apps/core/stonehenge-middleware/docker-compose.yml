@@ -1,0 +1,366 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-stonehenge}
+      POSTGRES_USER: ${POSTGRES_USER:-stonehenge_writer}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-stonehenge_dev_password}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.40
+
+  middleware:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${MIDDLEWARE_HOST_IP:-127.0.0.1}:${MIDDLEWARE_PORT:-8080}:8080"
+    expose:
+      - "1502"
+    volumes:
+      - ${STONEHENGE_HOST_REPO:-..}:/host
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME:-stonehenge-middleware}
+      STONEHENGE_CONFIG: ${STONEHENGE_CONFIG:-/app/configs/config.linux.example.json}
+      HISTORY_ADAPTER: ${HISTORY_ADAPTER:-postgres}
+      POSTGRES_HOST: ${POSTGRES_HOST:-postgres}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_DB: ${POSTGRES_DB:-stonehenge}
+      POSTGRES_USER: ${POSTGRES_USER:-stonehenge_writer}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-stonehenge_dev_password}
+      POSTGRES_SSLMODE: ${POSTGRES_SSLMODE:-disable}
+      POSTGRES_MAX_CONNECTIONS: ${POSTGRES_MAX_CONNECTIONS:-10}
+      POSTGRES_WRITE_QUEUE_SIZE: ${POSTGRES_WRITE_QUEUE_SIZE:-1000}
+      POSTGRES_RETRY_INTERVAL_SECONDS: ${POSTGRES_RETRY_INTERVAL_SECONDS:-5}
+      PLC_HOST: ${PLC_HOST:-openplc-control-gun1}
+      PLC_PORT: ${PLC_PORT:-502}
+      PLC_UNIT_ID: ${PLC_UNIT_ID:-1}
+      PLC_COMMAND_ACK_TIMEOUT_SECONDS: ${PLC_COMMAND_ACK_TIMEOUT_SECONDS:-5}
+      PLC_POLL_INTERVAL_MS: ${PLC_POLL_INTERVAL_MS:-100}
+      PLC_LIFECYCLE_POLL_INTERVAL_MS: ${PLC_LIFECYCLE_POLL_INTERVAL_MS:-200}
+      PLC_LIFECYCLE_COMPLETION_TIMEOUT_SECONDS: ${PLC_LIFECYCLE_COMPLETION_TIMEOUT_SECONDS:-30}
+      PLC_LIFECYCLE_MAX_CONSECUTIVE_READ_ERRORS: ${PLC_LIFECYCLE_MAX_CONSECUTIVE_READ_ERRORS:-5}
+      PLC_AUTO_READINESS_POLL_INTERVAL_MS: ${PLC_AUTO_READINESS_POLL_INTERVAL_MS:-500}
+      PLC_AUTO_SAFETY_FIRE_PERMISSIVE: ${PLC_AUTO_SAFETY_FIRE_PERMISSIVE:-false}
+      PLC_FAULT_ON_SAFETY_BLOCKED: ${PLC_FAULT_ON_SAFETY_BLOCKED:-false}
+      PLC_AUTO_TELEMETRY_MODBUS_ENABLED: ${PLC_AUTO_TELEMETRY_MODBUS_ENABLED:-true}
+      PLC_AUTO_TELEMETRY_MODBUS_ADDR: ${PLC_AUTO_TELEMETRY_MODBUS_ADDR:-0.0.0.0:1502}
+      PLC_AUTO_TELEMETRY_UNIT_ID: ${PLC_AUTO_TELEMETRY_UNIT_ID:-1}
+      PLC_AUTO_TELEMETRY_POLL_INTERVAL: ${PLC_AUTO_TELEMETRY_POLL_INTERVAL:-500ms}
+      PLC_AUTO_TELEMETRY_STALE_AFTER: ${PLC_AUTO_TELEMETRY_STALE_AFTER:-3s}
+      PLC_FAULT_RESET_TIMEOUT: ${PLC_FAULT_RESET_TIMEOUT:-30s}
+      PLC_STARTUP_MODE: ${PLC_STARTUP_MODE:-manual}
+      PLC_STARTUP_MODE_RETRY_TIMEOUT: ${PLC_STARTUP_MODE_RETRY_TIMEOUT:-5m}
+      GUNS_CONFIG_JSON: ${GUNS_CONFIG_JSON:-}
+      TARGET_FEED_ENABLED: ${TARGET_FEED_ENABLED:-true}
+      TARGET_FEED_MAX_PENDING: ${TARGET_FEED_MAX_PENDING:-25}
+      TARGET_FEED_TARGET_TTL: ${TARGET_FEED_TARGET_TTL:-2m}
+      TARGET_FEED_HEALTHY_WINDOW: ${TARGET_FEED_HEALTHY_WINDOW:-30s}
+      TARGET_FEED_DISPATCH_POLL_INTERVAL_MS: ${TARGET_FEED_DISPATCH_POLL_INTERVAL_MS:-500}
+      DISPATCHER_ENABLED: ${DISPATCHER_ENABLED:-true}
+      DISPATCHER_MODE: ${DISPATCHER_MODE:-active}
+      DISPATCHER_POLL_INTERVAL_MS: ${DISPATCHER_POLL_INTERVAL_MS:-500}
+      DISPATCHER_ASSIGNMENT_LEASE_DURATION: ${DISPATCHER_ASSIGNMENT_LEASE_DURATION:-90s}
+      DISPATCHER_LEASE_RENEWAL_INTERVAL: ${DISPATCHER_LEASE_RENEWAL_INTERVAL:-30s}
+      DISPATCHER_RECONCILIATION_INTERVAL: ${DISPATCHER_RECONCILIATION_INTERVAL:-5s}
+      DISPATCHER_SHADOW_DECISION_RETENTION: ${DISPATCHER_SHADOW_DECISION_RETENTION:-10m}
+      DISPATCHER_ELEVATION_WEIGHT: ${DISPATCHER_ELEVATION_WEIGHT:-1}
+      STONEHENGE_TEST_CONTROLS: ${STONEHENGE_TEST_CONTROLS:-false}
+      STONEHENGE_TEST_TOKEN: ${STONEHENGE_TEST_TOKEN:-}
+      STONEHENGE_MAINTENANCE_CONTROLS: ${STONEHENGE_MAINTENANCE_CONTROLS:-false}
+      STONEHENGE_MAINTENANCE_TOKEN: ${STONEHENGE_MAINTENANCE_TOKEN:-}
+      STONEHENGE_MAINTENANCE_SCRIPT: ${STONEHENGE_MAINTENANCE_SCRIPT:-/host/stonehenge-middleware/tools/maintenance/stonehenge-maintenance}
+      STONEHENGE_MAINTENANCE_TIMEOUT: ${STONEHENGE_MAINTENANCE_TIMEOUT:-20m}
+      STONEHENGE_HOST_REPO: ${STONEHENGE_HOST_REPO:-..}
+      STONEHENGE_MAINTENANCE_RUNNER_IMAGE: ${STONEHENGE_MAINTENANCE_RUNNER_IMAGE:-stonehenge-middleware-middleware}
+      STONEHENGE_CONTROL_TOKEN: ${STONEHENGE_CONTROL_TOKEN:-}
+      STONEHENGE_INGEST_TOKEN: ${STONEHENGE_INGEST_TOKEN:-}
+      SAFETY_PLC_ENABLED: ${SAFETY_PLC_ENABLED:-true}
+      SAFETY_PLC_ENFORCEMENT: ${SAFETY_PLC_ENFORCEMENT:-true}
+      SAFETY_PLC_HOST: ${SAFETY_PLC_HOST:-openplc-safety}
+      SAFETY_PLC_PORT: ${SAFETY_PLC_PORT:-502}
+      SAFETY_PLC_UNIT_ID: ${SAFETY_PLC_UNIT_ID:-1}
+      SAFETY_PLC_POLL_INTERVAL: ${SAFETY_PLC_POLL_INTERVAL:-250ms}
+      SAFETY_PLC_STALE_AFTER: ${SAFETY_PLC_STALE_AFTER:-2s}
+      SAFETY_PLC_STATUS_REGISTER_TYPE: ${SAFETY_PLC_STATUS_REGISTER_TYPE:-holding}
+      SAFETY_PLC_MW_REGISTER_BASE: ${SAFETY_PLC_MW_REGISTER_BASE:-80}
+      SAFETY_PLC_RESET_PULSE_DURATION: ${SAFETY_PLC_RESET_PULSE_DURATION:-750ms}
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.30
+
+  openplc-control-gun1:
+    image: ${OPENPLC_IMAGE:-ghcr.io/autonomy-logic/openplc-runtime:latest}
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+      - SYS_RESOURCE
+    ports:
+      - "${OPENPLC_CONTROL_HOST_IP:-127.0.0.1}:${OPENPLC_WEB_PORT:-8443}:8443"
+      - "${OPENPLC_CONTROL_HOST_IP:-127.0.0.1}:${OPENPLC_DISCOVERY_PORT:-33333}:33333/udp"
+    expose:
+      - "502"
+    volumes:
+      - openplc-runtime-data:/var/run/runtime
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kfsS https://localhost:8443/api/version >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.10
+
+  openplc-safety:
+    image: ${OPENPLC_IMAGE:-ghcr.io/autonomy-logic/openplc-runtime:latest}
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+      - SYS_RESOURCE
+    ports:
+      - "${OPENPLC_SAFETY_HOST_IP:-127.0.0.1}:${OPENPLC_SAFETY_WEB_PORT:-8450}:8443"
+      - "${OPENPLC_SAFETY_HOST_IP:-127.0.0.1}:${OPENPLC_SAFETY_DISCOVERY_PORT:-33340}:33333/udp"
+    expose:
+      - "502"
+    volumes:
+      - openplc-safety-runtime-data:/var/run/runtime
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kfsS https://localhost:8443/api/version >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.11
+
+  openplc-control-gun2:
+    image: ${OPENPLC_IMAGE:-ghcr.io/autonomy-logic/openplc-runtime:latest}
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+      - SYS_RESOURCE
+    ports:
+      - "${OPENPLC_GUN2_HOST_IP:-127.0.0.1}:${OPENPLC_GUN2_WEB_PORT:-8444}:8443"
+      - "${OPENPLC_GUN2_HOST_IP:-127.0.0.1}:${OPENPLC_GUN2_DISCOVERY_PORT:-33334}:33333/udp"
+    expose:
+      - "502"
+    volumes:
+      - openplc-gun2-runtime-data:/var/run/runtime
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kfsS https://localhost:8443/api/version >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.12
+
+  openplc-control-gun3:
+    image: ${OPENPLC_IMAGE:-ghcr.io/autonomy-logic/openplc-runtime:latest}
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+      - SYS_RESOURCE
+    ports:
+      - "${OPENPLC_GUN3_HOST_IP:-127.0.0.1}:${OPENPLC_GUN3_WEB_PORT:-8445}:8443"
+      - "${OPENPLC_GUN3_HOST_IP:-127.0.0.1}:${OPENPLC_GUN3_DISCOVERY_PORT:-33335}:33333/udp"
+    expose:
+      - "502"
+    volumes:
+      - openplc-gun3-runtime-data:/var/run/runtime
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kfsS https://localhost:8443/api/version >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.13
+
+  openplc-control-gun4:
+    image: ${OPENPLC_IMAGE:-ghcr.io/autonomy-logic/openplc-runtime:latest}
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+      - SYS_RESOURCE
+    ports:
+      - "${OPENPLC_GUN4_HOST_IP:-127.0.0.1}:${OPENPLC_GUN4_WEB_PORT:-8446}:8443"
+      - "${OPENPLC_GUN4_HOST_IP:-127.0.0.1}:${OPENPLC_GUN4_DISCOVERY_PORT:-33336}:33333/udp"
+    expose:
+      - "502"
+    volumes:
+      - openplc-gun4-runtime-data:/var/run/runtime
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kfsS https://localhost:8443/api/version >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.14
+
+  openplc-control-gun5:
+    image: ${OPENPLC_IMAGE:-ghcr.io/autonomy-logic/openplc-runtime:latest}
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+      - SYS_RESOURCE
+    ports:
+      - "${OPENPLC_GUN5_HOST_IP:-127.0.0.1}:${OPENPLC_GUN5_WEB_PORT:-8447}:8443"
+      - "${OPENPLC_GUN5_HOST_IP:-127.0.0.1}:${OPENPLC_GUN5_DISCOVERY_PORT:-33337}:33333/udp"
+    expose:
+      - "502"
+    volumes:
+      - openplc-gun5-runtime-data:/var/run/runtime
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kfsS https://localhost:8443/api/version >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.15
+
+  openplc-control-gun6:
+    image: ${OPENPLC_IMAGE:-ghcr.io/autonomy-logic/openplc-runtime:latest}
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+      - SYS_RESOURCE
+    ports:
+      - "${OPENPLC_GUN6_HOST_IP:-127.0.0.1}:${OPENPLC_GUN6_WEB_PORT:-8448}:8443"
+      - "${OPENPLC_GUN6_HOST_IP:-127.0.0.1}:${OPENPLC_GUN6_DISCOVERY_PORT:-33338}:33333/udp"
+    expose:
+      - "502"
+    volumes:
+      - openplc-gun6-runtime-data:/var/run/runtime
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kfsS https://localhost:8443/api/version >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.16
+
+  openplc-control-gun7:
+    image: ${OPENPLC_IMAGE:-ghcr.io/autonomy-logic/openplc-runtime:latest}
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+      - SYS_RESOURCE
+    ports:
+      - "${OPENPLC_GUN7_HOST_IP:-127.0.0.1}:${OPENPLC_GUN7_WEB_PORT:-8449}:8443"
+      - "${OPENPLC_GUN7_HOST_IP:-127.0.0.1}:${OPENPLC_GUN7_DISCOVERY_PORT:-33339}:33333/udp"
+    expose:
+      - "502"
+    volumes:
+      - openplc-gun7-runtime-data:/var/run/runtime
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kfsS https://localhost:8443/api/version >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.17
+
+  openplc-control-gun8:
+    image: ${OPENPLC_IMAGE:-ghcr.io/autonomy-logic/openplc-runtime:latest}
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+      - SYS_RESOURCE
+    ports:
+      - "${OPENPLC_GUN8_HOST_IP:-127.0.0.1}:${OPENPLC_GUN8_WEB_PORT:-8451}:8443"
+      - "${OPENPLC_GUN8_HOST_IP:-127.0.0.1}:${OPENPLC_GUN8_DISCOVERY_PORT:-33341}:33333/udp"
+    expose:
+      - "502"
+    volumes:
+      - openplc-gun8-runtime-data:/var/run/runtime
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kfsS https://localhost:8443/api/version >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.18
+
+  fuxa:
+    build:
+      context: .
+      dockerfile: docker/fuxa/Dockerfile
+    image: stonehenge-fuxa:1.3.3-plugins
+    restart: unless-stopped
+    depends_on:
+      - openplc-control-gun1
+    ports:
+      - "${FUXA_HOST_IP:-127.0.0.1}:${FUXA_PORT:-1881}:1881"
+    environment:
+      STONEHENGE_CONTROL_TOKEN: ${STONEHENGE_CONTROL_TOKEN:-}
+      STONEHENGE_FUXA_PROXY_TOKEN: ${STONEHENGE_FUXA_PROXY_TOKEN:-}
+    volumes:
+      - fuxa_appdata:/usr/src/app/FUXA/server/_appdata
+      - fuxa_db:/usr/src/app/FUXA/server/_db
+      - fuxa_logs:/usr/src/app/FUXA/server/_logs
+      - fuxa_images:/usr/src/app/FUXA/server/_images
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:1881',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      stonehenge-control:
+        ipv4_address: 172.28.0.20
+
+volumes:
+  postgres-data:
+  openplc-runtime-data:
+  openplc-safety-runtime-data:
+  openplc-gun2-runtime-data:
+  openplc-gun3-runtime-data:
+  openplc-gun4-runtime-data:
+  openplc-gun5-runtime-data:
+  openplc-gun6-runtime-data:
+  openplc-gun7-runtime-data:
+  openplc-gun8-runtime-data:
+  fuxa_appdata:
+  fuxa_db:
+  fuxa_logs:
+  fuxa_images:
+
+networks:
+  stonehenge-control:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24

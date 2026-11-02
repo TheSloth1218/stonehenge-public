@@ -1,0 +1,86 @@
+# Explicit CPTC training LDAP profile. This is inert until an operator selects
+# it with DEX_CONFIG_FILE=config.ldap.training.yaml and recreates Dex.
+issuer: '{{ getenv "DEX_ISSUER" }}'
+
+storage:
+  type: sqlite3
+  config:
+    file: /var/dex/dex.db
+
+web:
+  http: 0.0.0.0:5556
+
+telemetry:
+  http: 0.0.0.0:5558
+
+oauth2:
+  skipApprovalScreen: true
+  responseTypes: ["code"]
+
+expiry:
+  idTokens: 8h
+
+signer:
+  type: local
+  config:
+    keysRotationPeriod: 6h
+
+staticClients:
+  - id: login-portal
+    name: FCU Central Access Portal
+    secret: '{{ getenv "LOGIN_PORTAL_OIDC_CLIENT_SECRET" }}'
+    redirectURIs:
+      - '{{ getenv "LOGIN_PORTAL_PUBLIC_ORIGIN" }}/api/auth/callback'
+  - id: stonehenge-astro
+    name: Stonehenge Astro Public Interface
+    secret: '{{ getenv "ASTRO_OIDC_CLIENT_SECRET" }}'
+    redirectURIs:
+      - '{{ getenv "ASTRO_PUBLIC_ORIGIN" }}/api/auth/callback'
+  - id: stonehenge-vendor
+    name: SCA Parts Fulfillment Portal
+    secret: '{{ getenv "VENDOR_OIDC_CLIENT_SECRET" }}'
+    redirectURIs:
+      - '{{ getenv "VENDOR_PUBLIC_ORIGIN" }}/login/oauth2/code/dex'
+  - id: stonehenge-engineering
+    name: Stonehenge Engineering Console
+    secret: '{{ getenv "ENGINEERING_OIDC_CLIENT_SECRET" }}'
+    redirectURIs:
+      - '{{ getenv "ENGINEERING_PUBLIC_ORIGIN" }}/signin-oidc'
+    trustedPeers: [stonehenge-vendor]
+
+enablePasswordDB: false
+connectors:
+  - type: ldap
+    id: fcu-active-directory
+    name: FCU Active Directory
+    config:
+      host: '{{ getenv "DEX_LDAP_HOST" }}:636'
+      insecureNoSSL: false
+      insecureSkipVerify: false
+      startTLS: false
+      rootCA: /etc/dex/ldap-ca.pem
+      bindDN: '{{ getenv "DEX_LDAP_BIND_DN" }}'
+      bindPW: '{{ getenv "DEX_LDAP_BIND_PASSWORD" }}'
+      usernamePrompt: UPN
+      userSearch:
+        baseDN: '{{ getenv "DEX_LDAP_USER_BASE_DN" }}'
+        filter: "(&(objectCategory=person)(objectClass=user))"
+        username: userPrincipalName
+        idAttr: DN
+        emailAttr: userPrincipalName
+        nameAttr: displayName
+        preferredUsernameAttr: sAMAccountName
+      groupSearch:
+        baseDN: '{{ getenv "DEX_LDAP_GROUP_BASE_DN" }}'
+        # Keep the public identity contract limited to SCA authorization groups.
+        filter: >-
+          (&(objectClass=group)(|(cn=SCA-Employees)(cn=SCA-Admins)(cn=SCA-Engineering-Users)(cn=SCA-Engineering-Admins)))
+        userMatchers:
+          - userAttr: DN
+            groupAttr: member
+        nameAttr: cn
+
+frontend:
+  dir: /srv/dex/web
+  issuer: Federation of Central Usea
+  theme: stonehenge

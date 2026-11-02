@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head('Inventory')}"></head>
+<body><div th:replace="~{common/nav :: nav}"></div>
+<main class="container-fluid">
+    <h1 class="h4">Inventory</h1>
+    <form class="row g-2 mb-3" method="get">
+        <div class="col-md-10"><input class="form-control" name="q" th:value="${q}" placeholder="Search part or bin"></div>
+        <div class="col-md-2"><button class="btn btn-primary w-100">Search</button></div>
+    </form>
+    <table class="table table-hover align-middle">
+        <thead><tr><th>SKU</th><th>Part</th><th>Bin</th><th>On hand</th><th>Reserved</th><th>Available</th><th>Reorder</th><th>Adjust</th></tr></thead>
+        <tbody>
+        <tr th:each="i : ${inventory.content}">
+            <td th:text="${i.part.sku}"></td>
+            <td th:text="${i.part.name}"></td>
+            <td th:text="${i.binLocation}"></td>
+            <td th:text="${i.quantityOnHand}"></td>
+            <td th:text="${i.quantityReserved}"></td>
+            <td th:class="${i.availableQuantity() <= i.reorderLevel ? 'low-stock' : ''}" th:text="${i.availableQuantity()}"></td>
+            <td th:text="${i.reorderLevel}"></td>
+            <td>
+                <form class="d-flex gap-1" method="post" th:action="@{/inventory/{id}/adjust(id=${i.id})}">
+                    <input class="form-control form-control-sm" name="quantityDelta" type="number" value="0" style="width:5rem">
+                    <input class="form-control form-control-sm" name="reason" placeholder="Reason" style="width:12rem">
+                    <button class="btn btn-sm btn-outline-primary" onclick="return confirm('Apply this stock adjustment?')">Apply</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main></body></html>

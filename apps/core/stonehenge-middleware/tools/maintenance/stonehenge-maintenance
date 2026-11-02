@@ -1,0 +1,672 @@
+#!/usr/bin/env python3
+"""Host-side Stonehenge stack maintenance orchestration.
+
+This tool is intentionally conservative:
+- actions are dry-run unless --execute is passed;
+- startup, hard-reset, and complete-reset require --confirm;
+- OpenPLC uploads are delegated to the monorepo PLC deployer.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import ssl
+import subprocess
+import sys
+import time
+import urllib.error
+import urllib.request
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+
+RESET_CONFIRMATION = "STONEHENGE_MAINTENANCE_RESET"
+GUN_SERVICES = {
+    1: "openplc-control-gun1",
+    2: "openplc-control-gun2",
+    3: "openplc-control-gun3",
+    4: "openplc-control-gun4",
+    5: "openplc-control-gun5",
+    6: "openplc-control-gun6",
+    7: "openplc-control-gun7",
+    8: "openplc-control-gun8",
+}
+OPENPLC_SERVICES = [
+    "openplc-control-gun1",
+    "openplc-control-gun2",
+    "openplc-control-gun3",
+    "openplc-control-gun4",
+    "openplc-control-gun5",
+    "openplc-control-gun6",
+    "openplc-control-gun7",
+    "openplc-control-gun8",
+    "openplc-safety",
+]
+OPENPLC_VOLUMES = [
+    "openplc-runtime-data",
+    "openplc-gun2-runtime-data",
+    "openplc-gun3-runtime-data",
+    "openplc-gun4-runtime-data",
+    "openplc-gun5-runtime-data",
+    "openplc-gun6-runtime-data",
+    "openplc-gun7-runtime-data",
+    "openplc-gun8-runtime-data",
+    "openplc-safety-runtime-data",
+]
+
+
+class MaintenanceError(RuntimeError):
+    pass
+
+
+class MaintenanceControlUnavailable(MaintenanceError):
+    pass
+
+
+def repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
+
+
+def monorepo_root() -> Path:
+    configured = os.getenv("STONEHENGE_MONOREPO_ROOT")
+    if configured:
+        return Path(configured).expanduser().resolve()
+    middleware_root = repo_root()
+    if (middleware_root.parent / "stonehenge-plc-deployer").exists():
+        return middleware_root.parent.resolve()
+    return middleware_root.resolve()
+
+
+def plc_deployer_root() -> Path:
+    configured = os.getenv("STONEHENGE_PLC_DEPLOYER_ROOT")
+    if configured:
+        return Path(configured).expanduser().resolve()
+    candidate = monorepo_root() / "stonehenge-plc-deployer"
+    if candidate.exists():
+        return candidate.resolve()
+    return (repo_root() / "tools" / "openplc").resolve()
+
+
+def plc_deployer_script() -> Path:
+    script = plc_deployer_root() / "tools" / "plc_deployer.py"
+    if script.exists():
+        return script
+    legacy = plc_deployer_root() / "plc_deployer.py"
+    if legacy.exists():
+        return legacy
+    raise MaintenanceError(f"PLC deployer script not found under {plc_deployer_root()}")
+
+
+def plc_inventory() -> Path:
+    return plc_deployer_root() / "inventory" / "runtimes.local.json"
+
+
+def utc_stamp() -> str:
+    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+
+def run(args: list[str], *, cwd: Path, execute: bool, env: dict[str, str] | None = None) -> dict[str, Any]:
+    item: dict[str, Any] = {"command": args, "cwd": str(cwd), "executed": execute}
+    if not execute:
+        item["returncode"] = 0
+        return item
+    proc = subprocess.run(args, cwd=cwd, env=env, text=True, capture_output=True, check=False)
+    item.update({"returncode": proc.returncode, "stdout": proc.stdout[-8000:], "stderr": proc.stderr[-8000:]})
+    if proc.returncode != 0:
+        detail = item["stderr"].strip() or item["stdout"].strip()
+        suffix = f": {detail}" if detail else ""
+        raise MaintenanceError(f"command failed: {' '.join(args)}{suffix}")
+    return item
+
+
+def compose(args: list[str], *, execute: bool, env: dict[str, str] | None = None) -> dict[str, Any]:
+    return run(["docker", "compose", *args], cwd=repo_root(), execute=execute, env=env)
+
+
+def maintenance_start_env() -> dict[str, str]:
+    env = os.environ.copy()
+    env["PLC_STARTUP_MODE"] = "manual"
+    return env
+
+
+def load_control_token() -> str:
+    token = os.getenv("STONEHENGE_CONTROL_TOKEN", "")
+    if token:
+        return token
+    try:
+        lines = (repo_root() / ".env").read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return ""
+    for line in lines:
+        key, separator, value = line.partition("=")
+        if separator and key.strip() == "STONEHENGE_CONTROL_TOKEN":
+            value = value.strip()
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in "'\"":
+                value = value[1:-1]
+            return value
+    return ""
+
+
+def control_request(url: str, payload: dict[str, Any], *, execute: bool) -> dict[str, Any]:
+    result: dict[str, Any] = {"method": "PUT", "url": url, "payload": payload, "executed": execute}
+    if not execute:
+        return result
+    token = load_control_token()
+    if not token:
+        raise MaintenanceError("STONEHENGE_CONTROL_TOKEN is required for middleware writes")
+    request = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "X-Stonehenge-Control-Token": token,
+        },
+        method="PUT",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=20) as response:
+            result["status"] = response.status
+            body = response.read(65536)
+    except urllib.error.HTTPError as exc:
+        error_type = MaintenanceControlUnavailable if exc.code == 503 else MaintenanceError
+        raise error_type(
+            f"middleware control request failed for {url}: {exc}"
+        ) from exc
+    except urllib.error.URLError as exc:
+        raise MaintenanceControlUnavailable(
+            f"middleware control request failed for {url}: {exc}"
+        ) from exc
+    except Exception as exc:
+        raise MaintenanceError(f"middleware control request failed for {url}: {exc}") from exc
+    if body:
+        try:
+            result["response"] = json.loads(body.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            result["response"] = body.decode("utf-8", errors="replace")
+    return result
+
+
+def wait_http(url: str, *, execute: bool, timeout_s: int = 180, insecure_tls: bool = False) -> dict[str, Any]:
+    result: dict[str, Any] = {"url": url, "executed": execute, "ready": False}
+    if not execute:
+        result["ready"] = True
+        return result
+    deadline = time.monotonic() + timeout_s
+    context = ssl._create_unverified_context() if insecure_tls else None
+    last_error = ""
+    while time.monotonic() < deadline:
+        try:
+            with urllib.request.urlopen(url, timeout=5, context=context) as resp:
+                result["status"] = resp.status
+                if 200 <= resp.status < 500:
+                    result["ready"] = True
+                    return result
+        except Exception as exc:
+            last_error = str(exc)
+        time.sleep(2)
+    result["error"] = last_error
+    raise MaintenanceError(f"timed out waiting for {url}: {last_error}")
+
+
+def wait_middleware(args: argparse.Namespace, execute: bool) -> dict[str, Any]:
+    return wait_http(f"{args.middleware_url.rstrip('/')}/ready", execute=execute, timeout_s=args.readiness_timeout)
+
+
+def wait_openplc_runtimes(args: argparse.Namespace, execute: bool) -> dict[str, Any]:
+    inventory = json.loads(plc_inventory().read_text(encoding="utf-8"))
+    runtimes = [item.strip() for item in args.runtimes.split(",") if item.strip()]
+    results = []
+    for name in runtimes:
+        entry = inventory["runtimes"][name]
+        results.append(wait_http(f"{entry['url'].rstrip('/')}/api/version", execute=execute, timeout_s=args.readiness_timeout, insecure_tls=True))
+    return {"openplc_ready": True, "results": results}
+
+
+def wait_gun_modes(args: argparse.Namespace, mode: str, execute: bool) -> dict[str, Any]:
+    result: dict[str, Any] = {"mode": mode, "executed": execute, "ready": False}
+    if not execute:
+        result["ready"] = True
+        return result
+    deadline = time.monotonic() + args.readiness_timeout
+    last_modes: list[str] = []
+    while time.monotonic() < deadline:
+        try:
+            last_modes = []
+            for gun in range(1, 9):
+                with urllib.request.urlopen(f"{args.middleware_url.rstrip('/')}/api/v1/guns/{gun}/mode", timeout=5) as resp:
+                    status = json.loads(resp.read().decode("utf-8"))
+                last_modes.append(str(status.get("mode", "")).lower())
+            if len(last_modes) >= 8 and all(item == mode.lower() for item in last_modes[:8]):
+                result["ready"] = True
+                result["modes"] = last_modes[:8]
+                return result
+        except Exception as exc:
+            result["error"] = str(exc)
+        time.sleep(2)
+    result["modes"] = last_modes
+    raise MaintenanceError(f"timed out waiting for guns to enter {mode}: {last_modes}")
+
+
+def wait_safety_permissive(args: argparse.Namespace, execute: bool) -> dict[str, Any]:
+    result: dict[str, Any] = {"executed": execute, "ready": False}
+    if not execute:
+        result["ready"] = True
+        return result
+    deadline = time.monotonic() + args.readiness_timeout
+    last: dict[str, Any] = {}
+    while time.monotonic() < deadline:
+        try:
+            with urllib.request.urlopen(f"{args.middleware_url.rstrip('/')}/api/v1/safety", timeout=5) as resp:
+                last = json.loads(resp.read().decode("utf-8"))
+            guns = last.get("guns", [])
+            if (
+                last.get("connected")
+                and last.get("fresh")
+                and last.get("ready")
+                and last.get("global_fire_permissive")
+                and not last.get("global_inhibit_active")
+                and len(guns) >= 8
+                and all(gun.get("enabled_status") and gun.get("fire_permissive") and not gun.get("inhibit_active") for gun in guns[:8])
+            ):
+                result["ready"] = True
+                result["safety"] = last
+                return result
+        except Exception as exc:
+            result["error"] = str(exc)
+        time.sleep(2)
+    result["safety"] = last
+    raise MaintenanceError("timed out waiting for safety permissive")
+
+
+def wait_dispatcher_ready(args: argparse.Namespace, execute: bool) -> dict[str, Any]:
+    result: dict[str, Any] = {"executed": execute, "ready": False}
+    if not execute:
+        result["ready"] = True
+        return result
+    deadline = time.monotonic() + args.readiness_timeout
+    last: dict[str, Any] = {}
+    while time.monotonic() < deadline:
+        try:
+            with urllib.request.urlopen(f"{args.middleware_url.rstrip('/')}/api/v1/dispatcher", timeout=5) as resp:
+                last = json.loads(resp.read().decode("utf-8"))
+            if (
+                last.get("enabled")
+                and last.get("ready")
+                and last.get("ownership_reconciled")
+                and last.get("target_ingest_allowed")
+                and int(last.get("queued_target_count", 0)) == 0
+                and int(last.get("uncertain_assignment_count", 0)) == 0
+                and len(last.get("active_assignments", [])) == 0
+            ):
+                result["ready"] = True
+                result["dispatcher"] = last
+                return result
+        except Exception as exc:
+            result["error"] = str(exc)
+        time.sleep(2)
+    result["dispatcher"] = last
+    raise MaintenanceError("timed out waiting for dispatcher readiness")
+
+
+def require_operational_drain(args: argparse.Namespace, execute: bool) -> dict[str, Any]:
+    result: dict[str, Any] = {"executed": execute, "checked": False}
+    if not execute:
+        result["checked"] = True
+        return result
+    base = args.middleware_url.rstrip("/")
+    try:
+        with urllib.request.urlopen(f"{base}/api/v1/dispatcher", timeout=5) as resp:
+            dispatcher = json.loads(resp.read().decode("utf-8"))
+        with urllib.request.urlopen(f"{base}/api/v1/target-feed", timeout=5) as resp:
+            feed = json.loads(resp.read().decode("utf-8"))
+    except Exception as exc:
+        result["skipped"] = True
+        result["reason"] = f"middleware status unavailable: {exc}"
+        return result
+    result["checked"] = True
+    result["dispatcher"] = dispatcher
+    result["target_feed"] = feed
+    blockers = []
+    if int(dispatcher.get("queued_target_count", 0)) > 0:
+        blockers.append("queued targets")
+    if int(dispatcher.get("uncertain_assignment_count", 0)) > 0:
+        blockers.append("uncertain assignments")
+    if len(dispatcher.get("active_assignments", [])) > 0:
+        blockers.append("active assignments")
+    if bool(feed.get("receiving")):
+        blockers.append("target feed is actively receiving")
+    if int(feed.get("pending_count", 0)) > 0:
+        blockers.append("target feed pending targets")
+    if blockers:
+        raise MaintenanceError("refusing live reset while operational work is active: " + ", ".join(blockers))
+    return result
+
+
+def require_confirmation(args: argparse.Namespace) -> None:
+    if args.dry_run:
+        return
+    if args.confirm != RESET_CONFIRMATION:
+        raise MaintenanceError(f"live {args.action} requires --confirm {RESET_CONFIRMATION}")
+
+
+def default_gun_artifact() -> Path:
+    values = sorted((plc_deployer_root() / "artifacts" / "gun").glob("stonehenge-gun-*.zip"))
+    if not values:
+        raise MaintenanceError(f"no gun artifact found under {plc_deployer_root() / 'artifacts' / 'gun'}")
+    return values[-1]
+
+
+def default_safety_artifact() -> Path:
+    values = sorted((plc_deployer_root() / "artifacts" / "safety").glob("stonehenge-safety-*.zip"))
+    if not values:
+        raise MaintenanceError(f"no safety artifact found under {plc_deployer_root() / 'artifacts' / 'safety'}")
+    return values[-1]
+
+
+def backup_postgres(execute: bool) -> dict[str, Any]:
+    out = repo_root() / "backups" / f"stonehenge-postgres-{utc_stamp()}.dump"
+    cmd = [
+        "docker",
+        "compose",
+        "exec",
+        "-T",
+        "postgres",
+        "pg_dump",
+        "-U",
+        os.getenv("POSTGRES_USER", "stonehenge_writer"),
+        "-d",
+        os.getenv("POSTGRES_DB", "stonehenge"),
+        "-Fc",
+        "-f",
+        f"/tmp/{out.name}",
+    ]
+    copy_cmd = ["docker", "compose", "cp", f"postgres:/tmp/{out.name}", str(out)]
+    cleanup_cmd = ["docker", "compose", "exec", "-T", "postgres", "rm", "-f", f"/tmp/{out.name}"]
+    result = {"path": str(out), "steps": []}
+    out.parent.mkdir(parents=True, exist_ok=True)
+    result["steps"].append(run(cmd, cwd=repo_root(), execute=execute))
+    result["steps"].append(run(copy_cmd, cwd=repo_root(), execute=execute))
+    result["steps"].append(run(cleanup_cmd, cwd=repo_root(), execute=execute))
+    return result
+
+
+def deploy_plcs(args: argparse.Namespace, execute: bool) -> dict[str, Any]:
+    credentials = args.credentials
+    if args.rotated_credentials:
+        credentials = args.rotated_credentials
+    cmd = [
+        sys.executable,
+        str(plc_deployer_script()),
+        "startup-reload",
+        "--gun-artifact",
+        str(Path(args.gun_artifact).resolve() if args.gun_artifact else default_gun_artifact()),
+        "--safety-artifact",
+        str(Path(args.safety_artifact).resolve() if args.safety_artifact else default_safety_artifact()),
+        "--runtimes",
+        args.runtimes,
+        "--include-safety",
+        "--allow-active-pair",
+        "--middleware-url",
+        args.middleware_url,
+        "--insecure",
+    ]
+    if not execute:
+        cmd.append("--skip-middleware-check")
+    if credentials:
+        cmd.extend(["--credentials", credentials])
+    cmd.append("--execute" if execute else "--dry-run")
+    return run(cmd, cwd=repo_root(), execute=True)
+
+
+def rotate_openplc_passwords(args: argparse.Namespace, execute: bool) -> dict[str, Any]:
+    readiness = wait_openplc_runtimes(args, execute)
+    output = Path(args.rotated_credentials or (repo_root() / "runtime-secrets" / "openplc-maintenance.json")).resolve()
+    args.rotated_credentials = str(output)
+    if not args.credentials and not os.getenv("OPENPLC_PASSWORD") and output.exists():
+        args.credentials = str(output)
+    if args.credentials and not Path(args.credentials).exists():
+        args.credentials = ""
+    if execute and not args.credentials and not os.getenv("OPENPLC_PASSWORD"):
+        recovery = recover_openplc_credentials(args, execute, output)
+        return {"readiness": readiness, **recovery}
+    cmd = [
+        sys.executable,
+        str(plc_deployer_script()),
+        "rotate-password",
+        "--inventory",
+        str(plc_inventory()),
+        "--runtimes",
+        args.runtimes,
+        "--write-credentials",
+        str(output),
+        "--insecure",
+    ]
+    if args.credentials:
+        cmd.extend(["--credentials", args.credentials])
+    if args.openplc_username:
+        cmd.extend(["--username", args.openplc_username])
+    child_env = None
+    if args.openplc_new_password:
+        child_env = os.environ.copy()
+        child_env["OPENPLC_NEW_PASSWORD"] = args.openplc_new_password
+    cmd.append("--execute" if execute else "--dry-run")
+    return {"readiness": readiness, "rotation": run(cmd, cwd=repo_root(), execute=True, env=child_env)}
+
+
+def recover_openplc_credentials(args: argparse.Namespace, execute: bool, output: Path) -> dict[str, Any]:
+    steps: list[dict[str, Any]] = []
+    steps.append(compose(["stop", *OPENPLC_SERVICES], execute=execute))
+    steps.append(compose(["rm", "-f", "-s", *OPENPLC_SERVICES], execute=execute))
+    volume_prefix = args.openplc_volume_prefix or os.getenv("COMPOSE_PROJECT_NAME") or repo_root().name
+    for volume in OPENPLC_VOLUMES:
+        steps.append(run(["docker", "volume", "rm", "-f", f"{volume_prefix}_{volume}"], cwd=repo_root(), execute=execute))
+    steps.append(compose(["up", "-d", *OPENPLC_SERVICES], execute=execute))
+    steps.append(wait_openplc_runtimes(args, execute))
+    cmd = [
+        sys.executable,
+        str(plc_deployer_script()),
+        "init-user",
+        "--inventory",
+        str(plc_inventory()),
+        "--runtimes",
+        args.runtimes,
+        "--write-credentials",
+        str(output),
+        "--insecure",
+    ]
+    if args.openplc_username:
+        cmd.extend(["--username", args.openplc_username])
+    child_env = None
+    if args.openplc_new_password:
+        child_env = os.environ.copy()
+        child_env["OPENPLC_NEW_PASSWORD"] = args.openplc_new_password
+    cmd.append("--execute" if execute else "--dry-run")
+    steps.append(run(cmd, cwd=repo_root(), execute=True, env=child_env))
+    return {"credential_recovery": True, "credential_file": str(output), "steps": steps}
+
+
+def set_gun_mode(args: argparse.Namespace, mode: str, execute: bool) -> list[dict[str, Any]]:
+    results = []
+    for gun in range(1, 9):
+        url = f"{args.middleware_url.rstrip('/')}/api/v1/guns/{gun}/mode"
+        results.append(control_request(url, {"mode": mode}, execute=execute))
+    return results
+
+
+def set_safety_permissive(args: argparse.Namespace, execute: bool) -> list[dict[str, Any]]:
+    results = []
+    base = args.middleware_url.rstrip("/")
+    results.append(
+        control_request(
+            f"{base}/api/v1/safety/global",
+            {"global_enable": True, "emergency_stop": False, "maintenance_mode": False},
+            execute=execute,
+        )
+    )
+    for gun in range(1, 9):
+        results.append(
+            control_request(
+                f"{base}/api/v1/safety/guns/{gun}",
+                {"enabled": True, "maintenance_inhibit": False, "external_inhibit": False},
+                execute=execute,
+            )
+        )
+    return results
+
+
+def set_safety_global_enabled(args: argparse.Namespace, enabled: bool, execute: bool) -> list[dict[str, Any]]:
+    base = args.middleware_url.rstrip("/")
+    return [control_request(f"{base}/api/v1/safety/global", {"global_enable": enabled}, execute=execute)]
+
+
+def reset_database(execute: bool) -> list[dict[str, Any]]:
+    return [
+        compose(["stop", "middleware"], execute=execute),
+        compose(["exec", "-T", "postgres", "psql", "-U", os.getenv("POSTGRES_USER", "stonehenge_writer"), "-d", "postgres", "-c", "DROP DATABASE IF EXISTS stonehenge WITH (FORCE);"], execute=execute),
+        compose(["exec", "-T", "postgres", "psql", "-U", os.getenv("POSTGRES_USER", "stonehenge_writer"), "-d", "postgres", "-c", "CREATE DATABASE stonehenge;"], execute=execute),
+    ]
+
+
+def start_postgres(args: argparse.Namespace, execute: bool) -> dict[str, Any]:
+    return compose(
+        [
+            "up",
+            "-d",
+            "--build",
+            "--wait",
+            "--wait-timeout",
+            str(args.readiness_timeout),
+            "postgres",
+        ],
+        execute=execute,
+    )
+
+
+def disable_safety_for_hard_reset(
+    args: argparse.Namespace, execute: bool
+) -> dict[str, Any]:
+    try:
+        steps = set_safety_global_enabled(args, False, execute)
+    except MaintenanceControlUnavailable as exc:
+        return {
+            "safety_disabled": False,
+            "recovery_required": True,
+            "reason": str(exc),
+        }
+    return {"safety_disabled": True, "steps": steps}
+
+
+def startup(args: argparse.Namespace) -> dict[str, Any]:
+    require_confirmation(args)
+    execute = not args.dry_run
+    steps: list[Any] = []
+    steps.append(require_operational_drain(args, execute))
+    steps.extend(set_safety_global_enabled(args, False, execute))
+    steps.append(start_postgres(args, execute))
+    steps.append(backup_postgres(execute))
+    steps.extend(reset_database(execute))
+    steps.append(compose(["up", "-d", "--build"], execute=execute, env=maintenance_start_env()))
+    steps.append(wait_middleware(args, execute))
+    steps.extend(set_gun_mode(args, "maintenance", execute))
+    steps.append(wait_gun_modes(args, "maintenance", execute))
+    steps.append(rotate_openplc_passwords(args, execute))
+    steps.append(deploy_plcs(args, execute))
+    steps.extend(set_safety_permissive(args, execute))
+    steps.append(wait_safety_permissive(args, execute))
+    steps.extend(set_gun_mode(args, "auto", execute))
+    steps.append(wait_gun_modes(args, "auto", execute))
+    steps.append(wait_dispatcher_ready(args, execute))
+    return {"action": args.action, "dry_run": args.dry_run, "steps": steps}
+
+
+def hard_reset(args: argparse.Namespace) -> dict[str, Any]:
+    require_confirmation(args)
+    execute = not args.dry_run
+    steps: list[Any] = []
+    steps.append(require_operational_drain(args, execute))
+    steps.append(disable_safety_for_hard_reset(args, execute))
+    steps.append(backup_postgres(execute))
+    steps.append(compose(["down"], execute=execute))
+    steps.append(start_postgres(args, execute))
+    steps.extend(reset_database(execute))
+    steps.append(compose(["up", "-d", "--build"], execute=execute, env=maintenance_start_env()))
+    steps.append(wait_middleware(args, execute))
+    steps.extend(set_gun_mode(args, "maintenance", execute))
+    steps.append(wait_gun_modes(args, "maintenance", execute))
+    steps.append(rotate_openplc_passwords(args, execute))
+    steps.append(deploy_plcs(args, execute))
+    steps.extend(set_safety_permissive(args, execute))
+    steps.append(wait_safety_permissive(args, execute))
+    steps.extend(set_gun_mode(args, "auto", execute))
+    steps.append(wait_gun_modes(args, "auto", execute))
+    steps.append(wait_dispatcher_ready(args, execute))
+    return {"action": args.action, "dry_run": args.dry_run, "steps": steps}
+
+
+def soft_reset(args: argparse.Namespace) -> dict[str, Any]:
+    execute = not args.dry_run
+    target = args.target
+    if target == "all-guns":
+        services = [GUN_SERVICES[i] for i in range(1, 9)]
+    elif target.startswith("gun"):
+        gun = int(target[3:])
+        if gun not in GUN_SERVICES:
+            raise MaintenanceError(f"invalid gun target: {target}")
+        services = [GUN_SERVICES[gun]]
+    elif target in {"middleware", "fuxa", "safety"}:
+        services = ["openplc-safety" if target == "safety" else target]
+    else:
+        raise MaintenanceError(f"invalid soft reset target: {target}")
+    return {"action": args.action, "target": target, "dry_run": args.dry_run, "steps": [compose(["restart", *services], execute=execute)]}
+
+
+def status(args: argparse.Namespace) -> dict[str, Any]:
+    execute = True
+    return {
+        "action": "status",
+        "dry_run": False,
+        "compose": compose(["ps", "--format", "json"], execute=execute),
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("action", choices=["status", "startup", "hard-reset", "complete-reset", "soft-reset"])
+    parser.add_argument("--execute", action="store_false", dest="dry_run", default=True)
+    parser.add_argument("--confirm", default="")
+    parser.add_argument("--target", default="all-guns")
+    parser.add_argument("--middleware-url", default=os.getenv("STONEHENGE_MIDDLEWARE_URL", "http://127.0.0.1:8080"))
+    parser.add_argument("--credentials", default=os.getenv("OPENPLC_CREDENTIAL_FILE", ""))
+    parser.add_argument("--rotated-credentials", default=os.getenv("OPENPLC_ROTATED_CREDENTIAL_FILE", ""))
+    parser.add_argument("--openplc-username", default=os.getenv("OPENPLC_USERNAME", ""))
+    parser.add_argument("--openplc-new-password", default=os.getenv("OPENPLC_NEW_PASSWORD", ""))
+    parser.add_argument("--openplc-volume-prefix", default=os.getenv("OPENPLC_VOLUME_PREFIX", ""))
+    parser.add_argument("--gun-artifact", default="")
+    parser.add_argument("--safety-artifact", default="")
+    parser.add_argument("--runtimes", default="gun1,gun2,gun3,gun4,gun5,gun6,gun7,gun8,safety")
+    parser.add_argument("--readiness-timeout", type=int, default=int(os.getenv("STONEHENGE_MAINTENANCE_READINESS_TIMEOUT", "180")))
+    args = parser.parse_args(argv)
+    try:
+        if args.action == "status":
+            result = status(args)
+        elif args.action == "soft-reset":
+            result = soft_reset(args)
+        elif args.action == "startup":
+            result = startup(args)
+        elif args.action in {"hard-reset", "complete-reset"}:
+            result = hard_reset(args)
+        else:
+            raise MaintenanceError(f"unsupported action: {args.action}")
+    except MaintenanceError as exc:
+        print(json.dumps({"ok": False, "error": str(exc), "action": args.action}, indent=2))
+        return 1
+    print(json.dumps({"ok": True, **result}, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

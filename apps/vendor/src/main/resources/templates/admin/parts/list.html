@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head('Catalog Administration')}"></head>
+<body><div th:replace="~{common/nav :: nav}"></div><main class="container-fluid">
+<div class="d-flex justify-content-between align-items-center mb-2"><h1 class="h4 mb-0">Catalog Administration</h1><a class="btn btn-primary btn-sm" href="/admin/parts/new">Create part</a></div>
+<table class="table table-hover"><thead><tr><th>SKU</th><th>Part</th><th>Category</th><th>Manufacturer</th><th>Active</th><th></th></tr></thead><tbody>
+<tr th:each="p : ${parts.content}"><td th:text="${p.sku}"></td><td th:text="${p.name}"></td><td th:text="${p.category}"></td><td th:text="${p.manufacturer}"></td><td th:text="${p.active ? 'Yes' : 'No'}"></td><td><a th:href="@{/admin/parts/{id}/edit(id=${p.id})}">Edit</a></td></tr>
+</tbody></table></main></body></html>

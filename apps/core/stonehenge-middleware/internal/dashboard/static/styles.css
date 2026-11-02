@@ -1,0 +1,451 @@
+:root {
+  color-scheme: dark;
+  --bg: #071016;
+  --panel: #101b24;
+  --panel-strong: #162533;
+  --text: #e1f5ff;
+  --muted: #83a9b8;
+  --line: #234250;
+  --ok: #4ee18b;
+  --warn: #f7d35a;
+  --high: #ff982e;
+  --bad: #ff5353;
+  --info: #67c8ff;
+  --low: #7d9cab;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(23, 103, 130, 0.34), transparent 40%),
+    var(--bg);
+  color: var(--text);
+  font: 14px/1.4 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--line);
+  background: #0b1620;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 24px;
+}
+
+h2 {
+  font-size: 16px;
+}
+
+#summary {
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.connection {
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--warn);
+}
+
+.connection.ok {
+  color: var(--ok);
+}
+
+.connection.bad {
+  color: var(--bad);
+}
+
+.nav-link {
+  color: var(--info);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 6px 10px;
+}
+
+main {
+  padding: 18px;
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+.panel {
+  background: rgba(16, 27, 36, 0.94);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 0 22px rgba(45, 166, 220, 0.08);
+  margin-bottom: 18px;
+}
+
+.panel-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.maintenance-main {
+  max-width: 980px;
+}
+
+.maintenance-controls {
+  padding-bottom: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  padding: 14px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+input,
+select,
+button {
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #0b1620;
+  color: var(--text);
+  font: inherit;
+}
+
+input,
+select {
+  padding: 0 10px;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 14px;
+}
+
+button {
+  cursor: pointer;
+  padding: 0 12px;
+}
+
+button:hover {
+  border-color: var(--info);
+}
+
+.result-box {
+  min-height: 320px;
+  max-height: 560px;
+  overflow: auto;
+  margin: 0;
+  padding: 14px;
+  color: var(--text);
+  background: #050b10;
+  border-radius: 0 0 6px 6px;
+  white-space: pre-wrap;
+}
+
+.guns-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+  padding: 12px;
+}
+
+.gun-card {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.gun-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.gun-title strong {
+  font-size: 15px;
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 10px;
+}
+
+.kv span:nth-child(odd) {
+  color: var(--muted);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(460px, 850px) minmax(360px, 1fr);
+  gap: 18px;
+  align-items: start;
+  justify-content: center;
+}
+
+.map-panel {
+  width: 100%;
+  max-width: 850px;
+  justify-self: center;
+}
+
+.map {
+  position: relative;
+  height: 420px;
+  min-height: 380px;
+  max-height: 450px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 56% 35%, rgba(47, 164, 211, 0.18), transparent 36%),
+    #07131b;
+  user-select: none;
+}
+
+.map::before {
+  content: "STONEHENGE SYNTHESIZED CONTROL NETWORK";
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  color: rgba(146, 220, 249, 0.42);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.map-canvas {
+  position: absolute;
+  inset: 0;
+  transform-origin: center;
+}
+
+.tactical-map-image,
+.marker-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.tactical-map-image {
+  display: block;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+.marker-layer {
+  pointer-events: none;
+}
+
+.marker {
+  position: absolute;
+  width: var(--marker-size, 11px);
+  height: var(--marker-size, 11px);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.marker-core {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 50%;
+  background: var(--marker-color, var(--info));
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.58),
+    0 0 var(--marker-glow, 10px) var(--marker-color, var(--info));
+}
+
+.marker-label {
+  position: absolute;
+  left: calc(var(--marker-size, 11px) + 3px);
+  top: -7px;
+  white-space: nowrap;
+  color: var(--text);
+  font-size: 10px;
+  text-shadow: 0 1px 2px #000;
+}
+
+.marker.priority-low {
+  --marker-size: 7px;
+  --marker-color: var(--low);
+  --marker-glow: 5px;
+  opacity: 0.62;
+}
+
+.marker.priority-low .marker-label {
+  display: none;
+}
+
+.marker.priority-low:hover .marker-label {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.marker.priority-medium {
+  --marker-size: 10px;
+  --marker-color: var(--warn);
+  --marker-glow: 9px;
+}
+
+.marker.priority-high {
+  --marker-size: 13px;
+  --marker-color: var(--high);
+  --marker-glow: 13px;
+}
+
+.marker.priority-critical {
+  --marker-size: 16px;
+  --marker-color: var(--bad);
+  --marker-glow: 18px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  white-space: nowrap;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.pill {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.status-active,
+.state-idle {
+  color: var(--info);
+}
+
+.status-assigned,
+.state-slewing,
+.state-on-target-settling,
+.state-ready-to-fire {
+  color: var(--warn);
+}
+
+.status-intercepted,
+.safe-true {
+  color: var(--ok);
+}
+
+.severity-info {
+  color: var(--info);
+}
+
+.status-missed,
+.state-faulted,
+.safe-false,
+.severity-critical {
+  color: var(--bad);
+}
+
+.severity-warning {
+  color: var(--warn);
+}
+
+.priority-low {
+  color: var(--low);
+}
+
+.priority-medium {
+  color: var(--warn);
+}
+
+.priority-high {
+  color: var(--high);
+}
+
+.priority-critical {
+  color: var(--bad);
+}
+
+.marker.status-intercepted {
+  --marker-color: var(--ok);
+  opacity: 0.9;
+}
+
+.marker.status-intercepted .marker-core {
+  border-color: rgba(201, 255, 219, 0.95);
+}
+
+.marker.status-intercepted .marker-label {
+  display: block;
+  color: var(--ok);
+}
+
+.marker.status-missed {
+  --marker-color: #7b1f28;
+  opacity: 0.86;
+}
+
+.marker.status-missed .marker-core {
+  background: transparent;
+  border-color: #d34747;
+}
+
+.marker.status-missed .marker-label {
+  color: #ff8989;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .map {
+    height: 380px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

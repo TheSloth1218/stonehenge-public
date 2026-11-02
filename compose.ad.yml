@@ -1,0 +1,8 @@
+# Optional Windows AD mode. Configure .env and copy the DC's public LDAPS
+# certificate to secrets/ad-ca.crt before using this overlay.
+services:
+  dex:
+    extra_hosts:
+      - "fcu-dc.fcu.gov:${AD_DC_IP:?Set AD_DC_IP in .env}"
+    volumes:
+      - ./secrets/ad-ca.crt:/etc/dex/ldap-ca.pem:ro

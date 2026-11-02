@@ -1,0 +1,470 @@
+@model Stonehenge.Engineering.App.Models.ManualControlViewModel
+
+@{
+    ViewData["Title"] = "Manual Controls (FUXA/HMI)";
+    var isManualMode = string.Equals(Model.RuntimeStatus.ManualMode, "manual", StringComparison.OrdinalIgnoreCase);
+    var isGunDisabled = string.Equals(Model.SelectedGun.Status, "Disabled", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(Model.SelectedGun.SafetyState, "Gun disabled", StringComparison.OrdinalIgnoreCase);
+    var isMaintenanceMode = string.Equals(Model.RuntimeStatus.ManualMode, "maintenance", StringComparison.OrdinalIgnoreCase);
+    var isManualAvailable = isManualMode && !isGunDisabled && !isMaintenanceMode;
+}
+
+<div class="manual-page">
+    <section class="page-heading manual-page-heading manual-title-row">
+        <div>
+            <p class="eyebrow">MANUAL OPERATOR WORKSPACE</p>
+            <h1>Manual Controls (FUXA/HMI)</h1>
+            <p class="page-subtitle subtitle">Selected-gun manual operation view and protected fire-control workspace.</p>
+        </div>
+        <div class="runtime-proof">STN manual status</div>
+    </section>
+
+    <section class="manual-context-bar manual-context-strip" aria-label="Manual controls context">
+        <form class="manual-gun-select" method="get" asp-controller="Engineering" asp-action="Manual">
+            <label for="gunNumber">Gun Selection</label>
+            <select id="gunNumber" name="gunNumber" onchange="this.form.submit()">
+                @foreach (var gun in Model.Guns)
+                {
+                    <option value="@gun.GunNumber" selected="@(gun.GunNumber == Model.SelectedGunNumber)">
+                        @gun.Name
+                    </option>
+                }
+            </select>
+        </form>
+
+        <div class="context-item">
+            <span>Mode</span>
+            <strong>@Model.RuntimeStatus.ManualMode</strong>
+        </div>
+        <div class="context-item context-summary">
+            <span>Selected</span>
+            <strong>@Model.SelectedGun.Name / @Model.SelectedGun.Status</strong>
+        </div>
+        <div class="context-item">
+            <span>Status</span>
+            <strong><span class="status-badge @Model.SelectedGun.StatusClass">@Model.SelectedGun.Status</span></strong>
+        </div>
+        <div class="context-item">
+            <span>Fire Permission</span>
+            <strong>@Model.SelectedGun.SafetyState</strong>
+        </div>
+        <div class="context-item">
+            <span>HMI / Middleware</span>
+            <strong>@Model.RuntimeStatus.HmiConnection / @Model.RuntimeStatus.MiddlewareConnection</strong>
+        </div>
+    </section>
+
+    <section class="manual-workspace" aria-label="Manual HMI workspace">
+        <section class="manual-hmi-panel manual-hmi-card">
+            <div class="manual-panel-header">
+                <div>
+                    <h2>HMI View</h2>
+                    <p>FUXA/HMI manual panel for selected gun.</p>
+                </div>
+                <div class="mode-gate @(isGunDisabled || isMaintenanceMode ? "is-disabled" : "")" data-mode-gate data-gun-number="@Model.SelectedGunNumber" data-target-mode="manual" data-confirmed="@isManualAvailable.ToString().ToLowerInvariant()" data-gun-disabled="@isGunDisabled.ToString().ToLowerInvariant()" data-gun-maintenance="@isMaintenanceMode.ToString().ToLowerInvariant()">
+                    <span class="mode-gate-label">Mode: <strong data-mode-label>@Model.RuntimeStatus.ManualMode</strong></span>
+                    <button class="mode-key-switch @(isManualAvailable ? "confirmed" : "") @(isGunDisabled || isMaintenanceMode ? "denied" : "")" type="button" aria-pressed="@isManualAvailable.ToString().ToLowerInvariant()" disabled="@isMaintenanceMode" data-mode-key>
+                        <span class="key-ring" aria-hidden="true"><span class="key-slot"></span></span>
+                        <span data-mode-key-text>@(isGunDisabled ? "GUN DISABLED" : isMaintenanceMode ? "IN MAINTENANCE" : isManualAvailable ? "MANUAL CONFIRMED" : "REQUEST MANUAL")</span>
+                    </button>
+                    <span class="auth-note">Dev admin</span>
+                </div>
+            </div>
+
+            <div class="manual-hmi-placeholder hmi-viewport mode-gated-hmi @(isManualAvailable ? "" : "is-blocked")" data-hmi-gate>
+                @await Html.PartialAsync("_FuxaPanelFrame", Model.FuxaPanel)
+                <div class="hmi-mode-blocker" data-hmi-blocker hidden="@isManualAvailable">
+                    <strong>@(isGunDisabled ? "Gun disabled" : isMaintenanceMode ? "Gun in maintenance" : "Manual HMI gated")</strong>
+                    <span>@(isGunDisabled ? "Admin must enable this gun in Safety PLC controls before operator HMI access." : isMaintenanceMode ? "Return this gun to operation from the Maintenance panel." : "Flip the mode key to request MANUAL. The panel unlocks after confirmation.")</span>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <section class="manual-bottom-grid">
+        <section class="filtered-log-panel">
+            <div class="manual-panel-header compact">
+                <div>
+                    <h2>Filtered Gun Log</h2>
+                    <p>Most recent operation/history entries for selected gun.</p>
+                </div>
+            </div>
+
+            <div class="manual-log-list filtered-log-list">
+                @foreach (var entry in Model.FilteredGunLog.Take(2))
+                {
+                    <article class="log-row" data-log-id="@entry.Id">
+                        <time>@entry.Timestamp.ToString("HH:mm:ss")</time>
+                        <div>
+                            <strong>@entry.Action</strong>
+                            <span>@entry.Source - @entry.Result</span>
+                            <p>@entry.Notes</p>
+                        </div>
+                    </article>
+                }
+            </div>
+        </section>
+
+        <section class="fire-control-panel" data-fire-gun-number="@Model.SelectedGunNumber">
+            <div class="fire-control-header fcs-header">
+                <div>
+                    <p class="eyebrow">Protected manual action</p>
+                    <h2>MANUAL FIRE CONTROL</h2>
+                    <span class="fire-control-subtitle">Protected manual action panel</span>
+                </div>
+                <div class="fire-header-actions fcs-actions">
+                    <div class="fire-auth-pill auth-badge">Dev admin</div>
+                    <button class="reset-mock-state" id="resetMockState" type="button">Reset State</button>
+                </div>
+            </div>
+
+            <div class="fire-status-message fcs-state-bar" id="fireStatusMessage">Safe / Locked</div>
+
+            <div class="fire-main-grid fcs-main">
+                <button class="key-switch safety-key-toggle safety-key-visual" id="safetyKeyToggle" type="button" aria-pressed="false" aria-label="Toggle mock safety key">
+                    <span class="safety-key-title">Safety Key</span>
+                    <span class="key-ring" aria-hidden="true">
+                        <span class="key-slot key-indicator"></span>
+                    </span>
+                    <span class="safety-key-state" id="safetyKeyState">@Model.FireControl.SafetyKeyState.ToUpperInvariant()</span>
+                </button>
+
+                <div class="protected-fire-area">
+                    <div class="protected-fire-title">Protected Fire Button</div>
+                    <div class="fire-button-zone protected-fire-box fire-button-stage">
+                        <button class="fire-button fire-button-disabled" id="mockFireButton" type="button" disabled>FIRE</button>
+                        <div class="cover-guard safety-cover safety-cover-closed" id="coverGuard">
+                            <span>COVER @Model.FireControl.SafetyCoverState.ToUpperInvariant()</span>
+                        </div>
+                    </div>
+                    <div class="fire-note">Fire request is routed through the Engineering Console backend.</div>
+                </div>
+
+                <dl class="fire-status-grid fcs-status">
+                    <div>
+                        <dt>Authorization</dt>
+                        <dd>@Model.FireControl.AuthorizationState</dd>
+                    </div>
+                    <div>
+                        <dt>Interlock</dt>
+                        <dd>@Model.FireControl.InterlockState</dd>
+                    </div>
+                    <div>
+                        <dt>Last command</dt>
+                        <dd id="mockLastCommand">@Model.FireControl.LastCommand</dd>
+                    </div>
+                    <div>
+                        <dt>Sequence</dt>
+                        <dd>@Model.FireControl.LastShotSequence</dd>
+                    </div>
+                    <div>
+                        <dt>State</dt>
+                        <dd id="mockCommandState">@Model.FireControl.FireCommandState</dd>
+                    </div>
+                    <div>
+                        <dt>Reloading</dt>
+                        <dd id="mockReloadState">Inactive</dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
+    </section>
+</div>
+
+<script>
+(() => {
+    const gate = document.querySelector("[data-mode-gate]");
+    if (!gate) return;
+
+    const csrfToken = document.querySelector('meta[name="stonehenge-csrf"]')?.content;
+    const button = gate.querySelector("[data-mode-key]");
+    const buttonText = gate.querySelector("[data-mode-key-text]");
+    const modeLabel = gate.querySelector("[data-mode-label]");
+    const hmi = document.querySelector("[data-hmi-gate]");
+    const blocker = document.querySelector("[data-hmi-blocker]");
+
+    function showDisabledBlocker() {
+        blocker?.removeAttribute("hidden");
+        blocker?.querySelector("strong")?.replaceChildren("Gun disabled");
+        blocker?.querySelector("span")?.replaceChildren("Admin must enable this gun in Safety PLC controls before operator HMI access.");
+    }
+
+    function showMaintenanceBlocker() {
+        blocker?.removeAttribute("hidden");
+        blocker?.querySelector("strong")?.replaceChildren("Gun in maintenance");
+        blocker?.querySelector("span")?.replaceChildren("Return this gun to operation from the Maintenance panel.");
+    }
+
+    async function requestMode() {
+        if (gate.dataset.gunMaintenance === "true") {
+            button.classList.add("denied");
+            buttonText.textContent = "IN MAINTENANCE";
+            showMaintenanceBlocker();
+            return;
+        }
+
+        if (gate.dataset.gunDisabled === "true") {
+            button.classList.add("denied");
+            buttonText.textContent = "GUN DISABLED";
+            showDisabledBlocker();
+            return;
+        }
+
+        const gunNumber = gate.dataset.gunNumber;
+        const mode = gate.dataset.targetMode;
+        button.disabled = true;
+        button.classList.remove("confirmed");
+        button.classList.add("pending");
+        buttonText.textContent = "REQUESTING MANUAL";
+
+        try {
+            const response = await fetch(`/Engineering/Guns/${gunNumber}/Mode`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(csrfToken ? { "X-Stonehenge-CSRF": csrfToken } : {})
+                },
+                body: JSON.stringify({ mode })
+            });
+            const result = await response.json();
+            if (!response.ok || !result.ok) throw new Error(result.error || "Mode request failed");
+
+            modeLabel.textContent = result.mode || mode;
+            gate.dataset.confirmed = "true";
+            button.setAttribute("aria-pressed", "true");
+            button.classList.remove("pending");
+            button.classList.add("confirmed");
+            buttonText.textContent = "MANUAL CONFIRMED";
+            hmi?.classList.remove("is-blocked");
+            blocker?.setAttribute("hidden", "hidden");
+            window.setTimeout(() => window.location.reload(), 750);
+        } catch (error) {
+            button.classList.remove("pending");
+            button.classList.add("denied");
+            const message = error.message?.toLowerCase().includes("disabled") ? "GUN DISABLED" : "MANUAL DENIED";
+            buttonText.textContent = message;
+            if (message === "GUN DISABLED") {
+                showDisabledBlocker();
+            }
+            window.setTimeout(() => {
+                if (message !== "GUN DISABLED") {
+                    button.classList.remove("denied");
+                    buttonText.textContent = "REQUEST MANUAL";
+                }
+            }, 1800);
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    if (gate.dataset.confirmed === "true") {
+        blocker?.setAttribute("hidden", "hidden");
+    }
+
+    button?.addEventListener("click", requestMode);
+
+})();
+</script>
+
+<div class="firing-sequence-overlay firing-overlay" id="firingSequenceOverlay" hidden aria-hidden="true">
+    <div class="firing-sequence-modal" role="status" aria-live="polite">
+        <p class="eyebrow">Manual mode sequence</p>
+        <h2>Stonehenge Firing Sequence</h2>
+        <video class="firing-video" id="firingSequenceVideo" src="~/media/stonehenge-firing.mp4" muted playsinline preload="auto"></video>
+        <strong>Simulated successful shot</strong>
+        <span>Playback starts after middleware accepts the fire request.</span>
+    </div>
+</div>
+
+<script>
+(() => {
+    const csrfToken = document.querySelector('meta[name="stonehenge-csrf"]')?.content;
+    let isArmed = false;
+    let isLockedOut = false;
+    let lockoutTimer = null;
+    let overlayTimer = null;
+    let overlayStartedAt = 0;
+    const key = document.getElementById("safetyKeyToggle");
+    const cover = document.getElementById("coverGuard");
+    const fireButton = document.getElementById("mockFireButton");
+    const status = document.getElementById("fireStatusMessage");
+    const keyState = document.getElementById("safetyKeyState");
+    const lastCommand = document.getElementById("mockLastCommand");
+    const commandState = document.getElementById("mockCommandState");
+    const reloadState = document.getElementById("mockReloadState");
+    const reset = document.getElementById("resetMockState");
+    const panel = document.querySelector(".fire-control-panel");
+    const overlay = document.getElementById("firingSequenceOverlay");
+    const firingVideo = document.getElementById("firingSequenceVideo");
+
+    function setArmed(next) {
+        if (isLockedOut && next) return;
+        isArmed = next;
+        key.classList.toggle("is-unlocked", isArmed);
+        cover.classList.toggle("is-open", isArmed);
+        fireButton.classList.toggle("is-armed", isArmed);
+        fireButton.classList.toggle("fire-button-disabled", !isArmed || isLockedOut);
+        fireButton.disabled = !isArmed || isLockedOut;
+        key.setAttribute("aria-pressed", String(isArmed));
+        keyState.textContent = isArmed ? "UNLOCKED" : "LOCKED";
+        cover.querySelector("span").textContent = isArmed ? "COVER OPEN" : "COVER CLOSED";
+        status.textContent = isArmed ? "Armed - visual mock only" : "Safe / Locked";
+        commandState.textContent = isArmed ? "Armed local state" : "Standby";
+        if (!isArmed) {
+            lastCommand.textContent = "None";
+        }
+    }
+
+    function prependManualLog(log) {
+        const list = document.querySelector(".filtered-log-list");
+        if (!list || !log) return;
+
+        const row = document.createElement("article");
+        row.className = "log-row";
+        row.dataset.logId = log.id || "";
+        row.innerHTML = `
+            <time>${log.timestamp || new Date().toLocaleTimeString([], { hour12: false })}</time>
+            <div>
+                <strong></strong>
+                <span></span>
+                <p></p>
+            </div>`;
+        row.querySelector("strong").textContent = log.action || "Manual event";
+        row.querySelector("span").textContent = `${log.source || "Engineering App"} - ${log.result || "Observed"}`;
+        row.querySelector("p").textContent = log.notes || "";
+        list.prepend(row);
+
+        [...list.querySelectorAll(".log-row")].slice(5).forEach(item => item.remove());
+    }
+
+    function beginReloading() {
+        isLockedOut = true;
+        setArmed(false);
+        let remaining = 10;
+        status.textContent = "Reloading";
+        commandState.textContent = "Local visual sequence complete";
+        reloadState.textContent = `Reloading: ${remaining}s`;
+        lockoutTimer = window.setInterval(() => {
+            remaining -= 1;
+            reloadState.textContent = remaining > 0 ? `Reloading: ${remaining}s` : "Inactive";
+            if (remaining <= 0) {
+                window.clearInterval(lockoutTimer);
+                lockoutTimer = null;
+                isLockedOut = false;
+                status.textContent = "Safe / Ready mock state";
+                commandState.textContent = "Standby";
+                fireButton.disabled = true;
+                fireButton.classList.add("fire-button-disabled");
+            }
+        }, 1000);
+    }
+
+    function resetMockState() {
+        if (lockoutTimer) {
+            window.clearInterval(lockoutTimer);
+            lockoutTimer = null;
+        }
+        if (overlayTimer) {
+            window.clearTimeout(overlayTimer);
+            overlayTimer = null;
+        }
+        isLockedOut = false;
+        reloadState.textContent = "Inactive";
+        commandState.textContent = "Standby";
+        setArmed(false);
+    }
+
+    function finishFiringPlayback() {
+        if (overlayTimer) {
+            window.clearTimeout(overlayTimer);
+            overlayTimer = null;
+        }
+        firingVideo.pause();
+        overlay.hidden = true;
+        overlay.classList.remove("is-visible");
+        overlay.setAttribute("aria-hidden", "true");
+        try {
+            firingVideo.currentTime = 0;
+        } catch {
+            // Some browsers reject seeking while media metadata is still settling.
+        }
+        panel.classList.remove("mock-pulse");
+        beginReloading();
+    }
+
+    function requestFinishFiringPlayback() {
+        const elapsed = Date.now() - overlayStartedAt;
+        const remaining = Math.max(0, 3000 - elapsed);
+        if (remaining > 0) {
+            if (overlayTimer) {
+                window.clearTimeout(overlayTimer);
+            }
+            overlayTimer = window.setTimeout(finishFiringPlayback, remaining);
+            return;
+        }
+
+        finishFiringPlayback();
+    }
+
+    function showFiringPlayback() {
+        overlayStartedAt = Date.now();
+        panel.classList.add("mock-pulse");
+        overlay.hidden = false;
+        overlay.classList.add("is-visible");
+        overlay.setAttribute("aria-hidden", "false");
+
+        firingVideo.pause();
+        firingVideo.currentTime = 0;
+        firingVideo.load();
+
+        const playPromise = firingVideo.play();
+        if (playPromise) {
+            playPromise.catch(() => {
+                // Keep the firing overlay visible even if the browser declines playback.
+            });
+        }
+
+        const durationMs = Number.isFinite(firingVideo.duration) && firingVideo.duration > 0
+            ? Math.ceil(firingVideo.duration * 1000) + 250
+            : 3000;
+        overlayTimer = window.setTimeout(finishFiringPlayback, Math.max(durationMs, 3000));
+    }
+
+    key.addEventListener("click", () => setArmed(!isArmed));
+    reset.addEventListener("click", resetMockState);
+    firingVideo.addEventListener("ended", finishFiringPlayback);
+    fireButton.addEventListener("click", async event => {
+        event.preventDefault();
+        if (!isArmed || isLockedOut) return;
+        const gunNumber = panel.dataset.fireGunNumber;
+        let result = null;
+        fireButton.disabled = true;
+        status.textContent = "Submitting fire request...";
+        lastCommand.textContent = "Fire request submitted";
+        commandState.textContent = "Waiting for middleware";
+
+        try {
+            const response = await fetch(`/Engineering/Guns/${gunNumber}/Fire`, {
+                method: "POST",
+                headers: csrfToken ? { "X-Stonehenge-CSRF": csrfToken } : {}
+            });
+            result = await response.json();
+            if (!response.ok || !result.ok) {
+                throw new Error(result.error || "Fire request denied");
+            }
+        } catch (error) {
+            status.textContent = "Fire request denied";
+            lastCommand.textContent = error.message;
+            commandState.textContent = "Middleware rejected request";
+            fireButton.disabled = false;
+            return;
+        }
+
+        status.textContent = "Middleware fire request accepted.";
+        lastCommand.textContent = "Fire request accepted";
+        commandState.textContent = "Firing sequence active";
+        prependManualLog(result.log);
+        showFiringPlayback();
+    });
+})();
+</script>

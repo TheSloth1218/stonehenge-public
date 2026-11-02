@@ -1,0 +1,255 @@
+@model Stonehenge.Engineering.App.Models.MaintenancePanelViewModel
+
+@{
+    ViewData["Title"] = "Maintenance Panel";
+    var selectedGunInMaintenance = Model.SelectedGun.CurrentMode.Equals("maintenance", StringComparison.OrdinalIgnoreCase)
+        || Model.SelectedGun.MaintenanceState.Equals("Maintenance", StringComparison.OrdinalIgnoreCase);
+    var pendingPartRequest = Model.PartRequests.Any(request => request.Status == "Pending");
+    var pendingMaintenanceRequest = Model.MaintenanceRequests.Any(request => request.Status == "Pending");
+    var maintenanceRequestLocked = selectedGunInMaintenance || pendingMaintenanceRequest;
+    var currentMaintenanceRequest = CurrentRequest(Model.MaintenanceRequests);
+    var currentPartRequest = CurrentRequest(Model.PartRequests);
+    var currentRequests = new[] { currentMaintenanceRequest, currentPartRequest }
+        .Where(request => request is not null)
+        .Cast<Stonehenge.Engineering.App.Models.MaintenanceRequestViewModel>()
+        .ToList();
+    var remainingEventSlots = Math.Max(0, 3 - currentRequests.Count);
+}
+
+<div class="maintenance-page">
+    <section class="page-heading maintenance-heading">
+        <div>
+            <p class="eyebrow">ADMIN MAINTENANCE WORKSPACE</p>
+            <h1>Maintenance Panel</h1>
+            <p class="page-subtitle">App-owned per-gun maintenance status, alerts, and simple request workspace.</p>
+        </div>
+        <div class="runtime-proof">STN maintenance status</div>
+    </section>
+
+    <section class="maintenance-summary-strip" aria-label="Maintenance summary">
+        <div class="maintenance-chip">
+            <span>Selected</span>
+            <strong>@Model.SelectedGun.Name</strong>
+        </div>
+        <div class="maintenance-mode-bar" aria-label="Selected gun mode">
+            @if (selectedGunInMaintenance)
+            {
+                <form method="post" asp-controller="Engineering" asp-action="SetMaintenanceGunMode" asp-route-gunNumber="@Model.SelectedGunNumber">
+                    <input type="hidden" name="Mode" value="auto">
+                    <button class="mode-return-button auto" type="submit">Auto</button>
+                </form>
+                <form method="post" asp-controller="Engineering" asp-action="SetMaintenanceGunMode" asp-route-gunNumber="@Model.SelectedGunNumber">
+                    <input type="hidden" name="Mode" value="manual">
+                    <button class="mode-return-button manual" type="submit">Manual</button>
+                </form>
+            }
+            else
+            {
+                <span class="@(Model.SelectedGun.CurrentMode.Equals("auto", StringComparison.OrdinalIgnoreCase) ? "active auto" : "")">Auto</span>
+                <span class="@(Model.SelectedGun.CurrentMode.Equals("manual", StringComparison.OrdinalIgnoreCase) ? "active manual" : "")">Manual</span>
+            }
+            <span class="@(Model.SelectedGun.CurrentMode.Equals("maintenance", StringComparison.OrdinalIgnoreCase) ? "active maintenance" : "")">Maintenance</span>
+        </div>
+    </section>
+
+    <section class="maintenance-workspace">
+        <section class="maintenance-array-panel">
+            <div class="maintenance-panel-header">
+                <div>
+                    <h2>Gun Maintenance Status</h2>
+                    <p>Per-gun maintenance readiness and current mode.</p>
+                </div>
+                <span>8 guns</span>
+            </div>
+
+            <div class="maintenance-gun-grid">
+                @foreach (var gun in Model.Guns)
+                {
+                    <a class="maintenance-gun-card @(gun.GunNumber == Model.SelectedGunNumber ? "selected" : "")" asp-controller="Engineering" asp-action="Maintenance" asp-route-gunNumber="@gun.GunNumber">
+                        <div class="maintenance-card-topline">
+                            <strong>@gun.Name</strong>
+                            <span class="status-dot @gun.MaintenanceClass"></span>
+                        </div>
+                        <span class="status-badge @gun.MaintenanceClass">@gun.MaintenanceState</span>
+                        <dl>
+                            <div>
+                                <dt>Mode</dt>
+                                <dd>@gun.CurrentMode</dd>
+                            </div>
+                            <div>
+                                <dt>Parts</dt>
+                                <dd>@gun.PartStatus</dd>
+                            </div>
+                            <div>
+                                <dt>Shots</dt>
+                                <dd>@gun.FiringCount / @gun.ServiceThreshold</dd>
+                            </div>
+                        </dl>
+                    </a>
+                }
+            </div>
+        </section>
+
+        <aside class="maintenance-control-panel">
+            <div class="maintenance-panel-header">
+                <div>
+                    <h2>Maintenance Control Template</h2>
+                    <p>Simple app-owned maintenance and part requests.</p>
+                </div>
+                <span class="admin-pill">Admin</span>
+            </div>
+
+            <section class="maintenance-selected-card">
+                <p class="eyebrow">Selected maintenance context</p>
+                <h3>@Model.SelectedGun.Name</h3>
+                <dl>
+                    <div>
+                        <dt>Maintenance state</dt>
+                        <dd>@Model.SelectedGun.MaintenanceState</dd>
+                    </div>
+                    <div>
+                        <dt>Current mode</dt>
+                        <dd>@Model.SelectedGun.CurrentMode</dd>
+                    </div>
+                    <div>
+                        <dt>Part cycle</dt>
+                        <dd>@Model.SelectedGun.FiringCount / @Model.SelectedGun.ServiceThreshold</dd>
+                    </div>
+                    <div>
+                        <dt>Last inspection</dt>
+                        <dd>@Model.SelectedGun.LastInspection</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <section class="maintenance-order-card">
+                <p class="eyebrow">Part request</p>
+                <div class="order-row">
+                    <span>Status</span>
+                    <strong class="part-status @Model.SelectedGun.PartClass">@Model.SelectedGun.PartStatus</strong>
+                </div>
+                <form class="maintenance-request-form part-request-form" method="post" asp-controller="Engineering" asp-action="SubmitPartRequest">
+                    <input type="hidden" name="gunNumber" value="@Model.SelectedGunNumber">
+                    <label for="partRequestNotes">Part request notes</label>
+                    <textarea id="partRequestNotes" name="notes" rows="2">Part service request for @Model.SelectedGun.Name.</textarea>
+                    <button type="submit" disabled="@pendingPartRequest">@(pendingPartRequest ? "Part Request Pending" : "Submit Part Request")</button>
+                </form>
+            </section>
+
+            <section class="maintenance-action-card">
+                <form class="maintenance-request-form" method="post" asp-controller="Engineering" asp-action="SubmitMaintenanceRequest">
+                    <input type="hidden" name="gunNumber" value="@Model.SelectedGunNumber">
+                    <label for="maintenanceRequestNotes">Maintenance request</label>
+                    <textarea id="maintenanceRequestNotes" name="notes" rows="2" disabled="@maintenanceRequestLocked">@(selectedGunInMaintenance ? $"{Model.SelectedGun.Name} is already in maintenance." : pendingMaintenanceRequest ? $"Maintenance request pending for {Model.SelectedGun.Name}." : $"Request maintenance review for {Model.SelectedGun.Name}.")</textarea>
+                    <button type="submit" disabled="@maintenanceRequestLocked">@(selectedGunInMaintenance ? "Already In Maintenance" : pendingMaintenanceRequest ? "Maintenance Request Pending" : "Submit Maintenance Request")</button>
+                </form>
+                <p>Admin approval transitions the gun to maintenance mode through middleware.</p>
+            </section>
+        </aside>
+    </section>
+
+    <section class="maintenance-events">
+        <div class="maintenance-panel-header compact">
+            <div>
+                <h2>Maintenance Event Notes</h2>
+                <p>Selected-gun request and maintenance activity.</p>
+            </div>
+        </div>
+        <div class="maintenance-event-list">
+            @foreach (var request in currentRequests)
+            {
+                var eventTime = request.ReviewedAt ?? request.RequestedAt;
+                <article class="request-event-card" data-maintenance-request-id="@request.Id">
+                    @if (request.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <form class="request-cancel-form" method="post" asp-controller="Engineering" asp-action="CancelMaintenanceRequest" asp-route-requestId="@request.Id">
+                            <button type="submit" aria-label="Cancel @request.RequestType request">×</button>
+                        </form>
+                    }
+                    <time>@eventTime.ToString("HH:mm:ss")</time>
+                    <strong>@RequestEventTitle(request)</strong>
+                    <span>@request.RequestedBy - @request.GunName</span>
+                    <p>@(string.IsNullOrWhiteSpace(request.ReviewNotes) ? request.Notes : request.ReviewNotes)</p>
+                </article>
+            }
+            @foreach (var entry in Model.MaintenanceEvents.Take(remainingEventSlots))
+            {
+                <article data-log-id="@entry.Id">
+                    <time>@entry.Timestamp.ToString("HH:mm:ss")</time>
+                    <strong>@entry.Action</strong>
+                    <span>@entry.Source - @entry.Result</span>
+                    <p>@entry.Notes</p>
+                </article>
+            }
+        </div>
+    </section>
+</div>
+
+<script>
+(() => {
+    const refreshMs = 10000;
+    let formDirty = false;
+
+    document.querySelectorAll(".maintenance-request-form input, .maintenance-request-form textarea, .maintenance-request-form select")
+        .forEach(element => {
+            element.addEventListener("input", () => {
+                formDirty = true;
+            });
+        });
+
+    document.querySelectorAll(".maintenance-request-form")
+        .forEach(form => {
+            form.addEventListener("submit", () => {
+                formDirty = false;
+            });
+        });
+
+    const isEditing = () => {
+        const active = document.activeElement;
+        return active && ["INPUT", "TEXTAREA", "SELECT"].includes(active.tagName);
+    };
+
+    const schedule = () => {
+        window.setTimeout(() => {
+            if (!document.hidden && !formDirty && !isEditing()) {
+                window.location.reload();
+                return;
+            }
+
+            schedule();
+        }, refreshMs);
+    };
+
+    schedule();
+})();
+</script>
+
+@functions {
+    private static Stonehenge.Engineering.App.Models.MaintenanceRequestViewModel? CurrentRequest(
+        IEnumerable<Stonehenge.Engineering.App.Models.MaintenanceRequestViewModel> requests)
+    {
+        var pending = requests
+            .Where(request => request.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(request => request.RequestedAt)
+            .FirstOrDefault();
+
+        return pending ?? requests
+            .OrderByDescending(request => request.ReviewedAt ?? request.RequestedAt)
+            .FirstOrDefault();
+    }
+
+    private static string RequestEventTitle(Stonehenge.Engineering.App.Models.MaintenanceRequestViewModel request)
+    {
+        var prefix = request.RequestType.Equals("Part", StringComparison.OrdinalIgnoreCase)
+            ? "Part request"
+            : "Maintenance request";
+
+        return request.Status.ToLowerInvariant() switch
+        {
+            "pending" => $"{prefix} submitted",
+            "approved" => $"{prefix} accepted",
+            "denied" => $"{prefix} denied",
+            _ => $"{prefix} {request.Status.ToLowerInvariant()}"
+        };
+    }
+}

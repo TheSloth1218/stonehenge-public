@@ -1,0 +1,29 @@
+sca:
+  training:
+    enabled: true
+  shipment:
+    compatibility:
+      format: java-native
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,mappings,configprops,env
+  endpoint:
+    env:
+      show-values: when_authorized
+    configprops:
+      show-values: when_authorized
+
+info:
+  app:
+    legacy-serializer: apache-commons-collections-3.2.1
+    legacy-payload-family: CommonsCollections6
+
+vendor:
+  support:
+    command: /usr/local/sbin/vendor-support
+    profile-directory: /opt/stonehenge/vendor/support/profiles
+    plugin-directory: /opt/stonehenge/vendor/support/plugins
+    mode: legacy-plugin

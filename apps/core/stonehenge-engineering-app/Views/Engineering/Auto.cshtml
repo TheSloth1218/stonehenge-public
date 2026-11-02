@@ -1,0 +1,314 @@
+@model Stonehenge.Engineering.App.Models.AutoStatusViewModel
+
+@{
+    ViewData["Title"] = "Auto Controls / Status";
+    var isAutoMode = string.Equals(Model.RuntimeStatus.AutoMode, "auto", StringComparison.OrdinalIgnoreCase);
+    var isGunDisabled = string.Equals(Model.SelectedGun.Status, "Disabled", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(Model.SelectedGun.SafetyState, "Gun disabled", StringComparison.OrdinalIgnoreCase);
+    var isMaintenanceMode = string.Equals(Model.RuntimeStatus.AutoMode, "maintenance", StringComparison.OrdinalIgnoreCase);
+    var isAutoAvailable = isAutoMode && !isGunDisabled && !isMaintenanceMode;
+    var selectedGunRuntimeOctet = Model.SelectedGunNumber == 1 ? 10 : Model.SelectedGunNumber + 10;
+    var selectedGunRuntimeEndpoint = $"OpenPLC Gun {Model.SelectedGunNumber} 172.28.0.{selectedGunRuntimeOctet}:502";
+    var selectedFuxaTagSource = $"FUXA tags 172.28.0.{selectedGunRuntimeOctet}:502";
+}
+
+<div class="auto-page">
+<section class="page-heading auto-page-heading">
+    <div>
+        <p class="eyebrow">Automatic Operation Status</p>
+        <h1>Auto Controls / Status</h1>
+        <p class="page-subtitle">Selected-gun automatic operation overview and HMI status.</p>
+    </div>
+    <div class="runtime-proof">STN auto status</div>
+</section>
+
+<section class="auto-layout auto-workspace">
+    <aside class="auto-side-panel" aria-label="Selected gun automatic status">
+        <form class="gun-select-form" method="get" asp-controller="Engineering" asp-action="Auto">
+            <label for="gunNumber">Gun Selection</label>
+            <select id="gunNumber" name="gunNumber" onchange="this.form.submit()">
+                @foreach (var gun in Model.Guns)
+                {
+                    <option value="@gun.GunNumber" selected="@(gun.GunNumber == Model.SelectedGunNumber)">
+                        @gun.Name
+                    </option>
+                }
+            </select>
+        </form>
+
+        <article class="auto-info-card">
+            <div class="auto-card-heading">
+                <span>Selected Gun</span>
+                <span class="status-badge @Model.SelectedGun.StatusClass" data-auto-status>@Model.SelectedGun.Status</span>
+            </div>
+            <strong>@Model.SelectedGun.Name</strong>
+            <dl class="compact-list">
+                <div>
+                    <dt>Fire permission</dt>
+                    <dd data-auto-fire-permission>@Model.SelectedGun.SafetyState</dd>
+                </div>
+                <div>
+                    <dt>Source</dt>
+                    <dd data-auto-source>@Model.RuntimeStatus.MiddlewareConnection</dd>
+                </div>
+            </dl>
+        </article>
+
+        <article class="auto-info-card">
+            <div class="auto-card-heading">
+                <span>Gun Telemetry</span>
+            </div>
+            <dl class="compact-list">
+                <div>
+                    <dt>State</dt>
+                    <dd data-auto-state>@Model.RuntimeStatus.AutoState</dd>
+                </div>
+                <div>
+                    <dt>Azimuth x10</dt>
+                    <dd data-auto-azimuth>@Math.Round(Model.SelectedGun.Azimuth * 10, 0)</dd>
+                </div>
+                <div>
+                    <dt>Elevation x10</dt>
+                    <dd data-auto-elevation>@Math.Round(Model.SelectedGun.Elevation * 10, 0)</dd>
+                </div>
+                <div>
+                    <dt>Last updated</dt>
+                    <dd data-auto-last-updated>@Model.SelectedGun.LastUpdated.ToString("HH:mm:ss")</dd>
+                </div>
+            </dl>
+        </article>
+
+        <article class="auto-info-card">
+            <div class="auto-card-heading">
+                <span>Auto Runtime</span>
+            </div>
+            <dl class="compact-list">
+                <div>
+                    <dt>Auto mode</dt>
+                    <dd data-auto-mode>@Model.RuntimeStatus.AutoMode</dd>
+                </div>
+                <div>
+                    <dt>Last sequence</dt>
+                    <dd data-auto-sequence>@Model.RuntimeStatus.LastSequence</dd>
+                </div>
+            </dl>
+        </article>
+
+        <article class="auto-info-card">
+            <div class="auto-card-heading">
+                <span>Connections</span>
+            </div>
+            <dl class="compact-list">
+                <div>
+                    <dt>HMI</dt>
+                    <dd data-auto-hmi>@(Model.FuxaPanel is { Enabled: true } ? "Embedded" : "Unavailable")</dd>
+                </div>
+                <div>
+                    <dt>App telemetry</dt>
+                    <dd data-auto-telemetry-source>Middleware /api/v1/status</dd>
+                </div>
+                <div>
+                    <dt>PLC runtime</dt>
+                    <dd data-auto-runtime-endpoint>@selectedGunRuntimeEndpoint</dd>
+                </div>
+                <div>
+                    <dt>FUXA tags</dt>
+                    <dd data-auto-fuxa-source>@selectedFuxaTagSource</dd>
+                </div>
+            </dl>
+        </article>
+
+    </aside>
+
+    <section class="hmi-panel">
+        <div class="hmi-panel-header">
+            <div>
+                <h2>HMI View</h2>
+                <p>FUXA/HMI panel for automatic coordination.</p>
+            </div>
+            <div class="mode-gate @(isGunDisabled || isMaintenanceMode ? "is-disabled" : "")" data-mode-gate data-gun-number="@Model.SelectedGunNumber" data-target-mode="auto" data-confirmed="@isAutoAvailable.ToString().ToLowerInvariant()" data-gun-disabled="@isGunDisabled.ToString().ToLowerInvariant()" data-gun-maintenance="@isMaintenanceMode.ToString().ToLowerInvariant()">
+                <span class="mode-gate-label">Mode: <strong data-mode-label>@Model.RuntimeStatus.AutoMode</strong></span>
+                <button class="mode-key-switch @(isAutoAvailable ? "confirmed" : "") @(isGunDisabled || isMaintenanceMode ? "denied" : "")" type="button" aria-pressed="@isAutoAvailable.ToString().ToLowerInvariant()" disabled="@isMaintenanceMode" data-mode-key>
+                    <span class="key-ring" aria-hidden="true"><span class="key-slot"></span></span>
+                    <span data-mode-key-text>@(isGunDisabled ? "GUN DISABLED" : isMaintenanceMode ? "IN MAINTENANCE" : isAutoAvailable ? "AUTO CONFIRMED" : "REQUEST AUTO")</span>
+                </button>
+                <span class="auth-note">Dev admin</span>
+            </div>
+        </div>
+
+        <div class="hmi-placeholder mode-gated-hmi @(isAutoAvailable ? "" : "is-blocked")" data-hmi-gate>
+            @await Html.PartialAsync("_FuxaPanelFrame", Model.FuxaPanel)
+            <div class="hmi-mode-blocker" data-hmi-blocker hidden="@isAutoAvailable">
+                <strong>@(isGunDisabled ? "Gun disabled" : isMaintenanceMode ? "Gun in maintenance" : "Auto HMI gated")</strong>
+                <span>@(isGunDisabled ? "Admin must enable this gun in Safety PLC controls before operator HMI access." : isMaintenanceMode ? "Return this gun to operation from the Maintenance panel." : "Flip the mode key to request AUTO. The panel unlocks after confirmation.")</span>
+            </div>
+        </div>
+    </section>
+</section>
+</div>
+
+<script>
+(() => {
+    const gate = document.querySelector("[data-mode-gate]");
+    if (!gate) return;
+
+    const csrfToken = document.querySelector('meta[name="stonehenge-csrf"]')?.content;
+    const button = gate.querySelector("[data-mode-key]");
+    const buttonText = gate.querySelector("[data-mode-key-text]");
+    const modeLabel = gate.querySelector("[data-mode-label]");
+    const hmi = document.querySelector("[data-hmi-gate]");
+    const blocker = document.querySelector("[data-hmi-blocker]");
+
+    function showDisabledBlocker() {
+        blocker?.removeAttribute("hidden");
+        blocker?.querySelector("strong")?.replaceChildren("Gun disabled");
+        blocker?.querySelector("span")?.replaceChildren("Admin must enable this gun in Safety PLC controls before operator HMI access.");
+    }
+
+    function showMaintenanceBlocker() {
+        blocker?.removeAttribute("hidden");
+        blocker?.querySelector("strong")?.replaceChildren("Gun in maintenance");
+        blocker?.querySelector("span")?.replaceChildren("Return this gun to operation from the Maintenance panel.");
+    }
+
+    async function requestMode() {
+        if (gate.dataset.gunMaintenance === "true") {
+            button.classList.add("denied");
+            buttonText.textContent = "IN MAINTENANCE";
+            showMaintenanceBlocker();
+            return;
+        }
+
+        if (gate.dataset.gunDisabled === "true") {
+            button.classList.add("denied");
+            buttonText.textContent = "GUN DISABLED";
+            showDisabledBlocker();
+            return;
+        }
+
+        const gunNumber = gate.dataset.gunNumber;
+        const mode = gate.dataset.targetMode;
+        button.disabled = true;
+        button.classList.remove("confirmed");
+        button.classList.add("pending");
+        buttonText.textContent = "REQUESTING AUTO";
+
+        try {
+            const response = await fetch(`/Engineering/Guns/${gunNumber}/Mode`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(csrfToken ? { "X-Stonehenge-CSRF": csrfToken } : {})
+                },
+                body: JSON.stringify({ mode })
+            });
+            const result = await response.json();
+            if (!response.ok || !result.ok) throw new Error(result.error || "Mode request failed");
+
+            modeLabel.textContent = result.mode || mode;
+            gate.dataset.confirmed = "true";
+            button.setAttribute("aria-pressed", "true");
+            button.classList.remove("pending");
+            button.classList.add("confirmed");
+            buttonText.textContent = "AUTO CONFIRMED";
+            hmi?.classList.remove("is-blocked");
+            blocker?.setAttribute("hidden", "hidden");
+            window.setTimeout(() => window.location.reload(), 750);
+        } catch (error) {
+            button.classList.remove("pending");
+            button.classList.add("denied");
+            const message = error.message?.toLowerCase().includes("disabled") ? "GUN DISABLED" : "AUTO DENIED";
+            buttonText.textContent = message;
+            if (message === "GUN DISABLED") {
+                showDisabledBlocker();
+            }
+            window.setTimeout(() => {
+                if (message !== "GUN DISABLED") {
+                    button.classList.remove("denied");
+                    buttonText.textContent = "REQUEST AUTO";
+                }
+            }, 1800);
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    if (gate.dataset.confirmed === "true") {
+        blocker?.setAttribute("hidden", "hidden");
+    }
+
+    button?.addEventListener("click", requestMode);
+
+    const liveFields = {
+        status: document.querySelector("[data-auto-status]"),
+        firePermission: document.querySelector("[data-auto-fire-permission]"),
+        source: document.querySelector("[data-auto-source]"),
+        azimuth: document.querySelector("[data-auto-azimuth]"),
+        elevation: document.querySelector("[data-auto-elevation]"),
+        lastUpdated: document.querySelector("[data-auto-last-updated]"),
+        mode: document.querySelector("[data-auto-mode]"),
+        state: document.querySelector("[data-auto-state]"),
+        sequence: document.querySelector("[data-auto-sequence]"),
+        hmi: document.querySelector("[data-auto-hmi]"),
+        telemetrySource: document.querySelector("[data-auto-telemetry-source]"),
+        runtimeEndpoint: document.querySelector("[data-auto-runtime-endpoint]"),
+        fuxaSource: document.querySelector("[data-auto-fuxa-source]")
+    };
+
+    function formatTime(value) {
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return value || "--";
+        return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+    }
+
+    function formatX10(x10, degrees) {
+        const numericX10 = Number(x10);
+        const numericDegrees = Number(degrees);
+        const x10Text = Number.isFinite(numericX10) ? Math.round(numericX10) : "--";
+        const degreeText = Number.isFinite(numericDegrees) ? numericDegrees.toFixed(1) : "--";
+        return `${x10Text} (${degreeText}°)`;
+    }
+
+    function setStatusBadge(status, statusClass) {
+        if (!liveFields.status) return;
+        liveFields.status.textContent = status || "--";
+        liveFields.status.classList.remove("online", "warning", "fault", "offline");
+        if (statusClass) {
+            liveFields.status.classList.add(statusClass);
+        }
+    }
+
+    async function refreshAutoStatus() {
+        try {
+            const response = await fetch(`/api/guns/${gate.dataset.gunNumber}/state?poll=true`, {
+                headers: { "Accept": "application/json" },
+                cache: "no-store"
+            });
+            if (!response.ok) return;
+            const state = await response.json();
+            if (!state.ok) return;
+
+            setStatusBadge(state.status, state.statusClass);
+            if (liveFields.firePermission) liveFields.firePermission.textContent = state.firePermission || "--";
+            if (liveFields.source) liveFields.source.textContent = state.middlewareSource || "--";
+            if (liveFields.azimuth) liveFields.azimuth.textContent = formatX10(state.azimuthX10, state.azimuth);
+            if (liveFields.elevation) liveFields.elevation.textContent = formatX10(state.elevationX10, state.elevation);
+            if (liveFields.lastUpdated) liveFields.lastUpdated.textContent = formatTime(state.lastUpdated);
+            if (liveFields.mode) liveFields.mode.textContent = state.mode || "--";
+            if (liveFields.state) liveFields.state.textContent = state.state || state.status || "--";
+            if (liveFields.sequence) liveFields.sequence.textContent = state.lastSequence || "Idle";
+            if (liveFields.telemetrySource) liveFields.telemetrySource.textContent = state.telemetrySource || state.middlewareSource || "--";
+            if (liveFields.runtimeEndpoint) liveFields.runtimeEndpoint.textContent = state.runtimeEndpoint || "--";
+            if (liveFields.fuxaSource) liveFields.fuxaSource.textContent = state.fuxaTagSource || "--";
+            if (liveFields.hmi) {
+                liveFields.hmi.textContent = document.querySelector(".fuxa-panel-frame") ? "Embedded" : "Unavailable";
+            }
+        } catch {
+            if (liveFields.telemetrySource) liveFields.telemetrySource.textContent = "Unavailable";
+        }
+    }
+
+    window.setInterval(refreshAutoStatus, 10000);
+    refreshAutoStatus();
+})();
+</script>

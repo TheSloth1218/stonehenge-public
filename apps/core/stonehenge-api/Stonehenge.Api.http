@@ -1,0 +1,11 @@
+@Stonehenge.Api_HostAddress = http://localhost:8092
+
+GET {{Stonehenge.Api_HostAddress}}/api/v1/system/health
+Accept: application/json
+
+###
+
+GET {{Stonehenge.Api_HostAddress}}/api/v1/apps/catalog
+Accept: application/json
+
+###

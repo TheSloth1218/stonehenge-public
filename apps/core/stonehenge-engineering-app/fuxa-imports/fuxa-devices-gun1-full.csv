@@ -1,0 +1,77 @@
+!! CSV separator property convertion to "~"
+#id,: Device id, GUID
+#name,: Device name
+#enabled,: Enabled
+#type,: Device Type: FuxaServer | SiemensS7 | OPCUA | BACnet | ModbusRTU | ModbusTCP | WebAPI | MQTTclient | internal | EthernetIP | ADSclient | Gpio | WebCam | MELSEC | REDIS
+#polling,: Polling interval in millisec., check changed value after ask value, by OPCUA there is a monitor
+#property.address,: Device address (IP)
+#property.baudrate,: dynamic property field
+#property.databits,: dynamic property field
+#property.delay,: dynamic property field
+#property.forceFC16,: dynamic property field
+#property.parity,: dynamic property field
+#property.port,: dynamic property field
+#property.rack,: dynamic property field
+#property.slaveid,: dynamic property field
+#property.slot,: dynamic property field
+#property.stopbits,: dynamic property field
+
+@header,id,name,enabled,type,polling,property.address,property.baudrate,property.databits,property.delay,property.forceFC16,property.parity,property.port,property.rack,property.slaveid,property.slot,property.stopbits,
+D@,0,FUXA Server,true,FuxaServer,1000,,,,,,,,,,,,
+D@,d_df067b5a-66524438,Stonehenge Control PLC,true,ModbusTCP,500,172.18.0.2:502,9600,8,10,false,None,,,1,,1,
+
+#deviceId,:Reference to device
+#id,: Tag id, GUID
+#name,: Tag name, is like the id
+#label,: Tag label, used by BACnet and WebAPI
+#type,: Tag type, Bool, Byte, etc. depending of device type
+#memaddress,: Address of Tag, combine with address by Modbus, some property for WebAPI
+#address,: Tag address, for OPCUA like the id
+#divisor,: Value divisor, used by Modbus
+#init,: Init value
+#format,: Number of digits to appear after the decimal point
+#direction,: A string specifying whether the GPIO should be configured as an input or output. The valid values are: in, out, high, and low.
+#edge,: An optional string specifying the interrupt generating edge or edges for an input GPIO.
+#description,: dynamic tag field
+#sysType,: dynamic tag field
+#options,: Options is a string JSON object, used for WebAPI and MQTT, pubs: items to publish | subs: items to subscribe
+#daq.enabled,: Daq enabled storage
+#daq.interval,: min storage interval (without change value)
+#daq.changed,: dynamic daq field
+#daq.restored,: dynamic daq field
+
+@header,deviceId,id,name,label,type,memaddress,address,divisor,init,format,direction,edge,description,sysType,options,daq.enabled,daq.interval,daq.changed,daq.restored,
+T@,0,t_6a436926-27f7474b,Stonehenge Control PLC Connection Status,Stonehenge Control PLC Connection Status,number,d_df067b5a-66524438,,,,,,,,,1,,false,60,false,false,
+
+T@,d_df067b5a-66524438,t_9f70462b-0d671d39,Gun1_CommandSequenceLow,,UInt16,400000,1025,1,,,,,Gun 1 command sequence low word,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_62971cff-57a2407d,Gun1_CommandSequenceHigh,,UInt16,400000,1026,1,,,,,Gun 1 command sequence high word,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_36ca6aac-c2540c8e,Gun1_Mode,,UInt16,400000,1027,1,,,,,Gun 1 mode command,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_e7b2059f-207f3450,Gun1_TargetAzimuth,,Int16,400000,1028,1,,,,,Gun 1 target azimuth x10,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_15f9931e-4d1a8e8d,Gun1_TargetElevation,,Int16,400000,1029,1,,,,,Gun 1 target elevation x10,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_eabf39d1-8be36cf6,Gun1_FragmentLow,,UInt16,400000,1030,1,,,,,Gun 1 assigned fragment low word,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_01d46ab3-e99b3224,Gun1_FragmentHigh,,UInt16,400000,1031,1,,,,,Gun 1 assigned fragment high word,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_fe9a8cdf-0467891f,Gun1_FireRequest,,UInt16,400000,1032,1,,,,,Gun 1 fire request,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_266a18d6-b357ac77,Gun1_Maintenance,,UInt16,400000,1033,1,,,,,Gun 1 maintenance enabled,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_5a9c52a2-f3b0999e,Gun1_AdminOverride,,UInt16,400000,1034,1,,,,,Gun 1 admin override active,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_07dad42a-2c307415,Gun1_FaultReset,,UInt16,400000,1035,1,,,,,Gun 1 fault reset,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_bdd3062f-71869e9a,Gun1_SafetyFirePermissive,,UInt16,400000,1036,1,,,,,Gun 1 safety fire permissive,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_2106d1b1-09c01420,Gun1_SafetyExtendedPermissive,,UInt16,400000,1037,1,,,,,Gun 1 safety extended-motion permissive,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_ba97782f-46184cc6,Gun1_AcceptedSequenceLow,,UInt16,400000,21,1,,,,,Gun 1 accepted command sequence low word,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_86b47626-c5608303,Gun1_AcceptedSequenceHigh,,UInt16,400000,22,1,,,,,Gun 1 accepted command sequence high word,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_70f1ce23-05e14b6c,Gun1_State,,UInt16,400000,23,1,,,,,Gun 1 operating state,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_4089b64e-40b04942,Gun1_CurrentAzimuth,,Int16,400000,24,1,,,,,Gun 1 current azimuth x10,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_3a96decb-f4314fcd,Gun1_CurrentElevation,,Int16,400000,25,1,,,,,Gun 1 current elevation x10,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_33f63987-7cfa8c81,Gun1_ActiveFragmentLow,,UInt16,400000,26,1,,,,,Gun 1 active fragment low word,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_b77a1a8b-e9d12156,Gun1_ActiveFragmentHigh,,UInt16,400000,27,1,,,,,Gun 1 active fragment high word,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_f7c80ff4-42144645,Gun1_TargetAccepted,,UInt16,400000,28,1,,,,,Gun 1 target-accepted pulse,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_276afc10-f55bb375,Gun1_OnTarget,,UInt16,400000,29,1,,,,,Gun 1 on-target status,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_08750b3e-ccc7b172,Gun1_Settling,,UInt16,400000,30,1,,,,,Gun 1 settling status,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_aa633ad5-b9ca73b5,Gun1_Firing,,UInt16,400000,31,1,,,,,Gun 1 firing status,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_0e538ad0-040808a5,Gun1_Lockout,,UInt16,400000,32,1,,,,,Gun 1 post-fire lockout status,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_1303f612-a7cbe941,Gun1_Ready,,UInt16,400000,33,1,,,,,Gun 1 ready status,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_c69f8d51-2a9fd6ec,Gun1_FaultActive,,UInt16,400000,34,1,,,,,Gun 1 fault-active status,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_d63a8eb8-21573b00,Gun1_FaultCode,,UInt16,400000,35,1,,,,,Gun 1 fault code,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_fd528fa1-9415a60e,Gun1_ShotSequenceLow,,UInt16,400000,36,1,,,,,Gun 1 shot sequence low word,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_66c55a6a-1c0da159,Gun1_ShotSequenceHigh,,UInt16,400000,37,1,,,,,Gun 1 shot sequence high word,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_977d394e-7db44349,Gun1_SettlingSeconds,,UInt16,400000,38,1,,,,,Gun 1 settling seconds remaining,,,false,60,false,false,
+T@,d_df067b5a-66524438,t_e4bd04ed-a5c09941,Gun1_LockoutSeconds,,UInt16,400000,39,1,,,,,Gun 1 lockout seconds remaining,,,false,60,false,false,

@@ -1,0 +1,10 @@
+#!/usr/bin/python3
+import json
+import os
+import pwd
+
+print(json.dumps({
+    "effectiveUid": os.geteuid(),
+    "effectiveUser": pwd.getpwuid(os.geteuid()).pw_name,
+    "invokedBy": os.environ.get("SUDO_USER", "unknown"),
+}))

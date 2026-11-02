@@ -1,0 +1,77 @@
+{
+  "meta": {
+    "name": "Stonehenge Control PLC",
+    "type": "plc-project"
+  },
+  "data": {
+    "dataTypes": [],
+    "pous": [],
+    "configuration": {
+      "resource": {
+        "tasks": [
+          {
+            "name": "task0",
+            "triggering": "Cyclic",
+            "interval": "T#20ms",
+            "priority": 1
+          }
+        ],
+        "instances": [
+          {
+            "name": "instance0",
+            "task": "task0",
+            "program": "main"
+          }
+        ],
+        "globalVariables": []
+      }
+    },
+    "libraries": [],
+    "debugVariables": {
+      "pous": {
+        "main": [
+          "GUN_COMMAND_SEQUENCE_LOW",
+          "GUN_COMMAND_SEQUENCE_HIGH",
+          "GUN_MODE_COMMAND",
+          "GUN_TARGET_AZIMUTH_X10",
+          "GUN_TARGET_ELEVATION_X10",
+          "GUN_ASSIGNED_FRAGMENT_ID_LOW",
+          "GUN_ASSIGNED_FRAGMENT_ID_HIGH",
+          "GUN_FIRE_REQUEST",
+          "GUN_MAINTENANCE_ENABLED",
+          "GUN_ADMIN_OVERRIDE_ACTIVE",
+          "GUN_FAULT_RESET",
+          "GUN_SAFETY_FIRE_PERMISSIVE_IN",
+          "GUN_SAFETY_EXTENDED_MOTION_PERMISSIVE_IN",
+          "GUN_ACCEPTED_COMMAND_SEQUENCE_LOW",
+          "GUN_ACCEPTED_COMMAND_SEQUENCE_HIGH",
+          "GUN_STATE",
+          "GUN_CURRENT_AZIMUTH_X10",
+          "GUN_CURRENT_ELEVATION_X10",
+          "GUN_ACTIVE_FRAGMENT_ID_LOW",
+          "GUN_ACTIVE_FRAGMENT_ID_HIGH",
+          "GUN_TARGET_ACCEPTED",
+          "GUN_ON_TARGET",
+          "GUN_SETTLING",
+          "GUN_FIRING",
+          "GUN_POST_FIRE_LOCKOUT",
+          "GUN_READY",
+          "GUN_FAULT_ACTIVE",
+          "GUN_FAULT_CODE",
+          "GUN_SHOT_SEQUENCE_LOW",
+          "GUN_SHOT_SEQUENCE_HIGH",
+          "GUN_SETTLING_SECONDS_REMAINING",
+          "GUN_LOCKOUT_SECONDS_REMAINING",
+          "GUN_SAFETY_FIRE_PERMISSIVE_OUT",
+          "GUN_SAFETY_EXTENDED_MOTION_PERMISSIVE_OUT",
+          "command_sequence_udint",
+          "sequence_high_word",
+          "sequence_low_word",
+          "assigned_fragment_dint",
+          "high_word",
+          "low_word"
+        ]
+      }
+    }
+  }
+}

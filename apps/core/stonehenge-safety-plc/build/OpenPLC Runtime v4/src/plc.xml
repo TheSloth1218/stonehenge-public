@@ -1,0 +1,1728 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0201" xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:ns1="http://www.plcopen.org/xml/tc6_0201">
+  <fileHeader companyName="Unknown" productName="Unnamed" productVersion="1" creationDateTime="2026-07-03T11:13:12"/>
+  <contentHeader name="Unnamed" modificationDateTime="2026-07-03T11:13:12">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="16" y="16"/>
+      </fbd>
+      <ld>
+        <scaling x="16" y="16"/>
+      </ld>
+      <sfc>
+        <scaling x="16" y="16"/>
+      </sfc>
+    </coordinateInfo>
+  </contentHeader>
+  <types>
+    <dataTypes/>
+    <pous>
+      <pou name="FB_GlobalSafety" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="global_enable">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="emergency_stop">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="global_maintenance_mode">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="safety_reset_request">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="test_fault_request">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="schema_version">
+              <type>
+                <INT/>
+              </type>
+            </variable>
+            <variable name="heartbeat_counter">
+              <type>
+                <INT/>
+              </type>
+            </variable>
+            <variable name="safety_state">
+              <type>
+                <INT/>
+              </type>
+            </variable>
+            <variable name="safety_ready">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="global_fire_permissive">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="global_inhibit_active">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="global_inhibit_reason">
+              <type>
+                <INT/>
+              </type>
+            </variable>
+            <variable name="safety_fault_active">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="safety_fault_code">
+              <type>
+                <INT/>
+              </type>
+            </variable>
+            <variable name="reset_required">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="emergency_stop_active">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="maintenance_mode_active">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="SCHEMA_VERSION_VALUE">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="1"/>
+              </initialValue>
+            </variable>
+            <variable name="STATE_INITIALIZING">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="1"/>
+              </initialValue>
+            </variable>
+            <variable name="STATE_READY">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="2"/>
+              </initialValue>
+            </variable>
+            <variable name="STATE_INHIBITED">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="3"/>
+              </initialValue>
+            </variable>
+            <variable name="STATE_EMERGENCY_STOP">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="4"/>
+              </initialValue>
+            </variable>
+            <variable name="STATE_MAINTENANCE">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="5"/>
+              </initialValue>
+            </variable>
+            <variable name="STATE_FAULT">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="6"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_NONE">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_GLOBAL_DISABLED">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="1"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_EMERGENCY_STOP_ACTIVE">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="2"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_GLOBAL_MAINTENANCE_MODE">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="3"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_SAFETY_FAULT_ACTIVE">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="4"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_INITIALIZING">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="5"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_RESET_REQUIRED">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="6"/>
+              </initialValue>
+            </variable>
+            <variable name="FAULT_NONE">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="FAULT_INVALID_CONFIGURATION">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="1"/>
+              </initialValue>
+            </variable>
+            <variable name="FAULT_RESET_REQUIRED">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="2"/>
+              </initialValue>
+            </variable>
+            <variable name="FAULT_CRITICAL_INTERNAL">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="5"/>
+              </initialValue>
+            </variable>
+            <variable name="INIT_SCAN_LIMIT">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="50"/>
+              </initialValue>
+            </variable>
+            <variable name="HEARTBEAT_SCAN_DIVIDER">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="50"/>
+              </initialValue>
+            </variable>
+            <variable name="initialized">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE"/>
+              </initialValue>
+            </variable>
+            <variable name="init_scan_count">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="heartbeat_scan_count">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="heartbeat_word">
+              <type>
+                <DINT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="reset_request_previous">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE"/>
+              </initialValue>
+            </variable>
+            <variable name="reset_edge">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="FALSE"/>
+              </initialValue>
+            </variable>
+            <variable name="configuration_valid">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="TRUE"/>
+              </initialValue>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml:p><![CDATA[schema_version := SCHEMA_VERSION_VALUE;
+emergency_stop_active := emergency_stop;
+maintenance_mode_active := global_maintenance_mode;
+
+reset_edge := safety_reset_request AND NOT reset_request_previous;
+reset_request_previous := safety_reset_request;
+
+IF NOT initialized THEN
+    initialized := TRUE;
+    init_scan_count := 0;
+    safety_state := STATE_INITIALIZING;
+    safety_ready := FALSE;
+    global_fire_permissive := FALSE;
+    global_inhibit_active := TRUE;
+    global_inhibit_reason := INHIBIT_INITIALIZING;
+    safety_fault_active := FALSE;
+    safety_fault_code := FAULT_NONE;
+    reset_required := FALSE;
+    heartbeat_scan_count := 0;
+    heartbeat_word := 0;
+END_IF;
+
+heartbeat_scan_count := heartbeat_scan_count + 1;
+IF heartbeat_scan_count >= HEARTBEAT_SCAN_DIVIDER THEN
+    heartbeat_scan_count := 0;
+    IF heartbeat_word >= 65535 THEN
+        heartbeat_word := 0;
+    ELSE
+        heartbeat_word := heartbeat_word + 1;
+    END_IF;
+END_IF;
+
+IF heartbeat_word > 32767 THEN
+    heartbeat_counter := DINT_TO_INT(heartbeat_word - 65536);
+ELSE
+    heartbeat_counter := DINT_TO_INT(heartbeat_word);
+END_IF;
+
+IF init_scan_count < INIT_SCAN_LIMIT THEN
+    init_scan_count := init_scan_count + 1;
+END_IF;
+
+IF emergency_stop THEN
+    reset_required := TRUE;
+END_IF;
+
+IF test_fault_request THEN
+    safety_fault_active := TRUE;
+    safety_fault_code := FAULT_CRITICAL_INTERNAL;
+    reset_required := TRUE;
+END_IF;
+
+IF reset_edge THEN
+    IF (NOT emergency_stop) AND (NOT global_maintenance_mode) AND (NOT test_fault_request) AND configuration_valid THEN
+        reset_required := FALSE;
+        IF safety_fault_code = FAULT_CRITICAL_INTERNAL THEN
+            safety_fault_active := FALSE;
+            safety_fault_code := FAULT_NONE;
+        END_IF;
+    END_IF;
+END_IF;
+
+IF NOT configuration_valid THEN
+    safety_fault_active := TRUE;
+    safety_fault_code := FAULT_INVALID_CONFIGURATION;
+END_IF;
+
+safety_ready := FALSE;
+global_fire_permissive := FALSE;
+global_inhibit_active := TRUE;
+global_inhibit_reason := INHIBIT_NONE;
+
+IF safety_fault_active THEN
+    safety_state := STATE_FAULT;
+    global_inhibit_reason := INHIBIT_SAFETY_FAULT_ACTIVE;
+ELSIF emergency_stop THEN
+    safety_state := STATE_EMERGENCY_STOP;
+    global_inhibit_reason := INHIBIT_EMERGENCY_STOP_ACTIVE;
+ELSIF reset_required THEN
+    safety_state := STATE_INHIBITED;
+    global_inhibit_reason := INHIBIT_RESET_REQUIRED;
+ELSIF global_maintenance_mode THEN
+    safety_state := STATE_MAINTENANCE;
+    global_inhibit_reason := INHIBIT_GLOBAL_MAINTENANCE_MODE;
+ELSIF init_scan_count < INIT_SCAN_LIMIT THEN
+    safety_state := STATE_INITIALIZING;
+    global_inhibit_reason := INHIBIT_INITIALIZING;
+ELSIF NOT global_enable THEN
+    safety_state := STATE_INHIBITED;
+    global_inhibit_reason := INHIBIT_GLOBAL_DISABLED;
+ELSE
+    safety_state := STATE_READY;
+    global_inhibit_reason := INHIBIT_NONE;
+    global_inhibit_active := FALSE;
+END_IF;
+
+safety_ready := (init_scan_count >= INIT_SCAN_LIMIT) AND NOT safety_fault_active;
+global_fire_permissive := safety_ready AND global_enable AND NOT emergency_stop AND NOT global_maintenance_mode AND NOT safety_fault_active AND NOT reset_required;
+
+IF global_fire_permissive THEN
+    global_inhibit_active := FALSE;
+    global_inhibit_reason := INHIBIT_NONE;
+ELSE
+    global_inhibit_active := TRUE;
+END_IF;
+
+IF reset_required AND (NOT safety_fault_active) AND (safety_fault_code = FAULT_NONE) THEN
+    safety_fault_code := FAULT_RESET_REQUIRED;
+END_IF;
+IF NOT reset_required AND (safety_fault_code = FAULT_RESET_REQUIRED) THEN
+    safety_fault_code := FAULT_NONE;
+END_IF;]]></xhtml:p>
+          </ST>
+        </body>
+        <documentation>
+          <xhtml:p><![CDATA[ ]]></xhtml:p>
+        </documentation>
+      </pou>
+      <pou name="FB_GunSafety" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="global_fire_permissive">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="global_fault_active">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="reset_required">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="gun_enabled">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="gun_maintenance_inhibit">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="gun_external_inhibit">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="fire_permissive">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="inhibit_active">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="inhibit_reason">
+              <type>
+                <INT/>
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="INHIBIT_NONE">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_GLOBAL_INHIBIT">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="1"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_GUN_DISABLED">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="2"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_GUN_MAINTENANCE">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="3"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_GUN_EXTERNAL">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="4"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_SAFETY_FAULT">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="5"/>
+              </initialValue>
+            </variable>
+            <variable name="INHIBIT_RESET_REQUIRED">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="6"/>
+              </initialValue>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml:p><![CDATA[fire_permissive := global_fire_permissive AND gun_enabled AND NOT gun_maintenance_inhibit AND NOT gun_external_inhibit;
+
+IF global_fault_active THEN
+    inhibit_active := TRUE;
+    inhibit_reason := INHIBIT_SAFETY_FAULT;
+ELSIF reset_required THEN
+    inhibit_active := TRUE;
+    inhibit_reason := INHIBIT_RESET_REQUIRED;
+ELSIF NOT global_fire_permissive THEN
+    inhibit_active := TRUE;
+    inhibit_reason := INHIBIT_GLOBAL_INHIBIT;
+ELSIF NOT gun_enabled THEN
+    inhibit_active := TRUE;
+    inhibit_reason := INHIBIT_GUN_DISABLED;
+ELSIF gun_maintenance_inhibit THEN
+    inhibit_active := TRUE;
+    inhibit_reason := INHIBIT_GUN_MAINTENANCE;
+ELSIF gun_external_inhibit THEN
+    inhibit_active := TRUE;
+    inhibit_reason := INHIBIT_GUN_EXTERNAL;
+ELSE
+    inhibit_active := FALSE;
+    inhibit_reason := INHIBIT_NONE;
+END_IF;]]></xhtml:p>
+          </ST>
+        </body>
+        <documentation>
+          <xhtml:p><![CDATA[ ]]></xhtml:p>
+        </documentation>
+      </pou>
+      <pou name="main" pouType="program">
+        <interface>
+          <localVars>
+            <variable name="SafetyGlobal">
+              <type>
+                <derived name="FB_GlobalSafety"/>
+              </type>
+            </variable>
+            <variable name="Gun1Safety">
+              <type>
+                <derived name="FB_GunSafety"/>
+              </type>
+            </variable>
+            <variable name="Gun2Safety">
+              <type>
+                <derived name="FB_GunSafety"/>
+              </type>
+            </variable>
+            <variable name="Gun3Safety">
+              <type>
+                <derived name="FB_GunSafety"/>
+              </type>
+            </variable>
+            <variable name="Gun4Safety">
+              <type>
+                <derived name="FB_GunSafety"/>
+              </type>
+            </variable>
+            <variable name="Gun5Safety">
+              <type>
+                <derived name="FB_GunSafety"/>
+              </type>
+            </variable>
+            <variable name="Gun6Safety">
+              <type>
+                <derived name="FB_GunSafety"/>
+              </type>
+            </variable>
+            <variable name="Gun7Safety">
+              <type>
+                <derived name="FB_GunSafety"/>
+              </type>
+            </variable>
+            <variable name="Gun8Safety">
+              <type>
+                <derived name="FB_GunSafety"/>
+              </type>
+            </variable>
+            <variable name="CONTROL_VERSION_REQUEST" address="%MW0">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GLOBAL_ENABLE" address="%MW1">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="EMERGENCY_STOP" address="%MW2">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GLOBAL_MAINTENANCE_MODE" address="%MW3">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="SAFETY_RESET_REQUEST" address="%MW4">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="TEST_FAULT_REQUEST" address="%MW5">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="INPUT_RESERVED_6" address="%MW6">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="INPUT_RESERVED_7" address="%MW7">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN1_ENABLED" address="%MW16">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN1_MAINTENANCE_INHIBIT" address="%MW17">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN1_EXTERNAL_INHIBIT" address="%MW18">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN1_INPUT_RESERVED" address="%MW19">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN2_ENABLED" address="%MW20">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN2_MAINTENANCE_INHIBIT" address="%MW21">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN2_EXTERNAL_INHIBIT" address="%MW22">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN2_INPUT_RESERVED" address="%MW23">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN3_ENABLED" address="%MW24">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN3_MAINTENANCE_INHIBIT" address="%MW25">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN3_EXTERNAL_INHIBIT" address="%MW26">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN3_INPUT_RESERVED" address="%MW27">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN4_ENABLED" address="%MW28">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN4_MAINTENANCE_INHIBIT" address="%MW29">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN4_EXTERNAL_INHIBIT" address="%MW30">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN4_INPUT_RESERVED" address="%MW31">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN5_ENABLED" address="%MW32">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN5_MAINTENANCE_INHIBIT" address="%MW33">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN5_EXTERNAL_INHIBIT" address="%MW34">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN5_INPUT_RESERVED" address="%MW35">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN6_ENABLED" address="%MW36">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN6_MAINTENANCE_INHIBIT" address="%MW37">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN6_EXTERNAL_INHIBIT" address="%MW38">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN6_INPUT_RESERVED" address="%MW39">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN7_ENABLED" address="%MW40">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN7_MAINTENANCE_INHIBIT" address="%MW41">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN7_EXTERNAL_INHIBIT" address="%MW42">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN7_INPUT_RESERVED" address="%MW43">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN8_ENABLED" address="%MW44">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN8_MAINTENANCE_INHIBIT" address="%MW45">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN8_EXTERNAL_INHIBIT" address="%MW46">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN8_INPUT_RESERVED" address="%MW47">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="SAFETY_SCHEMA_VERSION" address="%QW0">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="SAFETY_HEARTBEAT_COUNTER" address="%QW1">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="SAFETY_STATE" address="%QW2">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="SAFETY_READY" address="%QW3">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GLOBAL_FIRE_PERMISSIVE" address="%QW4">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GLOBAL_INHIBIT_ACTIVE" address="%QW5">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GLOBAL_INHIBIT_REASON" address="%QW6">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="SAFETY_FAULT_ACTIVE" address="%QW7">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="SAFETY_FAULT_CODE" address="%QW8">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="RESET_REQUIRED" address="%QW9">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="EMERGENCY_STOP_ACTIVE" address="%QW10">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="MAINTENANCE_MODE_ACTIVE" address="%QW11">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="STATUS_RESERVED_12" address="%QW12">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="STATUS_RESERVED_13" address="%QW13">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="STATUS_RESERVED_14" address="%QW14">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="STATUS_RESERVED_15" address="%QW15">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN1_FIRE_PERMISSIVE" address="%QW16">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN1_INHIBIT_ACTIVE" address="%QW17">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN1_INHIBIT_REASON" address="%QW18">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN1_ENABLED_STATUS" address="%QW19">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN1_MAINTENANCE_INHIBIT_STATUS" address="%QW20">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN1_EXTERNAL_INHIBIT_STATUS" address="%QW21">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN1_STATUS_RESERVED_A" address="%QW22">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN1_STATUS_RESERVED_B" address="%QW23">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN2_FIRE_PERMISSIVE" address="%QW24">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN2_INHIBIT_ACTIVE" address="%QW25">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN2_INHIBIT_REASON" address="%QW26">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN2_ENABLED_STATUS" address="%QW27">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN2_MAINTENANCE_INHIBIT_STATUS" address="%QW28">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN2_EXTERNAL_INHIBIT_STATUS" address="%QW29">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN2_STATUS_RESERVED_A" address="%QW30">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN2_STATUS_RESERVED_B" address="%QW31">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN3_FIRE_PERMISSIVE" address="%QW32">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN3_INHIBIT_ACTIVE" address="%QW33">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN3_INHIBIT_REASON" address="%QW34">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN3_ENABLED_STATUS" address="%QW35">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN3_MAINTENANCE_INHIBIT_STATUS" address="%QW36">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN3_EXTERNAL_INHIBIT_STATUS" address="%QW37">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN3_STATUS_RESERVED_A" address="%QW38">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN3_STATUS_RESERVED_B" address="%QW39">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN4_FIRE_PERMISSIVE" address="%QW40">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN4_INHIBIT_ACTIVE" address="%QW41">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN4_INHIBIT_REASON" address="%QW42">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN4_ENABLED_STATUS" address="%QW43">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN4_MAINTENANCE_INHIBIT_STATUS" address="%QW44">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN4_EXTERNAL_INHIBIT_STATUS" address="%QW45">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN4_STATUS_RESERVED_A" address="%QW46">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN4_STATUS_RESERVED_B" address="%QW47">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN5_FIRE_PERMISSIVE" address="%QW48">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN5_INHIBIT_ACTIVE" address="%QW49">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN5_INHIBIT_REASON" address="%QW50">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN5_ENABLED_STATUS" address="%QW51">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN5_MAINTENANCE_INHIBIT_STATUS" address="%QW52">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN5_EXTERNAL_INHIBIT_STATUS" address="%QW53">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN5_STATUS_RESERVED_A" address="%QW54">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN5_STATUS_RESERVED_B" address="%QW55">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN6_FIRE_PERMISSIVE" address="%QW56">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN6_INHIBIT_ACTIVE" address="%QW57">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN6_INHIBIT_REASON" address="%QW58">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN6_ENABLED_STATUS" address="%QW59">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN6_MAINTENANCE_INHIBIT_STATUS" address="%QW60">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN6_EXTERNAL_INHIBIT_STATUS" address="%QW61">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN6_STATUS_RESERVED_A" address="%QW62">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN6_STATUS_RESERVED_B" address="%QW63">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN7_FIRE_PERMISSIVE" address="%QW64">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN7_INHIBIT_ACTIVE" address="%QW65">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN7_INHIBIT_REASON" address="%QW66">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN7_ENABLED_STATUS" address="%QW67">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN7_MAINTENANCE_INHIBIT_STATUS" address="%QW68">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN7_EXTERNAL_INHIBIT_STATUS" address="%QW69">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN7_STATUS_RESERVED_A" address="%QW70">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN7_STATUS_RESERVED_B" address="%QW71">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN8_FIRE_PERMISSIVE" address="%QW72">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN8_INHIBIT_ACTIVE" address="%QW73">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN8_INHIBIT_REASON" address="%QW74">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN8_ENABLED_STATUS" address="%QW75">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN8_MAINTENANCE_INHIBIT_STATUS" address="%QW76">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN8_EXTERNAL_INHIBIT_STATUS" address="%QW77">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN8_STATUS_RESERVED_A" address="%QW78">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+            <variable name="GUN8_STATUS_RESERVED_B" address="%QW79">
+              <type>
+                <INT/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml:p><![CDATA[SafetyGlobal(
+    global_enable := GLOBAL_ENABLE <> 0,
+    emergency_stop := EMERGENCY_STOP <> 0,
+    global_maintenance_mode := GLOBAL_MAINTENANCE_MODE <> 0,
+    safety_reset_request := SAFETY_RESET_REQUEST <> 0,
+    test_fault_request := TEST_FAULT_REQUEST <> 0
+);
+
+Gun1Safety(global_fire_permissive := SafetyGlobal.global_fire_permissive, global_fault_active := SafetyGlobal.safety_fault_active, reset_required := SafetyGlobal.reset_required, gun_enabled := GUN1_ENABLED <> 0, gun_maintenance_inhibit := GUN1_MAINTENANCE_INHIBIT <> 0, gun_external_inhibit := GUN1_EXTERNAL_INHIBIT <> 0);
+Gun2Safety(global_fire_permissive := SafetyGlobal.global_fire_permissive, global_fault_active := SafetyGlobal.safety_fault_active, reset_required := SafetyGlobal.reset_required, gun_enabled := GUN2_ENABLED <> 0, gun_maintenance_inhibit := GUN2_MAINTENANCE_INHIBIT <> 0, gun_external_inhibit := GUN2_EXTERNAL_INHIBIT <> 0);
+Gun3Safety(global_fire_permissive := SafetyGlobal.global_fire_permissive, global_fault_active := SafetyGlobal.safety_fault_active, reset_required := SafetyGlobal.reset_required, gun_enabled := GUN3_ENABLED <> 0, gun_maintenance_inhibit := GUN3_MAINTENANCE_INHIBIT <> 0, gun_external_inhibit := GUN3_EXTERNAL_INHIBIT <> 0);
+Gun4Safety(global_fire_permissive := SafetyGlobal.global_fire_permissive, global_fault_active := SafetyGlobal.safety_fault_active, reset_required := SafetyGlobal.reset_required, gun_enabled := GUN4_ENABLED <> 0, gun_maintenance_inhibit := GUN4_MAINTENANCE_INHIBIT <> 0, gun_external_inhibit := GUN4_EXTERNAL_INHIBIT <> 0);
+Gun5Safety(global_fire_permissive := SafetyGlobal.global_fire_permissive, global_fault_active := SafetyGlobal.safety_fault_active, reset_required := SafetyGlobal.reset_required, gun_enabled := GUN5_ENABLED <> 0, gun_maintenance_inhibit := GUN5_MAINTENANCE_INHIBIT <> 0, gun_external_inhibit := GUN5_EXTERNAL_INHIBIT <> 0);
+Gun6Safety(global_fire_permissive := SafetyGlobal.global_fire_permissive, global_fault_active := SafetyGlobal.safety_fault_active, reset_required := SafetyGlobal.reset_required, gun_enabled := GUN6_ENABLED <> 0, gun_maintenance_inhibit := GUN6_MAINTENANCE_INHIBIT <> 0, gun_external_inhibit := GUN6_EXTERNAL_INHIBIT <> 0);
+Gun7Safety(global_fire_permissive := SafetyGlobal.global_fire_permissive, global_fault_active := SafetyGlobal.safety_fault_active, reset_required := SafetyGlobal.reset_required, gun_enabled := GUN7_ENABLED <> 0, gun_maintenance_inhibit := GUN7_MAINTENANCE_INHIBIT <> 0, gun_external_inhibit := GUN7_EXTERNAL_INHIBIT <> 0);
+Gun8Safety(global_fire_permissive := SafetyGlobal.global_fire_permissive, global_fault_active := SafetyGlobal.safety_fault_active, reset_required := SafetyGlobal.reset_required, gun_enabled := GUN8_ENABLED <> 0, gun_maintenance_inhibit := GUN8_MAINTENANCE_INHIBIT <> 0, gun_external_inhibit := GUN8_EXTERNAL_INHIBIT <> 0);
+
+SAFETY_SCHEMA_VERSION := SafetyGlobal.schema_version;
+SAFETY_HEARTBEAT_COUNTER := SafetyGlobal.heartbeat_counter;
+SAFETY_STATE := SafetyGlobal.safety_state;
+IF SafetyGlobal.safety_ready THEN SAFETY_READY := 1; ELSE SAFETY_READY := 0; END_IF;
+IF SafetyGlobal.global_fire_permissive THEN GLOBAL_FIRE_PERMISSIVE := 1; ELSE GLOBAL_FIRE_PERMISSIVE := 0; END_IF;
+IF SafetyGlobal.global_inhibit_active THEN GLOBAL_INHIBIT_ACTIVE := 1; ELSE GLOBAL_INHIBIT_ACTIVE := 0; END_IF;
+GLOBAL_INHIBIT_REASON := SafetyGlobal.global_inhibit_reason;
+IF SafetyGlobal.safety_fault_active THEN SAFETY_FAULT_ACTIVE := 1; ELSE SAFETY_FAULT_ACTIVE := 0; END_IF;
+SAFETY_FAULT_CODE := SafetyGlobal.safety_fault_code;
+IF SafetyGlobal.reset_required THEN RESET_REQUIRED := 1; ELSE RESET_REQUIRED := 0; END_IF;
+IF SafetyGlobal.emergency_stop_active THEN EMERGENCY_STOP_ACTIVE := 1; ELSE EMERGENCY_STOP_ACTIVE := 0; END_IF;
+IF SafetyGlobal.maintenance_mode_active THEN MAINTENANCE_MODE_ACTIVE := 1; ELSE MAINTENANCE_MODE_ACTIVE := 0; END_IF;
+STATUS_RESERVED_12 := 0;
+STATUS_RESERVED_13 := 0;
+STATUS_RESERVED_14 := 0;
+STATUS_RESERVED_15 := 0;
+
+IF Gun1Safety.fire_permissive THEN GUN1_FIRE_PERMISSIVE := 1; ELSE GUN1_FIRE_PERMISSIVE := 0; END_IF;
+IF Gun1Safety.inhibit_active THEN GUN1_INHIBIT_ACTIVE := 1; ELSE GUN1_INHIBIT_ACTIVE := 0; END_IF;
+GUN1_INHIBIT_REASON := Gun1Safety.inhibit_reason;
+IF GUN1_ENABLED <> 0 THEN GUN1_ENABLED_STATUS := 1; ELSE GUN1_ENABLED_STATUS := 0; END_IF;
+IF GUN1_MAINTENANCE_INHIBIT <> 0 THEN GUN1_MAINTENANCE_INHIBIT_STATUS := 1; ELSE GUN1_MAINTENANCE_INHIBIT_STATUS := 0; END_IF;
+IF GUN1_EXTERNAL_INHIBIT <> 0 THEN GUN1_EXTERNAL_INHIBIT_STATUS := 1; ELSE GUN1_EXTERNAL_INHIBIT_STATUS := 0; END_IF;
+GUN1_STATUS_RESERVED_A := 0;
+GUN1_STATUS_RESERVED_B := 0;
+
+IF Gun2Safety.fire_permissive THEN GUN2_FIRE_PERMISSIVE := 1; ELSE GUN2_FIRE_PERMISSIVE := 0; END_IF;
+IF Gun2Safety.inhibit_active THEN GUN2_INHIBIT_ACTIVE := 1; ELSE GUN2_INHIBIT_ACTIVE := 0; END_IF;
+GUN2_INHIBIT_REASON := Gun2Safety.inhibit_reason;
+IF GUN2_ENABLED <> 0 THEN GUN2_ENABLED_STATUS := 1; ELSE GUN2_ENABLED_STATUS := 0; END_IF;
+IF GUN2_MAINTENANCE_INHIBIT <> 0 THEN GUN2_MAINTENANCE_INHIBIT_STATUS := 1; ELSE GUN2_MAINTENANCE_INHIBIT_STATUS := 0; END_IF;
+IF GUN2_EXTERNAL_INHIBIT <> 0 THEN GUN2_EXTERNAL_INHIBIT_STATUS := 1; ELSE GUN2_EXTERNAL_INHIBIT_STATUS := 0; END_IF;
+GUN2_STATUS_RESERVED_A := 0;
+GUN2_STATUS_RESERVED_B := 0;
+
+IF Gun3Safety.fire_permissive THEN GUN3_FIRE_PERMISSIVE := 1; ELSE GUN3_FIRE_PERMISSIVE := 0; END_IF;
+IF Gun3Safety.inhibit_active THEN GUN3_INHIBIT_ACTIVE := 1; ELSE GUN3_INHIBIT_ACTIVE := 0; END_IF;
+GUN3_INHIBIT_REASON := Gun3Safety.inhibit_reason;
+IF GUN3_ENABLED <> 0 THEN GUN3_ENABLED_STATUS := 1; ELSE GUN3_ENABLED_STATUS := 0; END_IF;
+IF GUN3_MAINTENANCE_INHIBIT <> 0 THEN GUN3_MAINTENANCE_INHIBIT_STATUS := 1; ELSE GUN3_MAINTENANCE_INHIBIT_STATUS := 0; END_IF;
+IF GUN3_EXTERNAL_INHIBIT <> 0 THEN GUN3_EXTERNAL_INHIBIT_STATUS := 1; ELSE GUN3_EXTERNAL_INHIBIT_STATUS := 0; END_IF;
+GUN3_STATUS_RESERVED_A := 0;
+GUN3_STATUS_RESERVED_B := 0;
+
+IF Gun4Safety.fire_permissive THEN GUN4_FIRE_PERMISSIVE := 1; ELSE GUN4_FIRE_PERMISSIVE := 0; END_IF;
+IF Gun4Safety.inhibit_active THEN GUN4_INHIBIT_ACTIVE := 1; ELSE GUN4_INHIBIT_ACTIVE := 0; END_IF;
+GUN4_INHIBIT_REASON := Gun4Safety.inhibit_reason;
+IF GUN4_ENABLED <> 0 THEN GUN4_ENABLED_STATUS := 1; ELSE GUN4_ENABLED_STATUS := 0; END_IF;
+IF GUN4_MAINTENANCE_INHIBIT <> 0 THEN GUN4_MAINTENANCE_INHIBIT_STATUS := 1; ELSE GUN4_MAINTENANCE_INHIBIT_STATUS := 0; END_IF;
+IF GUN4_EXTERNAL_INHIBIT <> 0 THEN GUN4_EXTERNAL_INHIBIT_STATUS := 1; ELSE GUN4_EXTERNAL_INHIBIT_STATUS := 0; END_IF;
+GUN4_STATUS_RESERVED_A := 0;
+GUN4_STATUS_RESERVED_B := 0;
+
+IF Gun5Safety.fire_permissive THEN GUN5_FIRE_PERMISSIVE := 1; ELSE GUN5_FIRE_PERMISSIVE := 0; END_IF;
+IF Gun5Safety.inhibit_active THEN GUN5_INHIBIT_ACTIVE := 1; ELSE GUN5_INHIBIT_ACTIVE := 0; END_IF;
+GUN5_INHIBIT_REASON := Gun5Safety.inhibit_reason;
+IF GUN5_ENABLED <> 0 THEN GUN5_ENABLED_STATUS := 1; ELSE GUN5_ENABLED_STATUS := 0; END_IF;
+IF GUN5_MAINTENANCE_INHIBIT <> 0 THEN GUN5_MAINTENANCE_INHIBIT_STATUS := 1; ELSE GUN5_MAINTENANCE_INHIBIT_STATUS := 0; END_IF;
+IF GUN5_EXTERNAL_INHIBIT <> 0 THEN GUN5_EXTERNAL_INHIBIT_STATUS := 1; ELSE GUN5_EXTERNAL_INHIBIT_STATUS := 0; END_IF;
+GUN5_STATUS_RESERVED_A := 0;
+GUN5_STATUS_RESERVED_B := 0;
+
+IF Gun6Safety.fire_permissive THEN GUN6_FIRE_PERMISSIVE := 1; ELSE GUN6_FIRE_PERMISSIVE := 0; END_IF;
+IF Gun6Safety.inhibit_active THEN GUN6_INHIBIT_ACTIVE := 1; ELSE GUN6_INHIBIT_ACTIVE := 0; END_IF;
+GUN6_INHIBIT_REASON := Gun6Safety.inhibit_reason;
+IF GUN6_ENABLED <> 0 THEN GUN6_ENABLED_STATUS := 1; ELSE GUN6_ENABLED_STATUS := 0; END_IF;
+IF GUN6_MAINTENANCE_INHIBIT <> 0 THEN GUN6_MAINTENANCE_INHIBIT_STATUS := 1; ELSE GUN6_MAINTENANCE_INHIBIT_STATUS := 0; END_IF;
+IF GUN6_EXTERNAL_INHIBIT <> 0 THEN GUN6_EXTERNAL_INHIBIT_STATUS := 1; ELSE GUN6_EXTERNAL_INHIBIT_STATUS := 0; END_IF;
+GUN6_STATUS_RESERVED_A := 0;
+GUN6_STATUS_RESERVED_B := 0;
+
+IF Gun7Safety.fire_permissive THEN GUN7_FIRE_PERMISSIVE := 1; ELSE GUN7_FIRE_PERMISSIVE := 0; END_IF;
+IF Gun7Safety.inhibit_active THEN GUN7_INHIBIT_ACTIVE := 1; ELSE GUN7_INHIBIT_ACTIVE := 0; END_IF;
+GUN7_INHIBIT_REASON := Gun7Safety.inhibit_reason;
+IF GUN7_ENABLED <> 0 THEN GUN7_ENABLED_STATUS := 1; ELSE GUN7_ENABLED_STATUS := 0; END_IF;
+IF GUN7_MAINTENANCE_INHIBIT <> 0 THEN GUN7_MAINTENANCE_INHIBIT_STATUS := 1; ELSE GUN7_MAINTENANCE_INHIBIT_STATUS := 0; END_IF;
+IF GUN7_EXTERNAL_INHIBIT <> 0 THEN GUN7_EXTERNAL_INHIBIT_STATUS := 1; ELSE GUN7_EXTERNAL_INHIBIT_STATUS := 0; END_IF;
+GUN7_STATUS_RESERVED_A := 0;
+GUN7_STATUS_RESERVED_B := 0;
+
+IF Gun8Safety.fire_permissive THEN GUN8_FIRE_PERMISSIVE := 1; ELSE GUN8_FIRE_PERMISSIVE := 0; END_IF;
+IF Gun8Safety.inhibit_active THEN GUN8_INHIBIT_ACTIVE := 1; ELSE GUN8_INHIBIT_ACTIVE := 0; END_IF;
+GUN8_INHIBIT_REASON := Gun8Safety.inhibit_reason;
+IF GUN8_ENABLED <> 0 THEN GUN8_ENABLED_STATUS := 1; ELSE GUN8_ENABLED_STATUS := 0; END_IF;
+IF GUN8_MAINTENANCE_INHIBIT <> 0 THEN GUN8_MAINTENANCE_INHIBIT_STATUS := 1; ELSE GUN8_MAINTENANCE_INHIBIT_STATUS := 0; END_IF;
+IF GUN8_EXTERNAL_INHIBIT <> 0 THEN GUN8_EXTERNAL_INHIBIT_STATUS := 1; ELSE GUN8_EXTERNAL_INHIBIT_STATUS := 0; END_IF;
+GUN8_STATUS_RESERVED_A := 0;
+GUN8_STATUS_RESERVED_B := 0;]]></xhtml:p>
+          </ST>
+        </body>
+        <documentation>
+          <xhtml:p><![CDATA[ ]]></xhtml:p>
+        </documentation>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations>
+      <configuration name="Config0">
+        <resource name="Res0">
+          <task name="task0" priority="1" interval="T#20ms">
+            <pouInstance name="instance0" typeName="main"/>
+          </task>
+        </resource>
+      </configuration>
+    </configurations>
+  </instances>
+</project>

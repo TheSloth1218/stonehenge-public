@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "ACES04";
+  src: url("/fonts/ACES04.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ACES04 Heavy";
+  src: url("/fonts/ACES04_Heavy.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ACES04 PA";
+  src: url("/fonts/ACES04_PA.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ACES04 PA Heavy";
+  src: url("/fonts/ACES04_PA_Heavy.ttf") format("truetype");
+  font-display: swap;
+}
+
+:root {
+  --font-aces: "ACES04";
+  --font-aces-heavy: "ACES04 Heavy";
+  --font-aces-pa: "ACES04 PA";
+  --font-aces-pa-heavy: "ACES04 PA Heavy";
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 68% 8%, rgba(79, 151, 255, 0.2), transparent 32rem),
+    radial-gradient(circle at 22% 28%, rgba(118, 94, 177, 0.18), transparent 28rem),
+    linear-gradient(180deg, #02051b 0%, #07123a 48%, #010313 100%);
+  color: #d4f8ff;
+  font-family: var(--font-aces), Arial Narrow, sans-serif;
+  letter-spacing: 0;
+}
+
+::selection {
+  background: rgba(121, 234, 255, 0.34);
+  color: white;
+}
+
+.crt-mask {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.028) 50%, rgba(0, 0, 0, 0.085) 50%),
+    linear-gradient(90deg, rgba(255, 79, 95, 0.018), rgba(121, 234, 255, 0.023), rgba(79, 78, 191, 0.024));
+  background-size: 100% 4px, 6px 100%;
+  mix-blend-mode: screen;
+  opacity: 0.62;
+}
+
+.technical-copy {
+  font-family: var(--font-aces-pa), ui-monospace, monospace;
+  letter-spacing: 0;
+}
+
+.tracking-prefix {
+  color: #79eaff;
+  text-shadow: 0 0 10px rgba(121, 234, 255, 0.7);
+}
+
+.training-input {
+  min-height: 2.5rem;
+  width: 100%;
+  border: 1px solid rgba(121, 234, 255, 0.28);
+  background: rgba(2, 5, 27, 0.9);
+  padding-inline: 0.75rem;
+  color: white;
+  outline: none;
+}
+
+.training-input:focus {
+  border-color: rgba(121, 234, 255, 0.9);
+  box-shadow: 0 0 0 1px rgba(121, 234, 255, 0.35);
+}

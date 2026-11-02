@@ -1,0 +1,28 @@
+{
+	admin off
+}
+
+sca.fcu.gov {
+	tls {
+		ca https://ca.fcu.gov:8443/acme/acme/directory
+		ca_root /etc/caddy/pki/fcu-lab-pki-root-ca.crt
+	}
+
+	reverse_proxy astro-app:3000
+}
+
+login.fcu.gov {
+	tls {
+		ca https://ca.fcu.gov:8443/acme/acme/directory
+		ca_root /etc/caddy/pki/fcu-lab-pki-root-ca.crt
+	}
+
+	@dex path /dex /dex/*
+	handle @dex {
+		reverse_proxy dex:5556
+	}
+
+	handle {
+		reverse_proxy login-portal:3002
+	}
+}

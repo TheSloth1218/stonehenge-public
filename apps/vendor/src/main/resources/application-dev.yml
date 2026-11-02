@@ -1,0 +1,15 @@
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration
+  thymeleaf:
+    cache: false
+  jpa:
+    show-sql: false
+
+logging:
+  level:
+    gov.sca.fulfillment: DEBUG
+
+sca:
+  security:
+    development-auth: true

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head('Fulfillment Orders')}"></head>
+<body><div th:replace="~{common/nav :: nav}"></div>
+<main class="container-fluid">
+    <h1 class="h4">Fulfillment Orders</h1>
+    <table class="table table-hover align-middle">
+        <thead><tr><th>Order</th><th>Request</th><th>Status</th><th>Operator</th><th>Updated</th><th></th></tr></thead>
+        <tbody>
+        <tr th:each="o : ${orders.content}">
+            <td th:text="${o.orderNumber}"></td>
+            <td th:text="${o.maintenanceRequest.externalRequestId}"></td>
+            <td><span th:class="'status status-' + ${o.status}" th:text="${o.status}"></span></td>
+            <td th:text="${o.assignedUser != null ? o.assignedUser.displayName : 'Unassigned'}"></td>
+            <td th:text="${#temporals.format(o.updatedAt, 'yyyy-MM-dd HH:mm')}"></td>
+            <td><a class="btn btn-sm btn-outline-primary" th:href="@{/orders/{id}/review(id=${o.id})}">Open</a></td>
+        </tr>
+        </tbody>
+    </table>
+</main></body></html>

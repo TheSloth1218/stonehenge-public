@@ -1,0 +1,17 @@
+.env
+__pycache__/
+*.pyc
+*.env
+*.token
+*.jwt
+credentials*.json
+inventory/*secret*.json
+tmp/
+*.tmp
+*.log
+deployment-history/*.log
+deployment-history/*-logs.txt
+deployment-history/*.json
+artifacts/**/*.tmp
+artifacts/**/*.bad.zip
+artifacts/**/*.zip

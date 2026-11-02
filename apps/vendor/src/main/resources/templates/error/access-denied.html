@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head('Access denied')}"></head>
+<body><div th:replace="~{common/nav :: nav}"></div>
+<main class="container-fluid"><div class="panel"><h1 class="h4">Access denied</h1>
+    <p th:if="${oidcFailure}">Dex authenticated the request, but the Vendor application could not establish an authorized session.</p>
+    <p th:unless="${oidcFailure}">Your current Dex role does not allow this operation.</p>
+    <p th:if="${reference}" class="text-muted">Reference: <span th:text="${reference}"></span></p>
+    <a class="btn btn-outline-primary" href="/">Try again</a>
+</div></main>
+</body></html>

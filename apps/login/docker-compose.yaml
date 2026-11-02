@@ -1,0 +1,90 @@
+services:
+  caddy:
+    image: caddy:2.11.4-alpine
+    container_name: stonehenge-caddy
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+      - "0.0.0.0:443:443/udp"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro,Z
+      - ./dex/ca/fcu-lab-pki-root-ca.crt:/etc/caddy/pki/fcu-lab-pki-root-ca.crt:ro,z
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      - edge
+    depends_on:
+      login-portal:
+        condition: service_healthy
+      dex:
+        condition: service_started
+
+  dex:
+    image: ghcr.io/dexidp/dex:v2.45.1
+    container_name: stonehenge-dex
+    restart: unless-stopped
+    command: ["dex", "serve", "/etc/dex/config.yaml"]
+    ports:
+      - "127.0.0.1:5556:5556"
+    environment:
+      DEX_ISSUER: ${DEX_ISSUER:?Set DEX_ISSUER in .env}
+      LOGIN_PORTAL_PUBLIC_ORIGIN: ${LOGIN_PORTAL_PUBLIC_ORIGIN:?Set LOGIN_PORTAL_PUBLIC_ORIGIN in .env}
+      LOGIN_PORTAL_OIDC_CLIENT_SECRET: ${LOGIN_PORTAL_OIDC_CLIENT_SECRET:?Set LOGIN_PORTAL_OIDC_CLIENT_SECRET in .env}
+      ASTRO_PUBLIC_ORIGIN: ${ASTRO_PUBLIC_ORIGIN:?Set ASTRO_PUBLIC_ORIGIN in .env}
+      ASTRO_OIDC_CLIENT_SECRET: ${ASTRO_OIDC_CLIENT_SECRET:?Set ASTRO_OIDC_CLIENT_SECRET in .env}
+      VENDOR_PUBLIC_ORIGIN: ${VENDOR_PUBLIC_ORIGIN:?Set VENDOR_PUBLIC_ORIGIN in .env}
+      VENDOR_OIDC_CLIENT_SECRET: ${VENDOR_OIDC_CLIENT_SECRET:?Set VENDOR_OIDC_CLIENT_SECRET in .env}
+      ENGINEERING_PUBLIC_ORIGIN: ${ENGINEERING_PUBLIC_ORIGIN:?Set ENGINEERING_PUBLIC_ORIGIN in .env}
+      ENGINEERING_OIDC_CLIENT_SECRET: ${ENGINEERING_OIDC_CLIENT_SECRET:?Set ENGINEERING_OIDC_CLIENT_SECRET in .env}
+      DEX_LDAP_HOST: ${DEX_LDAP_HOST:-}
+      DEX_LDAP_BIND_DN: ${DEX_LDAP_BIND_DN:-}
+      DEX_LDAP_BIND_PASSWORD: ${DEX_LDAP_BIND_PASSWORD:-}
+      DEX_LDAP_USER_BASE_DN: ${DEX_LDAP_USER_BASE_DN:-}
+      DEX_LDAP_GROUP_BASE_DN: ${DEX_LDAP_GROUP_BASE_DN:-}
+    volumes:
+      - ./dex/${DEX_CONFIG_FILE:-config.local.yaml}:/etc/dex/config.yaml:ro
+      - ./dex/ca/fcu-lab-pki-root-ca.crt:/etc/dex/ldap-ca.pem:ro,z
+      - ./dex/theme:/srv/dex/web/themes/stonehenge:ro
+      - dex-data:/var/dex
+    networks:
+      - default
+      - edge
+
+  login-portal:
+    build: .
+    container_name: stonehenge-login-portal
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3002:3002"
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: 3002
+      APP_PUBLIC_ORIGIN: ${LOGIN_PORTAL_PUBLIC_ORIGIN:?Set LOGIN_PORTAL_PUBLIC_ORIGIN in .env}
+      ASTRO_PUBLIC_ORIGIN: ${ASTRO_PUBLIC_ORIGIN:?Set ASTRO_PUBLIC_ORIGIN in .env}
+      OIDC_ISSUER: ${DEX_ISSUER:?Set DEX_ISSUER in .env}
+      OIDC_INTERNAL_ISSUER: http://dex:5556/dex
+      OIDC_CLIENT_ID: login-portal
+      OIDC_CLIENT_SECRET: ${LOGIN_PORTAL_OIDC_CLIENT_SECRET:?Set LOGIN_PORTAL_OIDC_CLIENT_SECRET in .env}
+      AUTH_SESSION_SECRET: ${LOGIN_PORTAL_SESSION_SECRET:?Set LOGIN_PORTAL_SESSION_SECRET in .env}
+      AUTH_SESSION_COOKIE: sca_login_session
+    depends_on:
+      - dex
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3002/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+    networks:
+      - default
+      - edge
+
+volumes:
+  dex-data:
+  caddy-data:
+  caddy-config:
+
+networks:
+  edge:
+    name: stonehenge-edge

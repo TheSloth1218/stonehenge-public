@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "name": "Stonehenge Safety PLC",
+    "type": "plc-project"
+  },
+  "data": {
+    "dataTypes": [],
+    "pous": [],
+    "configuration": {
+      "resource": {
+        "tasks": [
+          {
+            "name": "task0",
+            "triggering": "Cyclic",
+            "interval": "T#20ms",
+            "priority": 1
+          }
+        ],
+        "instances": [
+          {
+            "name": "instance0",
+            "task": "task0",
+            "program": "main"
+          }
+        ],
+        "globalVariables": []
+      }
+    },
+    "libraries": [],
+    "debugVariables": {
+      "pous": {
+        "main": [
+          "GLOBAL_ENABLE",
+          "EMERGENCY_STOP",
+          "GLOBAL_MAINTENANCE_MODE",
+          "SAFETY_RESET_REQUEST",
+          "TEST_FAULT_REQUEST",
+          "SAFETY_SCHEMA_VERSION",
+          "SAFETY_HEARTBEAT_COUNTER",
+          "SAFETY_STATE",
+          "SAFETY_READY",
+          "GLOBAL_FIRE_PERMISSIVE",
+          "GLOBAL_INHIBIT_ACTIVE",
+          "GLOBAL_INHIBIT_REASON",
+          "SAFETY_FAULT_ACTIVE",
+          "SAFETY_FAULT_CODE",
+          "RESET_REQUIRED",
+          "EMERGENCY_STOP_ACTIVE",
+          "MAINTENANCE_MODE_ACTIVE"
+        ]
+      }
+    }
+  }
+}

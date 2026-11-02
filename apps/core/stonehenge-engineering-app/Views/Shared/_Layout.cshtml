@@ -1,0 +1,133 @@
+@using Stonehenge.Engineering.App.Security
+@using Microsoft.AspNetCore.Antiforgery
+@inject IWebHostEnvironment HostEnvironment
+@inject IConfiguration Configuration
+@inject StonehengeAuthenticationOptions AuthenticationOptions
+@inject IAntiforgery Antiforgery
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @if (AuthenticationOptions.IsOidc)
+    {
+        <meta name="stonehenge-csrf" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken">
+    }
+    <title>@ViewData["Title"] - Stonehenge Engineering Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="~/images/stonehenge-mark.png">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
+</head>
+<body>
+    <div class="app-frame">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img class="brand-mark" src="~/images/stonehenge-mark.png" alt="Stonehenge">
+                <div>
+                    <strong>Stonehenge</strong>
+                    <span>Engineering Console</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Engineering navigation">
+                <a class="@Active("Overview")" asp-controller="Engineering" asp-action="Overview">
+                    <span>Overview</span>
+                </a>
+                @if (CanAccessEngineering())
+                {
+                    <a class="@Active("Auto")" asp-controller="Engineering" asp-action="Auto">
+                        <span>Auto Controls / Status</span>
+                        <small>Engineering</small>
+                    </a>
+                    <a class="@Active("Manual")" asp-controller="Engineering" asp-action="Manual">
+                        <span>Manual Controls (FUXA/HMI)</span>
+                        <small>Engineering</small>
+                    </a>
+                    <a class="@Active("Maintenance")" asp-controller="Engineering" asp-action="Maintenance">
+                        <span>Maintenance Panel</span>
+                        <small>Engineering</small>
+                    </a>
+                }
+                @if (CanAccessAdmin())
+                {
+                    <a class="@Active("Admin")" asp-controller="Engineering" asp-action="Admin">
+                        <span>Admin Panel</span>
+                        <small>Admin</small>
+                    </a>
+                }
+            </nav>
+        </aside>
+
+        <div class="workspace">
+            <header class="top-header">
+                <div>Stonehenge Engineering Console</div>
+                <div class="header-user-stack">
+                    @if (ShowDevAccessIndicator())
+                    {
+                        <div class="dev-access-indicator">
+                            Dev Auth: @DevUserName() | Access: @AccessLevel() | Groups: @GroupList()
+                        </div>
+                    }
+                    <form class="header-logout-form" method="post" asp-controller="Auth" asp-action="Logout">
+                        <span class="user-placeholder">@User.StonehengeDisplayName()</span>
+                        <button class="header-logout-button" type="submit">Logout</button>
+                    </form>
+                </div>
+            </header>
+
+            <main class="main-content">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+</body>
+</html>
+
+@functions {
+    private string Active(string action)
+    {
+        return string.Equals(ViewContext.RouteData.Values["action"]?.ToString(), action, StringComparison.OrdinalIgnoreCase)
+            ? "active"
+            : "";
+    }
+
+    private bool CanAccessEngineering()
+    {
+        return User.HasStonehengeAccess(
+            StonehengeAuth.EngineeringAccessLevel,
+            StonehengeAuth.EngineeringAdminAccessLevel);
+    }
+
+    private bool CanAccessAdmin()
+    {
+        return User.HasStonehengeAccess(StonehengeAuth.EngineeringAdminAccessLevel);
+    }
+
+    private bool ShowDevAccessIndicator()
+    {
+        return AuthenticationOptions.IsDev &&
+            (HostEnvironment.IsDevelopment()
+                || string.Equals(Configuration["STONEHENGE_SHOW_DEV_AUTH"], "true", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private string DevUserName()
+    {
+        return User.Identity?.Name ?? "unauthenticated";
+    }
+
+    private string AccessLevel()
+    {
+        return User.FindFirst(StonehengeAuth.AccessLevelClaim)?.Value ?? "None";
+    }
+
+    private string GroupList()
+    {
+        var groups = User.Claims
+            .Where(claim => claim.Type == StonehengeAuth.GroupsClaim)
+            .Select(claim => claim.Value.Replace("STONEHENGE_", "", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        return groups.Length == 0 ? "none" : string.Join(",", groups);
+    }
+}

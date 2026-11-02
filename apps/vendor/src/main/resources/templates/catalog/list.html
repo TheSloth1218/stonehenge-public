@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head('Parts Catalog')}"></head>
+<body><div th:replace="~{common/nav :: nav}"></div>
+<main class="container-fluid">
+    <h1 class="h4">Parts Catalog</h1>
+    <form class="row g-2 mb-3" method="get">
+        <div class="col-md-5"><input class="form-control" name="q" th:value="${q}" placeholder="Search SKU, name, description"></div>
+        <div class="col-md-4">
+            <select class="form-select" name="category">
+                <option value="">All categories</option>
+                <option th:each="c : ${categories}" th:value="${c}" th:selected="${c == category}" th:text="${c}"></option>
+            </select>
+        </div>
+        <div class="col-md-3"><button class="btn btn-primary w-100">Search</button></div>
+    </form>
+    <table class="table table-hover align-middle">
+        <thead><tr><th></th><th>SKU</th><th>Part</th><th>Category</th><th>Asset class</th><th>Manufacturer</th><th>State</th><th></th></tr></thead>
+        <tbody>
+        <tr th:each="p : ${parts.content}">
+            <td><span class="part-icon" th:text="${#strings.substring(p.name,0,1)}"></span></td>
+            <td th:text="${p.sku}"></td>
+            <td><div th:text="${p.name}"></div><div class="text-muted small" th:text="${p.description}"></div></td>
+            <td th:text="${p.category}"></td>
+            <td th:text="${p.compatibleAssetClass}"></td>
+            <td th:text="${p.manufacturer}"></td>
+            <td><span class="status" th:text="${p.active ? 'ACTIVE' : 'INACTIVE'}"></span></td>
+            <td><a class="btn btn-sm btn-outline-primary" th:href="@{/catalog/{id}(id=${p.id})}">Details</a></td>
+        </tr>
+        </tbody>
+    </table>
+</main></body></html>

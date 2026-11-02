@@ -1,0 +1,45 @@
+# Local environment and secrets
+.env
+*.env
+*.token
+*.jwt
+credentials*.json
+runtime-secrets/
+.venv/
+stonehenge-api/.generated/
+tools/exploit-validation/config.local.json
+
+# Editor files
+.idea/
+.vscode/
+
+# Build/test outputs
+bin/
+obj/
+coverage.out
+dist/
+tmp/
+__pycache__/
+*.pyc
+*.test
+*.exe
+
+# Runtime/generated data
+backups/
+deployment-history/*.log
+deployment-history/*-logs.txt
+*.log
+
+# Webapp generated test artifacts
+stonehenge-engineering-app/tools/playwright/artifacts/
+stonehenge-engineering-app/tools/playwright/node_modules/
+stonehenge-engineering-app/tools/playwright/playwright-report/
+stonehenge-engineering-app/tools/playwright/test-results/
+stonehenge-engineering-app/shared-screenshots/*
+!stonehenge-engineering-app/shared-screenshots/.gitkeep
+
+# Exploit validation generated artifacts
+tools/exploit-validation/reports/*
+!tools/exploit-validation/reports/.gitkeep
+tools/exploit-validation/evidence/*
+!tools/exploit-validation/evidence/.gitkeep

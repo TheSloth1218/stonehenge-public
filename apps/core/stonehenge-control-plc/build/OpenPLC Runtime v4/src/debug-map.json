@@ -1,0 +1,693 @@
+{
+  "version": 2,
+  "md5": "4d48a02208d5da7039a2c274041eefb9",
+  "typeTags": {
+    "BOOL": 0,
+    "SINT": 1,
+    "USINT": 2,
+    "INT": 3,
+    "UINT": 4,
+    "DINT": 5,
+    "UDINT": 6,
+    "LINT": 7,
+    "ULINT": 8,
+    "REAL": 9,
+    "LREAL": 10,
+    "BYTE": 11,
+    "WORD": 12,
+    "DWORD": 13,
+    "LWORD": 14,
+    "TIME": 15,
+    "DATE": 16,
+    "TOD": 17,
+    "DT": 18,
+    "STRING": 19,
+    "WSTRING": 20
+  },
+  "arrays": [
+    {
+      "index": 0,
+      "count": 94
+    }
+  ],
+  "leaves": [
+    {
+      "arrayIdx": 0,
+      "elemIdx": 0,
+      "path": "INSTANCE0.GUN.COMMAND_SEQUENCE",
+      "type": "UDINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 1,
+      "path": "INSTANCE0.GUN.MODE_COMMAND",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 2,
+      "path": "INSTANCE0.GUN.TARGET_AZIMUTH_X10",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 3,
+      "path": "INSTANCE0.GUN.TARGET_ELEVATION_X10",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 4,
+      "path": "INSTANCE0.GUN.ASSIGNED_FRAGMENT_ID",
+      "type": "DINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 5,
+      "path": "INSTANCE0.GUN.FIRE_REQUEST",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 6,
+      "path": "INSTANCE0.GUN.MAINTENANCE_ENABLED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 7,
+      "path": "INSTANCE0.GUN.ADMIN_OVERRIDE_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 8,
+      "path": "INSTANCE0.GUN.FAULT_RESET",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 9,
+      "path": "INSTANCE0.GUN.SAFETY_FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 10,
+      "path": "INSTANCE0.GUN.SAFETY_EXTENDED_MOTION_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 11,
+      "path": "INSTANCE0.GUN.ACCEPTED_COMMAND_SEQUENCE",
+      "type": "UDINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 12,
+      "path": "INSTANCE0.GUN.GUN_STATE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 13,
+      "path": "INSTANCE0.GUN.CURRENT_AZIMUTH_X10",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 14,
+      "path": "INSTANCE0.GUN.CURRENT_ELEVATION_X10",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 15,
+      "path": "INSTANCE0.GUN.ACTIVE_FRAGMENT_ID",
+      "type": "DINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 16,
+      "path": "INSTANCE0.GUN.TARGET_ACCEPTED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 17,
+      "path": "INSTANCE0.GUN.ON_TARGET",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 18,
+      "path": "INSTANCE0.GUN.SETTLING",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 19,
+      "path": "INSTANCE0.GUN.FIRING",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 20,
+      "path": "INSTANCE0.GUN.POST_FIRE_LOCKOUT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 21,
+      "path": "INSTANCE0.GUN.READY",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 22,
+      "path": "INSTANCE0.GUN.FAULT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 23,
+      "path": "INSTANCE0.GUN.FAULT_CODE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 24,
+      "path": "INSTANCE0.GUN.SHOT_SEQUENCE",
+      "type": "DINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 25,
+      "path": "INSTANCE0.GUN.SETTLING_SECONDS_REMAINING",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 26,
+      "path": "INSTANCE0.GUN.LOCKOUT_SECONDS_REMAINING",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 27,
+      "path": "INSTANCE0.GUN.INITIALIZED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 28,
+      "path": "INSTANCE0.GUN.COMMAND_PENDING",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 29,
+      "path": "INSTANCE0.GUN.PENDING_AZIMUTH_X10",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 30,
+      "path": "INSTANCE0.GUN.PENDING_ELEVATION_X10",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 31,
+      "path": "INSTANCE0.GUN.PENDING_FRAGMENT_ID",
+      "type": "DINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 32,
+      "path": "INSTANCE0.GUN.ACCEPTED_MODE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 33,
+      "path": "INSTANCE0.GUN.ACCEPTED_FIRE_REQUEST",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 34,
+      "path": "INSTANCE0.GUN.ACCEPTED_MAINTENANCE_ENABLED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 35,
+      "path": "INSTANCE0.GUN.ACCEPTED_ADMIN_OVERRIDE_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 36,
+      "path": "INSTANCE0.GUN.ACCEPTED_SAFETY_FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 37,
+      "path": "INSTANCE0.GUN.ACCEPTED_SAFETY_EXTENDED_MOTION_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 38,
+      "path": "INSTANCE0.GUN.EXTENDED_ALLOWED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 39,
+      "path": "INSTANCE0.GUN.COMMAND_VALID",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 40,
+      "path": "INSTANCE0.GUN.SEQUENCE_IS_NEWER",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 41,
+      "path": "INSTANCE0.GUN.SEQUENCE_IS_STALE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 42,
+      "path": "INSTANCE0.GUN.AZ_DELTA",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 43,
+      "path": "INSTANCE0.GUN.AZ_ABS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 44,
+      "path": "INSTANCE0.GUN.EL_DELTA",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 45,
+      "path": "INSTANCE0.GUN.EL_ABS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 46,
+      "path": "INSTANCE0.GUN.SETTLE_COUNT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 47,
+      "path": "INSTANCE0.GUN.LOCKOUT_COUNT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 48,
+      "path": "INSTANCE0.GUN.FIRE_PULSE_COUNT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 49,
+      "path": "INSTANCE0.GUN.FIRE_COUNTED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 50,
+      "path": "INSTANCE0.COMMAND_SEQUENCE_UDINT",
+      "type": "UDINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 51,
+      "path": "INSTANCE0.SEQUENCE_HIGH_WORD",
+      "type": "UDINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 52,
+      "path": "INSTANCE0.SEQUENCE_LOW_WORD",
+      "type": "UDINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 53,
+      "path": "INSTANCE0.ASSIGNED_FRAGMENT_DINT",
+      "type": "DINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 54,
+      "path": "INSTANCE0.HIGH_WORD",
+      "type": "DINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 55,
+      "path": "INSTANCE0.LOW_WORD",
+      "type": "DINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 56,
+      "path": "INSTANCE0.GUN_COMMAND_SEQUENCE_LOW",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 57,
+      "path": "INSTANCE0.GUN_COMMAND_SEQUENCE_HIGH",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 58,
+      "path": "INSTANCE0.GUN_MODE_COMMAND",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 59,
+      "path": "INSTANCE0.GUN_TARGET_AZIMUTH_X10",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 60,
+      "path": "INSTANCE0.GUN_TARGET_ELEVATION_X10",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 61,
+      "path": "INSTANCE0.GUN_ASSIGNED_FRAGMENT_ID_LOW",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 62,
+      "path": "INSTANCE0.GUN_ASSIGNED_FRAGMENT_ID_HIGH",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 63,
+      "path": "INSTANCE0.GUN_FIRE_REQUEST",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 64,
+      "path": "INSTANCE0.GUN_MAINTENANCE_ENABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 65,
+      "path": "INSTANCE0.GUN_ADMIN_OVERRIDE_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 66,
+      "path": "INSTANCE0.GUN_FAULT_RESET",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 67,
+      "path": "INSTANCE0.GUN_SAFETY_FIRE_PERMISSIVE_IN",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 68,
+      "path": "INSTANCE0.GUN_SAFETY_EXTENDED_MOTION_PERMISSIVE_IN",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 69,
+      "path": "INSTANCE0.GUN_ACCEPTED_COMMAND_SEQUENCE_LOW",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 70,
+      "path": "INSTANCE0.GUN_ACCEPTED_COMMAND_SEQUENCE_HIGH",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 71,
+      "path": "INSTANCE0.GUN_STATE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 72,
+      "path": "INSTANCE0.GUN_CURRENT_AZIMUTH_X10",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 73,
+      "path": "INSTANCE0.GUN_CURRENT_ELEVATION_X10",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 74,
+      "path": "INSTANCE0.GUN_ACTIVE_FRAGMENT_ID_LOW",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 75,
+      "path": "INSTANCE0.GUN_ACTIVE_FRAGMENT_ID_HIGH",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 76,
+      "path": "INSTANCE0.GUN_TARGET_ACCEPTED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 77,
+      "path": "INSTANCE0.GUN_ON_TARGET",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 78,
+      "path": "INSTANCE0.GUN_SETTLING",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 79,
+      "path": "INSTANCE0.GUN_FIRING",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 80,
+      "path": "INSTANCE0.GUN_POST_FIRE_LOCKOUT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 81,
+      "path": "INSTANCE0.GUN_READY",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 82,
+      "path": "INSTANCE0.GUN_FAULT_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 83,
+      "path": "INSTANCE0.GUN_FAULT_CODE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 84,
+      "path": "INSTANCE0.GUN_SHOT_SEQUENCE_LOW",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 85,
+      "path": "INSTANCE0.GUN_SHOT_SEQUENCE_HIGH",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 86,
+      "path": "INSTANCE0.GUN_SETTLING_SECONDS_REMAINING",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 87,
+      "path": "INSTANCE0.GUN_LOCKOUT_SECONDS_REMAINING",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 88,
+      "path": "INSTANCE0.GUN_SAFETY_FIRE_PERMISSIVE_OUT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 89,
+      "path": "INSTANCE0.GUN_SAFETY_EXTENDED_MOTION_PERMISSIVE_OUT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 90,
+      "path": "INSTANCE0.SAFETY_FIRE_LEASE_LAST",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 91,
+      "path": "INSTANCE0.SAFETY_FIRE_LEASE_AGE_SCANS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 92,
+      "path": "INSTANCE0.SAFETY_EXTENDED_LEASE_LAST",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 93,
+      "path": "INSTANCE0.SAFETY_EXTENDED_LEASE_AGE_SCANS",
+      "type": "INT",
+      "size": 2
+    }
+  ]
+}

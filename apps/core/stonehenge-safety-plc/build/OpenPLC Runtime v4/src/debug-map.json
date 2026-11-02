@@ -1,0 +1,2079 @@
+{
+  "version": 2,
+  "md5": "e6a6bebeea1149a0eacab00f7e61f238",
+  "typeTags": {
+    "BOOL": 0,
+    "SINT": 1,
+    "USINT": 2,
+    "INT": 3,
+    "UINT": 4,
+    "DINT": 5,
+    "UDINT": 6,
+    "LINT": 7,
+    "ULINT": 8,
+    "REAL": 9,
+    "LREAL": 10,
+    "BYTE": 11,
+    "WORD": 12,
+    "DWORD": 13,
+    "LWORD": 14,
+    "TIME": 15,
+    "DATE": 16,
+    "TOD": 17,
+    "DT": 18,
+    "STRING": 19,
+    "WSTRING": 20
+  },
+  "arrays": [
+    {
+      "index": 0,
+      "count": 292
+    }
+  ],
+  "leaves": [
+    {
+      "arrayIdx": 0,
+      "elemIdx": 0,
+      "path": "INSTANCE0.SAFETYGLOBAL.GLOBAL_ENABLE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 1,
+      "path": "INSTANCE0.SAFETYGLOBAL.EMERGENCY_STOP",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 2,
+      "path": "INSTANCE0.SAFETYGLOBAL.GLOBAL_MAINTENANCE_MODE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 3,
+      "path": "INSTANCE0.SAFETYGLOBAL.SAFETY_RESET_REQUEST",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 4,
+      "path": "INSTANCE0.SAFETYGLOBAL.TEST_FAULT_REQUEST",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 5,
+      "path": "INSTANCE0.SAFETYGLOBAL.SCHEMA_VERSION",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 6,
+      "path": "INSTANCE0.SAFETYGLOBAL.HEARTBEAT_COUNTER",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 7,
+      "path": "INSTANCE0.SAFETYGLOBAL.SAFETY_STATE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 8,
+      "path": "INSTANCE0.SAFETYGLOBAL.SAFETY_READY",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 9,
+      "path": "INSTANCE0.SAFETYGLOBAL.GLOBAL_FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 10,
+      "path": "INSTANCE0.SAFETYGLOBAL.GLOBAL_INHIBIT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 11,
+      "path": "INSTANCE0.SAFETYGLOBAL.GLOBAL_INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 12,
+      "path": "INSTANCE0.SAFETYGLOBAL.SAFETY_FAULT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 13,
+      "path": "INSTANCE0.SAFETYGLOBAL.SAFETY_FAULT_CODE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 14,
+      "path": "INSTANCE0.SAFETYGLOBAL.RESET_REQUIRED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 15,
+      "path": "INSTANCE0.SAFETYGLOBAL.EMERGENCY_STOP_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 16,
+      "path": "INSTANCE0.SAFETYGLOBAL.MAINTENANCE_MODE_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 17,
+      "path": "INSTANCE0.SAFETYGLOBAL.SCHEMA_VERSION_VALUE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 18,
+      "path": "INSTANCE0.SAFETYGLOBAL.STATE_INITIALIZING",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 19,
+      "path": "INSTANCE0.SAFETYGLOBAL.STATE_READY",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 20,
+      "path": "INSTANCE0.SAFETYGLOBAL.STATE_INHIBITED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 21,
+      "path": "INSTANCE0.SAFETYGLOBAL.STATE_EMERGENCY_STOP",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 22,
+      "path": "INSTANCE0.SAFETYGLOBAL.STATE_MAINTENANCE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 23,
+      "path": "INSTANCE0.SAFETYGLOBAL.STATE_FAULT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 24,
+      "path": "INSTANCE0.SAFETYGLOBAL.INHIBIT_NONE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 25,
+      "path": "INSTANCE0.SAFETYGLOBAL.INHIBIT_GLOBAL_DISABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 26,
+      "path": "INSTANCE0.SAFETYGLOBAL.INHIBIT_EMERGENCY_STOP_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 27,
+      "path": "INSTANCE0.SAFETYGLOBAL.INHIBIT_GLOBAL_MAINTENANCE_MODE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 28,
+      "path": "INSTANCE0.SAFETYGLOBAL.INHIBIT_SAFETY_FAULT_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 29,
+      "path": "INSTANCE0.SAFETYGLOBAL.INHIBIT_INITIALIZING",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 30,
+      "path": "INSTANCE0.SAFETYGLOBAL.INHIBIT_RESET_REQUIRED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 31,
+      "path": "INSTANCE0.SAFETYGLOBAL.FAULT_NONE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 32,
+      "path": "INSTANCE0.SAFETYGLOBAL.FAULT_INVALID_CONFIGURATION",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 33,
+      "path": "INSTANCE0.SAFETYGLOBAL.FAULT_RESET_REQUIRED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 34,
+      "path": "INSTANCE0.SAFETYGLOBAL.FAULT_CRITICAL_INTERNAL",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 35,
+      "path": "INSTANCE0.SAFETYGLOBAL.INIT_SCAN_LIMIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 36,
+      "path": "INSTANCE0.SAFETYGLOBAL.HEARTBEAT_SCAN_DIVIDER",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 37,
+      "path": "INSTANCE0.SAFETYGLOBAL.INITIALIZED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 38,
+      "path": "INSTANCE0.SAFETYGLOBAL.INIT_SCAN_COUNT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 39,
+      "path": "INSTANCE0.SAFETYGLOBAL.HEARTBEAT_SCAN_COUNT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 40,
+      "path": "INSTANCE0.SAFETYGLOBAL.HEARTBEAT_WORD",
+      "type": "DINT",
+      "size": 4
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 41,
+      "path": "INSTANCE0.SAFETYGLOBAL.RESET_REQUEST_PREVIOUS",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 42,
+      "path": "INSTANCE0.SAFETYGLOBAL.RESET_EDGE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 43,
+      "path": "INSTANCE0.SAFETYGLOBAL.CONFIGURATION_VALID",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 44,
+      "path": "INSTANCE0.GUN1SAFETY.GLOBAL_FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 45,
+      "path": "INSTANCE0.GUN1SAFETY.GLOBAL_FAULT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 46,
+      "path": "INSTANCE0.GUN1SAFETY.RESET_REQUIRED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 47,
+      "path": "INSTANCE0.GUN1SAFETY.GUN_ENABLED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 48,
+      "path": "INSTANCE0.GUN1SAFETY.GUN_MAINTENANCE_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 49,
+      "path": "INSTANCE0.GUN1SAFETY.GUN_EXTERNAL_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 50,
+      "path": "INSTANCE0.GUN1SAFETY.FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 51,
+      "path": "INSTANCE0.GUN1SAFETY.INHIBIT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 52,
+      "path": "INSTANCE0.GUN1SAFETY.INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 53,
+      "path": "INSTANCE0.GUN1SAFETY.INHIBIT_NONE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 54,
+      "path": "INSTANCE0.GUN1SAFETY.INHIBIT_GLOBAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 55,
+      "path": "INSTANCE0.GUN1SAFETY.INHIBIT_GUN_DISABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 56,
+      "path": "INSTANCE0.GUN1SAFETY.INHIBIT_GUN_MAINTENANCE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 57,
+      "path": "INSTANCE0.GUN1SAFETY.INHIBIT_GUN_EXTERNAL",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 58,
+      "path": "INSTANCE0.GUN1SAFETY.INHIBIT_SAFETY_FAULT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 59,
+      "path": "INSTANCE0.GUN1SAFETY.INHIBIT_RESET_REQUIRED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 60,
+      "path": "INSTANCE0.GUN2SAFETY.GLOBAL_FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 61,
+      "path": "INSTANCE0.GUN2SAFETY.GLOBAL_FAULT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 62,
+      "path": "INSTANCE0.GUN2SAFETY.RESET_REQUIRED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 63,
+      "path": "INSTANCE0.GUN2SAFETY.GUN_ENABLED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 64,
+      "path": "INSTANCE0.GUN2SAFETY.GUN_MAINTENANCE_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 65,
+      "path": "INSTANCE0.GUN2SAFETY.GUN_EXTERNAL_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 66,
+      "path": "INSTANCE0.GUN2SAFETY.FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 67,
+      "path": "INSTANCE0.GUN2SAFETY.INHIBIT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 68,
+      "path": "INSTANCE0.GUN2SAFETY.INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 69,
+      "path": "INSTANCE0.GUN2SAFETY.INHIBIT_NONE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 70,
+      "path": "INSTANCE0.GUN2SAFETY.INHIBIT_GLOBAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 71,
+      "path": "INSTANCE0.GUN2SAFETY.INHIBIT_GUN_DISABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 72,
+      "path": "INSTANCE0.GUN2SAFETY.INHIBIT_GUN_MAINTENANCE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 73,
+      "path": "INSTANCE0.GUN2SAFETY.INHIBIT_GUN_EXTERNAL",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 74,
+      "path": "INSTANCE0.GUN2SAFETY.INHIBIT_SAFETY_FAULT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 75,
+      "path": "INSTANCE0.GUN2SAFETY.INHIBIT_RESET_REQUIRED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 76,
+      "path": "INSTANCE0.GUN3SAFETY.GLOBAL_FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 77,
+      "path": "INSTANCE0.GUN3SAFETY.GLOBAL_FAULT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 78,
+      "path": "INSTANCE0.GUN3SAFETY.RESET_REQUIRED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 79,
+      "path": "INSTANCE0.GUN3SAFETY.GUN_ENABLED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 80,
+      "path": "INSTANCE0.GUN3SAFETY.GUN_MAINTENANCE_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 81,
+      "path": "INSTANCE0.GUN3SAFETY.GUN_EXTERNAL_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 82,
+      "path": "INSTANCE0.GUN3SAFETY.FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 83,
+      "path": "INSTANCE0.GUN3SAFETY.INHIBIT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 84,
+      "path": "INSTANCE0.GUN3SAFETY.INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 85,
+      "path": "INSTANCE0.GUN3SAFETY.INHIBIT_NONE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 86,
+      "path": "INSTANCE0.GUN3SAFETY.INHIBIT_GLOBAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 87,
+      "path": "INSTANCE0.GUN3SAFETY.INHIBIT_GUN_DISABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 88,
+      "path": "INSTANCE0.GUN3SAFETY.INHIBIT_GUN_MAINTENANCE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 89,
+      "path": "INSTANCE0.GUN3SAFETY.INHIBIT_GUN_EXTERNAL",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 90,
+      "path": "INSTANCE0.GUN3SAFETY.INHIBIT_SAFETY_FAULT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 91,
+      "path": "INSTANCE0.GUN3SAFETY.INHIBIT_RESET_REQUIRED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 92,
+      "path": "INSTANCE0.GUN4SAFETY.GLOBAL_FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 93,
+      "path": "INSTANCE0.GUN4SAFETY.GLOBAL_FAULT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 94,
+      "path": "INSTANCE0.GUN4SAFETY.RESET_REQUIRED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 95,
+      "path": "INSTANCE0.GUN4SAFETY.GUN_ENABLED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 96,
+      "path": "INSTANCE0.GUN4SAFETY.GUN_MAINTENANCE_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 97,
+      "path": "INSTANCE0.GUN4SAFETY.GUN_EXTERNAL_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 98,
+      "path": "INSTANCE0.GUN4SAFETY.FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 99,
+      "path": "INSTANCE0.GUN4SAFETY.INHIBIT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 100,
+      "path": "INSTANCE0.GUN4SAFETY.INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 101,
+      "path": "INSTANCE0.GUN4SAFETY.INHIBIT_NONE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 102,
+      "path": "INSTANCE0.GUN4SAFETY.INHIBIT_GLOBAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 103,
+      "path": "INSTANCE0.GUN4SAFETY.INHIBIT_GUN_DISABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 104,
+      "path": "INSTANCE0.GUN4SAFETY.INHIBIT_GUN_MAINTENANCE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 105,
+      "path": "INSTANCE0.GUN4SAFETY.INHIBIT_GUN_EXTERNAL",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 106,
+      "path": "INSTANCE0.GUN4SAFETY.INHIBIT_SAFETY_FAULT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 107,
+      "path": "INSTANCE0.GUN4SAFETY.INHIBIT_RESET_REQUIRED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 108,
+      "path": "INSTANCE0.GUN5SAFETY.GLOBAL_FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 109,
+      "path": "INSTANCE0.GUN5SAFETY.GLOBAL_FAULT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 110,
+      "path": "INSTANCE0.GUN5SAFETY.RESET_REQUIRED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 111,
+      "path": "INSTANCE0.GUN5SAFETY.GUN_ENABLED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 112,
+      "path": "INSTANCE0.GUN5SAFETY.GUN_MAINTENANCE_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 113,
+      "path": "INSTANCE0.GUN5SAFETY.GUN_EXTERNAL_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 114,
+      "path": "INSTANCE0.GUN5SAFETY.FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 115,
+      "path": "INSTANCE0.GUN5SAFETY.INHIBIT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 116,
+      "path": "INSTANCE0.GUN5SAFETY.INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 117,
+      "path": "INSTANCE0.GUN5SAFETY.INHIBIT_NONE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 118,
+      "path": "INSTANCE0.GUN5SAFETY.INHIBIT_GLOBAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 119,
+      "path": "INSTANCE0.GUN5SAFETY.INHIBIT_GUN_DISABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 120,
+      "path": "INSTANCE0.GUN5SAFETY.INHIBIT_GUN_MAINTENANCE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 121,
+      "path": "INSTANCE0.GUN5SAFETY.INHIBIT_GUN_EXTERNAL",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 122,
+      "path": "INSTANCE0.GUN5SAFETY.INHIBIT_SAFETY_FAULT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 123,
+      "path": "INSTANCE0.GUN5SAFETY.INHIBIT_RESET_REQUIRED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 124,
+      "path": "INSTANCE0.GUN6SAFETY.GLOBAL_FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 125,
+      "path": "INSTANCE0.GUN6SAFETY.GLOBAL_FAULT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 126,
+      "path": "INSTANCE0.GUN6SAFETY.RESET_REQUIRED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 127,
+      "path": "INSTANCE0.GUN6SAFETY.GUN_ENABLED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 128,
+      "path": "INSTANCE0.GUN6SAFETY.GUN_MAINTENANCE_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 129,
+      "path": "INSTANCE0.GUN6SAFETY.GUN_EXTERNAL_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 130,
+      "path": "INSTANCE0.GUN6SAFETY.FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 131,
+      "path": "INSTANCE0.GUN6SAFETY.INHIBIT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 132,
+      "path": "INSTANCE0.GUN6SAFETY.INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 133,
+      "path": "INSTANCE0.GUN6SAFETY.INHIBIT_NONE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 134,
+      "path": "INSTANCE0.GUN6SAFETY.INHIBIT_GLOBAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 135,
+      "path": "INSTANCE0.GUN6SAFETY.INHIBIT_GUN_DISABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 136,
+      "path": "INSTANCE0.GUN6SAFETY.INHIBIT_GUN_MAINTENANCE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 137,
+      "path": "INSTANCE0.GUN6SAFETY.INHIBIT_GUN_EXTERNAL",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 138,
+      "path": "INSTANCE0.GUN6SAFETY.INHIBIT_SAFETY_FAULT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 139,
+      "path": "INSTANCE0.GUN6SAFETY.INHIBIT_RESET_REQUIRED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 140,
+      "path": "INSTANCE0.GUN7SAFETY.GLOBAL_FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 141,
+      "path": "INSTANCE0.GUN7SAFETY.GLOBAL_FAULT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 142,
+      "path": "INSTANCE0.GUN7SAFETY.RESET_REQUIRED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 143,
+      "path": "INSTANCE0.GUN7SAFETY.GUN_ENABLED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 144,
+      "path": "INSTANCE0.GUN7SAFETY.GUN_MAINTENANCE_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 145,
+      "path": "INSTANCE0.GUN7SAFETY.GUN_EXTERNAL_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 146,
+      "path": "INSTANCE0.GUN7SAFETY.FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 147,
+      "path": "INSTANCE0.GUN7SAFETY.INHIBIT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 148,
+      "path": "INSTANCE0.GUN7SAFETY.INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 149,
+      "path": "INSTANCE0.GUN7SAFETY.INHIBIT_NONE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 150,
+      "path": "INSTANCE0.GUN7SAFETY.INHIBIT_GLOBAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 151,
+      "path": "INSTANCE0.GUN7SAFETY.INHIBIT_GUN_DISABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 152,
+      "path": "INSTANCE0.GUN7SAFETY.INHIBIT_GUN_MAINTENANCE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 153,
+      "path": "INSTANCE0.GUN7SAFETY.INHIBIT_GUN_EXTERNAL",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 154,
+      "path": "INSTANCE0.GUN7SAFETY.INHIBIT_SAFETY_FAULT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 155,
+      "path": "INSTANCE0.GUN7SAFETY.INHIBIT_RESET_REQUIRED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 156,
+      "path": "INSTANCE0.GUN8SAFETY.GLOBAL_FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 157,
+      "path": "INSTANCE0.GUN8SAFETY.GLOBAL_FAULT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 158,
+      "path": "INSTANCE0.GUN8SAFETY.RESET_REQUIRED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 159,
+      "path": "INSTANCE0.GUN8SAFETY.GUN_ENABLED",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 160,
+      "path": "INSTANCE0.GUN8SAFETY.GUN_MAINTENANCE_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 161,
+      "path": "INSTANCE0.GUN8SAFETY.GUN_EXTERNAL_INHIBIT",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 162,
+      "path": "INSTANCE0.GUN8SAFETY.FIRE_PERMISSIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 163,
+      "path": "INSTANCE0.GUN8SAFETY.INHIBIT_ACTIVE",
+      "type": "BOOL",
+      "size": 1
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 164,
+      "path": "INSTANCE0.GUN8SAFETY.INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 165,
+      "path": "INSTANCE0.GUN8SAFETY.INHIBIT_NONE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 166,
+      "path": "INSTANCE0.GUN8SAFETY.INHIBIT_GLOBAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 167,
+      "path": "INSTANCE0.GUN8SAFETY.INHIBIT_GUN_DISABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 168,
+      "path": "INSTANCE0.GUN8SAFETY.INHIBIT_GUN_MAINTENANCE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 169,
+      "path": "INSTANCE0.GUN8SAFETY.INHIBIT_GUN_EXTERNAL",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 170,
+      "path": "INSTANCE0.GUN8SAFETY.INHIBIT_SAFETY_FAULT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 171,
+      "path": "INSTANCE0.GUN8SAFETY.INHIBIT_RESET_REQUIRED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 172,
+      "path": "INSTANCE0.CONTROL_VERSION_REQUEST",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 173,
+      "path": "INSTANCE0.GLOBAL_ENABLE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 174,
+      "path": "INSTANCE0.EMERGENCY_STOP",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 175,
+      "path": "INSTANCE0.GLOBAL_MAINTENANCE_MODE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 176,
+      "path": "INSTANCE0.SAFETY_RESET_REQUEST",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 177,
+      "path": "INSTANCE0.TEST_FAULT_REQUEST",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 178,
+      "path": "INSTANCE0.INPUT_RESERVED_6",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 179,
+      "path": "INSTANCE0.INPUT_RESERVED_7",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 180,
+      "path": "INSTANCE0.GUN1_ENABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 181,
+      "path": "INSTANCE0.GUN1_MAINTENANCE_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 182,
+      "path": "INSTANCE0.GUN1_EXTERNAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 183,
+      "path": "INSTANCE0.GUN1_INPUT_RESERVED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 184,
+      "path": "INSTANCE0.GUN2_ENABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 185,
+      "path": "INSTANCE0.GUN2_MAINTENANCE_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 186,
+      "path": "INSTANCE0.GUN2_EXTERNAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 187,
+      "path": "INSTANCE0.GUN2_INPUT_RESERVED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 188,
+      "path": "INSTANCE0.GUN3_ENABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 189,
+      "path": "INSTANCE0.GUN3_MAINTENANCE_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 190,
+      "path": "INSTANCE0.GUN3_EXTERNAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 191,
+      "path": "INSTANCE0.GUN3_INPUT_RESERVED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 192,
+      "path": "INSTANCE0.GUN4_ENABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 193,
+      "path": "INSTANCE0.GUN4_MAINTENANCE_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 194,
+      "path": "INSTANCE0.GUN4_EXTERNAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 195,
+      "path": "INSTANCE0.GUN4_INPUT_RESERVED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 196,
+      "path": "INSTANCE0.GUN5_ENABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 197,
+      "path": "INSTANCE0.GUN5_MAINTENANCE_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 198,
+      "path": "INSTANCE0.GUN5_EXTERNAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 199,
+      "path": "INSTANCE0.GUN5_INPUT_RESERVED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 200,
+      "path": "INSTANCE0.GUN6_ENABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 201,
+      "path": "INSTANCE0.GUN6_MAINTENANCE_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 202,
+      "path": "INSTANCE0.GUN6_EXTERNAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 203,
+      "path": "INSTANCE0.GUN6_INPUT_RESERVED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 204,
+      "path": "INSTANCE0.GUN7_ENABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 205,
+      "path": "INSTANCE0.GUN7_MAINTENANCE_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 206,
+      "path": "INSTANCE0.GUN7_EXTERNAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 207,
+      "path": "INSTANCE0.GUN7_INPUT_RESERVED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 208,
+      "path": "INSTANCE0.GUN8_ENABLED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 209,
+      "path": "INSTANCE0.GUN8_MAINTENANCE_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 210,
+      "path": "INSTANCE0.GUN8_EXTERNAL_INHIBIT",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 211,
+      "path": "INSTANCE0.GUN8_INPUT_RESERVED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 212,
+      "path": "INSTANCE0.SAFETY_SCHEMA_VERSION",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 213,
+      "path": "INSTANCE0.SAFETY_HEARTBEAT_COUNTER",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 214,
+      "path": "INSTANCE0.SAFETY_STATE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 215,
+      "path": "INSTANCE0.SAFETY_READY",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 216,
+      "path": "INSTANCE0.GLOBAL_FIRE_PERMISSIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 217,
+      "path": "INSTANCE0.GLOBAL_INHIBIT_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 218,
+      "path": "INSTANCE0.GLOBAL_INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 219,
+      "path": "INSTANCE0.SAFETY_FAULT_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 220,
+      "path": "INSTANCE0.SAFETY_FAULT_CODE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 221,
+      "path": "INSTANCE0.RESET_REQUIRED",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 222,
+      "path": "INSTANCE0.EMERGENCY_STOP_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 223,
+      "path": "INSTANCE0.MAINTENANCE_MODE_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 224,
+      "path": "INSTANCE0.STATUS_RESERVED_12",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 225,
+      "path": "INSTANCE0.STATUS_RESERVED_13",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 226,
+      "path": "INSTANCE0.STATUS_RESERVED_14",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 227,
+      "path": "INSTANCE0.STATUS_RESERVED_15",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 228,
+      "path": "INSTANCE0.GUN1_FIRE_PERMISSIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 229,
+      "path": "INSTANCE0.GUN1_INHIBIT_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 230,
+      "path": "INSTANCE0.GUN1_INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 231,
+      "path": "INSTANCE0.GUN1_ENABLED_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 232,
+      "path": "INSTANCE0.GUN1_MAINTENANCE_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 233,
+      "path": "INSTANCE0.GUN1_EXTERNAL_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 234,
+      "path": "INSTANCE0.GUN1_STATUS_RESERVED_A",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 235,
+      "path": "INSTANCE0.GUN1_STATUS_RESERVED_B",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 236,
+      "path": "INSTANCE0.GUN2_FIRE_PERMISSIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 237,
+      "path": "INSTANCE0.GUN2_INHIBIT_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 238,
+      "path": "INSTANCE0.GUN2_INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 239,
+      "path": "INSTANCE0.GUN2_ENABLED_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 240,
+      "path": "INSTANCE0.GUN2_MAINTENANCE_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 241,
+      "path": "INSTANCE0.GUN2_EXTERNAL_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 242,
+      "path": "INSTANCE0.GUN2_STATUS_RESERVED_A",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 243,
+      "path": "INSTANCE0.GUN2_STATUS_RESERVED_B",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 244,
+      "path": "INSTANCE0.GUN3_FIRE_PERMISSIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 245,
+      "path": "INSTANCE0.GUN3_INHIBIT_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 246,
+      "path": "INSTANCE0.GUN3_INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 247,
+      "path": "INSTANCE0.GUN3_ENABLED_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 248,
+      "path": "INSTANCE0.GUN3_MAINTENANCE_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 249,
+      "path": "INSTANCE0.GUN3_EXTERNAL_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 250,
+      "path": "INSTANCE0.GUN3_STATUS_RESERVED_A",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 251,
+      "path": "INSTANCE0.GUN3_STATUS_RESERVED_B",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 252,
+      "path": "INSTANCE0.GUN4_FIRE_PERMISSIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 253,
+      "path": "INSTANCE0.GUN4_INHIBIT_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 254,
+      "path": "INSTANCE0.GUN4_INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 255,
+      "path": "INSTANCE0.GUN4_ENABLED_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 256,
+      "path": "INSTANCE0.GUN4_MAINTENANCE_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 257,
+      "path": "INSTANCE0.GUN4_EXTERNAL_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 258,
+      "path": "INSTANCE0.GUN4_STATUS_RESERVED_A",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 259,
+      "path": "INSTANCE0.GUN4_STATUS_RESERVED_B",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 260,
+      "path": "INSTANCE0.GUN5_FIRE_PERMISSIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 261,
+      "path": "INSTANCE0.GUN5_INHIBIT_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 262,
+      "path": "INSTANCE0.GUN5_INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 263,
+      "path": "INSTANCE0.GUN5_ENABLED_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 264,
+      "path": "INSTANCE0.GUN5_MAINTENANCE_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 265,
+      "path": "INSTANCE0.GUN5_EXTERNAL_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 266,
+      "path": "INSTANCE0.GUN5_STATUS_RESERVED_A",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 267,
+      "path": "INSTANCE0.GUN5_STATUS_RESERVED_B",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 268,
+      "path": "INSTANCE0.GUN6_FIRE_PERMISSIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 269,
+      "path": "INSTANCE0.GUN6_INHIBIT_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 270,
+      "path": "INSTANCE0.GUN6_INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 271,
+      "path": "INSTANCE0.GUN6_ENABLED_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 272,
+      "path": "INSTANCE0.GUN6_MAINTENANCE_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 273,
+      "path": "INSTANCE0.GUN6_EXTERNAL_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 274,
+      "path": "INSTANCE0.GUN6_STATUS_RESERVED_A",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 275,
+      "path": "INSTANCE0.GUN6_STATUS_RESERVED_B",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 276,
+      "path": "INSTANCE0.GUN7_FIRE_PERMISSIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 277,
+      "path": "INSTANCE0.GUN7_INHIBIT_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 278,
+      "path": "INSTANCE0.GUN7_INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 279,
+      "path": "INSTANCE0.GUN7_ENABLED_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 280,
+      "path": "INSTANCE0.GUN7_MAINTENANCE_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 281,
+      "path": "INSTANCE0.GUN7_EXTERNAL_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 282,
+      "path": "INSTANCE0.GUN7_STATUS_RESERVED_A",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 283,
+      "path": "INSTANCE0.GUN7_STATUS_RESERVED_B",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 284,
+      "path": "INSTANCE0.GUN8_FIRE_PERMISSIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 285,
+      "path": "INSTANCE0.GUN8_INHIBIT_ACTIVE",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 286,
+      "path": "INSTANCE0.GUN8_INHIBIT_REASON",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 287,
+      "path": "INSTANCE0.GUN8_ENABLED_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 288,
+      "path": "INSTANCE0.GUN8_MAINTENANCE_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 289,
+      "path": "INSTANCE0.GUN8_EXTERNAL_INHIBIT_STATUS",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 290,
+      "path": "INSTANCE0.GUN8_STATUS_RESERVED_A",
+      "type": "INT",
+      "size": 2
+    },
+    {
+      "arrayIdx": 0,
+      "elemIdx": 291,
+      "path": "INSTANCE0.GUN8_STATUS_RESERVED_B",
+      "type": "INT",
+      "size": 2
+    }
+  ]
+}

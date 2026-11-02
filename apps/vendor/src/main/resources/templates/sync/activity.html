@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head('Activity')}"></head>
+<body><div th:replace="~{common/nav :: nav}"></div>
+<main class="container-fluid">
+    <div class="row g-3">
+        <section class="col-lg-6">
+            <div class="panel">
+                <h1 class="h5">Fulfillment Activity</h1>
+                <table class="table table-sm">
+                    <thead><tr><th>Type</th><th>Summary</th><th>Time</th></tr></thead>
+                    <tbody>
+                    <tr th:each="e : ${events.content}">
+                        <td th:text="${e.eventType}"></td>
+                        <td th:text="${e.summary}"></td>
+                        <td th:text="${#temporals.format(e.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section class="col-lg-6">
+            <div class="panel">
+                <h2 class="h5">Sync History</h2>
+                <table class="table table-sm">
+                    <thead><tr><th>Operation</th><th>Result</th><th>Message</th><th>Attempted</th></tr></thead>
+                    <tbody>
+                    <tr th:each="s : ${syncEvents.content}">
+                        <td>Engineering completion</td>
+                        <td th:text="${s.success ? 'Succeeded' : 'Failed'}"></td>
+                        <td th:text="${s.success ? 'Synchronized' : 'Synchronization requires administrator review'}"></td>
+                        <td th:text="${#temporals.format(s.attemptedAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</main></body></html>

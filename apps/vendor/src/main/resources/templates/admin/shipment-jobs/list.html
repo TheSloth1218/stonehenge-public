@@ -1,0 +1,5 @@
+<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{common/head :: head('Shipment Jobs')}"></head>
+<body><div th:replace="~{common/nav :: nav}"></div><main class="container-fluid"><h1 class="h4">Shipment Processing Jobs</h1>
+<table class="table table-hover"><thead><tr><th>ID</th><th>Shipment</th><th>Order</th><th>Request</th><th>Format</th><th>Status</th><th>Attempts</th><th>Created</th><th></th></tr></thead><tbody>
+<tr th:each="j : ${jobs.content}"><td th:text="${j.id}"></td><td th:text="${j.shipment != null ? j.shipment.shipmentNumber : '-'}"></td><td th:text="${j.fulfillmentOrder != null ? j.fulfillmentOrder.orderNumber : '-'}"></td><td th:text="${j.externalRequestId ?: '-'}"></td><td th:text="${j.payloadFormat}"></td><td th:text="${j.status}"></td><td th:text="${j.attemptCount}"></td><td th:text="${#temporals.format(j.createdAt, 'yyyy-MM-dd HH:mm')}"></td><td><a th:href="@{/admin/shipment-jobs/{id}(id=${j.id})}">View</a></td></tr>
+</tbody></table></main></body></html>

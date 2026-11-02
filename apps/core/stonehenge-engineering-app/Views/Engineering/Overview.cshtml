@@ -1,0 +1,118 @@
+@model Stonehenge.Engineering.App.Models.EngineeringOverviewViewModel
+
+@{
+    ViewData["Title"] = "Overview";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">STN Dashboard Status</p>
+        <h1>Stonehenge Dashboard</h1>
+    </div>
+    <div class="runtime-proof">Live engineering status</div>
+</section>
+
+<section class="overview-layout">
+    <div class="gun-card-grid">
+        @foreach (var gun in Model.Guns)
+        {
+            <article class="gun-card @gun.StatusClass">
+                <div class="card-topline">
+                    <h2>@gun.Name</h2>
+                    <span class="status-badge @gun.StatusClass">@gun.Status</span>
+                </div>
+                <dl>
+                    <div>
+                        <dt>Azimuth x10</dt>
+                        <dd>@((gun.Azimuth * 10).ToString("0"))</dd>
+                    </div>
+                    <div>
+                        <dt>Elevation x10</dt>
+                        <dd>@((gun.Elevation * 10).ToString("0"))</dd>
+                    </div>
+                    <div>
+                        <dt>Fire Permission</dt>
+                        <dd>@gun.SafetyState</dd>
+                    </div>
+                    <div>
+                        <dt>Updated</dt>
+                        <dd>@gun.LastUpdated.ToString("HH:mm:ss")</dd>
+                    </div>
+                </dl>
+            </article>
+        }
+    </div>
+
+    <section class="array-panel">
+        <div class="array-title">
+            <p class="eyebrow">Array topology</p>
+            <h2>Stonehenge Array</h2>
+        </div>
+
+        <div class="array-diagram" aria-label="Stonehenge Array gun overview">
+            <div class="array-core">
+                <span>Stonehenge</span>
+                <strong>8 Gun Array</strong>
+            </div>
+
+            @foreach (var gun in Model.Guns)
+            {
+                <div class="array-node gun-@gun.GunNumber">
+                    <div class="marker @gun.StatusClass">G@(gun.GunNumber)</div>
+                    <div class="node-label">
+                        <strong>@gun.Name</strong>
+                        <span>@gun.Status</span>
+                        <small>@gun.SafetyState</small>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+</section>
+
+<section class="history-panel">
+    <div class="section-header">
+        <div>
+            <p class="eyebrow">Recent mock events</p>
+            <h2>Operation History</h2>
+        </div>
+        <p>This page refreshes automatically while visible.</p>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Source</th>
+                    <th>Action</th>
+                    <th>Result</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entry in Model.OperationLog)
+                {
+                    <tr data-log-id="@entry.Id">
+                        <td>@entry.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                        <td>@entry.Source</td>
+                        <td>@entry.Action</td>
+                        <td><span class="result-pill @entry.Result.ToLowerInvariant()">@entry.Result</span></td>
+                        <td>@entry.Notes</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+(() => {
+    const refreshMs = 10000;
+    window.setTimeout(() => {
+        if (!document.hidden) {
+            window.location.reload();
+        }
+    }, refreshMs);
+})();
+</script>

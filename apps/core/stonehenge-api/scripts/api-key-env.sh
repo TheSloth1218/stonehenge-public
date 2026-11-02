@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+API_KEY_SCRIPT_DIR="${SCRIPT_DIR:-$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)}"
+GENERATED_ENV="${STONEHENGE_API_KEYS_ENV:-${API_KEY_SCRIPT_DIR}/../.generated/stonehenge-api-keys.env}"
+
+if [ -f "$GENERATED_ENV" ]; then
+  # shellcheck disable=SC1090
+  . "$GENERATED_ENV"
+fi
+
+VENDOR_KEY="${VENDOR_KEY:-${STONEHENGE_VENDOR_API_KEY:-vendor-dev-key}}"
+ASTRO_KEY="${ASTRO_KEY:-${STONEHENGE_ASTRO_API_KEY:-astro-dev-key}}"
+ENGINEERING_KEY="${ENGINEERING_KEY:-${STONEHENGE_ENGINEERING_API_KEY:-engineering-dev-key}}"
+VALIDATION_HARNESS_KEY="${VALIDATION_HARNESS_KEY:-${STONEHENGE_VALIDATION_HARNESS_API_KEY:-}}"

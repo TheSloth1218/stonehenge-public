@@ -1,0 +1,21 @@
+[Unit]
+Description=SCA Parts Fulfillment Portal
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=stonevendor
+Group=stonevendor
+WorkingDirectory=/opt/vendor-app
+EnvironmentFile=/etc/stonehenge-vendor/stonehenge-vendor.env
+ExecStart=/usr/bin/java -jar /opt/vendor-app/sca-parts-fulfillment.jar
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+StateDirectory=stonehenge-vendor
+LogsDirectory=stonehenge-vendor
+
+[Install]
+WantedBy=multi-user.target

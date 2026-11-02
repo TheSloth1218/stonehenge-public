@@ -1,0 +1,9 @@
+bin/
+obj/
+.git/
+.vs/
+.vscode/
+*.user
+*.suo
+.generated/*.env
+.generated/*keys.env

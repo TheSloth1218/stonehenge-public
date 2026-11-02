@@ -1,0 +1,6 @@
+tools/playwright/artifacts/
+tools/playwright/node_modules/
+tools/playwright/playwright-report/
+tools/playwright/test-results/
+shared-screenshots/*
+!shared-screenshots/.gitkeep

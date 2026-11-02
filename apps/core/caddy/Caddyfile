@@ -1,0 +1,48 @@
+{
+	admin off
+}
+
+{$ENGINEERING_HOSTNAME:engineering.fcu.gov} {
+	tls {
+		issuer acme {
+			dir {$ACME_CA_DIRECTORY:https://ca.fcu.gov:8443/acme/acme/directory}
+			trusted_roots /etc/caddy/pki/fcu-lab-root-ca.crt
+		}
+	}
+
+	encode zstd gzip
+	route {
+		@target_feed_ingest {
+			header Authorization "Bearer {$TARGET_FEED_AUTH_TOKEN}"
+			method POST
+			path /api/v1/ingest/fragments
+		}
+		reverse_proxy @target_feed_ingest middleware:8080
+
+		@target_feed_readiness {
+			header Authorization "Bearer {$TARGET_FEED_AUTH_TOKEN}"
+			method GET
+			path /api/v1/dispatcher /api/v1/target-feed/targets
+		}
+		reverse_proxy @target_feed_readiness middleware:8080
+
+		@target_feed_paths path /api/v1/ingest/fragments /api/v1/dispatcher /api/v1/target-feed/targets
+		respond @target_feed_paths 404
+
+		@internal path /internal /internal/*
+		respond @internal 404
+		reverse_proxy engineering-app:8080
+	}
+}
+
+{$API_HOSTNAME:api.fcu.gov} {
+	tls {
+		issuer acme {
+			dir {$ACME_CA_DIRECTORY:https://ca.fcu.gov:8443/acme/acme/directory}
+			trusted_roots /etc/caddy/pki/fcu-lab-root-ca.crt
+		}
+	}
+
+	encode zstd gzip
+	reverse_proxy stonehenge-api:8080
+}

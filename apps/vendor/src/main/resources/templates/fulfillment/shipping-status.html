@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{common/head :: head('Shipment Status')}"></head>
+<body><div th:replace="~{common/nav :: nav}"></div>
+<main class="container-fluid shipping-status-page">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div><h1 class="h4 mb-1">Shipment Status</h1><span class="text-muted" th:text="${progress.shipment.shipmentNumber}"></span></div>
+        <a class="btn btn-outline-primary" href="/shipments">All Shipments</a>
+    </div>
+
+    <ul class="nav nav-tabs mb-3" role="tablist" sec:authorize="hasRole('ADMIN')">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#shipment-overview" type="button">Overview</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipment-diagnostics" type="button">Diagnostics</button></li>
+    </ul>
+
+    <div class="tab-content">
+        <section id="shipment-overview" class="tab-pane fade show active">
+            <div class="shipment-timeline">
+                <div class="shipment-stage complete"><span class="stage-indicator"></span><div><strong>Order reviewed</strong><small>Parts and quantities locked for shipment.</small></div></div>
+                <div class="shipment-stage complete"><span class="stage-indicator"></span><div><strong>Inventory committed</strong><small>Stock deduction completed locally.</small></div></div>
+                <div class="shipment-stage complete"><span class="stage-indicator"></span><div><strong>Truck shipment recorded</strong><small th:text="${progress.shipment.trackingNumber}"></small></div></div>
+                <div class="shipment-stage" th:classappend="${progress.apiConfirmed()} ? 'complete' : (${progress.apiFailed()} ? 'failed' : 'pending')">
+                    <span class="stage-indicator"></span>
+                    <div>
+                        <strong th:text="${progress.apiConfirmed()} ? 'Engineering API confirmed' : (${progress.apiFailed()} ? 'Engineering API confirmation failed' : 'Engineering API confirmation pending')"></strong>
+                        <small th:if="${progress.apiConfirmed()}">The completion request was accepted.</small>
+                        <small th:if="${progress.apiFailed()}">The shipment remains recorded. An administrator can retry synchronization.</small>
+                        <small th:if="${progress.syncEvent == null}">Waiting for a synchronization result.</small>
+                    </div>
+                </div>
+            </div>
+            <table class="table mt-3"><tbody>
+            <tr><th>Order</th><td th:text="${progress.order.orderNumber}"></td></tr>
+            <tr><th>Request</th><td th:text="${progress.order.maintenanceRequest.externalRequestId}"></td></tr>
+            <tr><th>Transport</th><td th:text="${progress.shipment.carrier + ' / ' + progress.shipment.shippingMethod}"></td></tr>
+            <tr><th>Destination</th><td th:text="${progress.shipment.destinationLabel}"></td></tr>
+            <tr><th>Shipped</th><td th:text="${#temporals.format(progress.shipment.shippedAt, 'yyyy-MM-dd HH:mm')}"></td></tr>
+            </tbody></table>
+        </section>
+
+        <section id="shipment-diagnostics" class="tab-pane fade" sec:authorize="hasRole('ADMIN')">
+            <div class="panel">
+                <h2 class="h5">Synchronization Log</h2>
+                <table class="table table-sm" th:if="${progress.syncEvent != null}"><tbody>
+                <tr><th>Operation</th><td th:text="${progress.syncEvent.operation}"></td></tr>
+                <tr><th>Result</th><td th:text="${progress.syncEvent.success ? 'Accepted' : 'Failed'}"></td></tr>
+                <tr><th>HTTP status</th><td th:text="${progress.syncEvent.httpStatus ?: '-'}"></td></tr>
+                <tr><th>Correlation</th><td th:text="${progress.syncEvent.correlationId}"></td></tr>
+                <tr><th>Attempted</th><td th:text="${#temporals.format(progress.syncEvent.attemptedAt, 'yyyy-MM-dd HH:mm:ss')}"></td></tr>
+                <tr><th>Message</th><td th:text="${progress.syncEvent.sanitizedMessage}"></td></tr>
+                </tbody></table>
+                <p th:if="${progress.syncEvent == null}" class="text-muted">No synchronization attempt has been recorded.</p>
+                <a th:if="${progress.apiFailed()}" class="btn btn-primary" th:href="@{/admin/sync/{id}(id=${progress.syncEvent.id})}">Open Retry Controls</a>
+            </div>
+        </section>
+    </div>
+</main>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body></html>

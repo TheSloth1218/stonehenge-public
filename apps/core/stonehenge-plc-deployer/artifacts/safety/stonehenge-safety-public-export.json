@@ -1,0 +1,200 @@
+{
+  "artifact_name": "stonehenge-safety-public-export.zip",
+  "artifact_sha256": "5cb18e5da1b6c2668af25047f673132b6d3eb3ae87b164205a1de067ae2d1791",
+  "file_inventory": [
+    {
+      "path": "c_blocks.h",
+      "sha256": "210cb1630398ac33c0ffe14a7e950d51e14adf84ba939d632e11ba13c49763c8",
+      "size": 14
+    },
+    {
+      "path": "conf/ethercat.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "path": "conf/modbus_slave.json",
+      "sha256": "b7b8418d93246387bf4f0c1c1f82d62ef4ccccf496b02b0abd1b3a35c2962fbb",
+      "size": 385
+    },
+    {
+      "path": "configuration.cpp",
+      "sha256": "0c0063a3ca6ffcac73bca7e5b1248cb2b4aa11b5ba228c9a09c0497a3a17e8a8",
+      "size": 14114
+    },
+    {
+      "path": "debug-map.json",
+      "sha256": "0e8caf3402664db53b25d401a199450921faaf6f08ef981388e11b6df03e6077",
+      "size": 43408
+    },
+    {
+      "path": "defines.h",
+      "sha256": "c4071948630dc89ec4e2b6c0b4788835bba63f20c90e0aed8c321fe0c4d4f32c",
+      "size": 83
+    },
+    {
+      "path": "generated.hpp",
+      "sha256": "ccab09d1444c950a1dce7bcbf44bf6bee0e578d848520326a2f4514378250341",
+      "size": 17945
+    },
+    {
+      "path": "generated_debug.cpp",
+      "sha256": "ce225336c42ab81a8fa0f898f4e61db22c3405c22c91138f1a93977af1987c48",
+      "size": 34883
+    },
+    {
+      "path": "plc.xml",
+      "sha256": "2d865ac5e54582a53010b3b51a3372ae4fe642db8e47d3abfda8bedc0eb8c093",
+      "size": 59935
+    },
+    {
+      "path": "pou_FB_GLOBALSAFETY.cpp",
+      "sha256": "0da47107071b2cb12f5069408bc1e3206af5dd928358c6b72b5d3a1d6ed76b79",
+      "size": 4749
+    },
+    {
+      "path": "pou_FB_GUNSAFETY.cpp",
+      "sha256": "5ec0656d9d52728ce5a534a04e591e0c71801907da5bb887a5c9f3dbf6724dfe",
+      "size": 1360
+    },
+    {
+      "path": "pou_MAIN.cpp",
+      "sha256": "be60e28abd0beec4d7903a816d57a903b12e37a43769fa1d416b7193ffab30e4",
+      "size": 22249
+    },
+    {
+      "path": "program.st",
+      "sha256": "c486e226284789176f38acf2894a4158a0562d4002c98f7a7531f511e1759763",
+      "size": 22326
+    },
+    {
+      "path": "program.st.map.json",
+      "sha256": "04f67d342a79a164c028ebc6d19d164914e6d4c666185f059a1b2c93c1acffc6",
+      "size": 328
+    },
+    {
+      "path": "strucpp_runtime/include/debug_dispatch.hpp",
+      "sha256": "cb650c6c058d3fe40488f6da13864307aa443b362efe61c456836e83d907d479",
+      "size": 23144
+    },
+    {
+      "path": "strucpp_runtime/include/debug_table.hpp",
+      "sha256": "66ad32814ada2fea9a5ef16a7b78352f16a5cad79a962691e1df6d9ae6738ed5",
+      "size": 5885
+    },
+    {
+      "path": "strucpp_runtime/include/iec_array.hpp",
+      "sha256": "e5215c27645061a003d8205c7c42fb8d9888f09c8578853d670928658b34356a",
+      "size": 11816
+    },
+    {
+      "path": "strucpp_runtime/include/iec_char.hpp",
+      "sha256": "d8cdf22c7fe6df0e796a8a91b62df6d099e49a8abd5007d175353d59f2a19083",
+      "size": 6470
+    },
+    {
+      "path": "strucpp_runtime/include/iec_date.hpp",
+      "sha256": "ae0250a04c3ebd325d8428350f4ef223671f3c02b575d02890258c091a9992e9",
+      "size": 3919
+    },
+    {
+      "path": "strucpp_runtime/include/iec_dt.hpp",
+      "sha256": "2b6cdea1af14ad8e9cc3bb556c9d5678ea772c5f83449046507aa1033b58e01f",
+      "size": 6077
+    },
+    {
+      "path": "strucpp_runtime/include/iec_enum.hpp",
+      "sha256": "7af5682839b7e7748d745dc3791994589a597c773de4b60777ab8de843692646",
+      "size": 7663
+    },
+    {
+      "path": "strucpp_runtime/include/iec_fault.hpp",
+      "sha256": "fb5696d0051cfcce97904a85c6d7b56045e266f781627fbe5ad9d765bc0ba841",
+      "size": 2636
+    },
+    {
+      "path": "strucpp_runtime/include/iec_located.hpp",
+      "sha256": "41d571ca4ca5b4658ed65de10297262b3c09d3f2e487dbe12d370c469bbed77f",
+      "size": 7787
+    },
+    {
+      "path": "strucpp_runtime/include/iec_memory.hpp",
+      "sha256": "bf4317a7b99f1aa22d79494e30745a6a8137058bb4760fc8616e03703acf74d9",
+      "size": 2508
+    },
+    {
+      "path": "strucpp_runtime/include/iec_pointer.hpp",
+      "sha256": "aca50e24e6c92896af50c728955d35b34092dd973e02c29b53cd9b85bce27987",
+      "size": 14764
+    },
+    {
+      "path": "strucpp_runtime/include/iec_ptr.hpp",
+      "sha256": "7985687f26577115167b66036c3cdbd709222a5db4fdc4271057458f974634e9",
+      "size": 9986
+    },
+    {
+      "path": "strucpp_runtime/include/iec_retain.hpp",
+      "sha256": "f5d68cbe58e5a55298a93b41f0e5bf32bb2560be0f743fb86c0fd97fa68d54ed",
+      "size": 2940
+    },
+    {
+      "path": "strucpp_runtime/include/iec_std_lib.hpp",
+      "sha256": "828124323aa1010f6d72d40272deced6c708b92e3b9939042b512f41699e3d17",
+      "size": 55274
+    },
+    {
+      "path": "strucpp_runtime/include/iec_string.hpp",
+      "sha256": "6fb698515730447f3921332ce42a844d56fede327282a26c7db81e8e0bf3b5c3",
+      "size": 42287
+    },
+    {
+      "path": "strucpp_runtime/include/iec_struct.hpp",
+      "sha256": "4372ffa2377c4863b7deb7606d9020eb928b244aecfc9af5a4ac96719b98fc55",
+      "size": 2885
+    },
+    {
+      "path": "strucpp_runtime/include/iec_subrange.hpp",
+      "sha256": "63ecdb5e8c3dadf579e11fefaddafa5f893160ce72e51338be50be493e69b5ea",
+      "size": 11976
+    },
+    {
+      "path": "strucpp_runtime/include/iec_time.hpp",
+      "sha256": "c2044aa5440a7c37a7803ca849c98d42dd0bb21b870e67ebec06beae734a23eb",
+      "size": 5178
+    },
+    {
+      "path": "strucpp_runtime/include/iec_tod.hpp",
+      "sha256": "2e2edab5bb60e1b73db6ecb34816ae100e296a2e416bc5a68c6a9cd4f660f2ea",
+      "size": 5189
+    },
+    {
+      "path": "strucpp_runtime/include/iec_traits.hpp",
+      "sha256": "eed148fadff819e42182cb0cf58ad32f64ae8b57d2002790cfdb9ad1822c2bfc",
+      "size": 23361
+    },
+    {
+      "path": "strucpp_runtime/include/iec_types.hpp",
+      "sha256": "0782a67c4dc221f29744ae0a5e525a37c2fe5a4b4e77bef542be9f4d3bac1e1f",
+      "size": 9680
+    },
+    {
+      "path": "strucpp_runtime/include/iec_var.hpp",
+      "sha256": "ab9e0a8b15c4e53fe1dc060301f34728a8aaf82cafb34d470b7e22eb36045496",
+      "size": 20545
+    },
+    {
+      "path": "strucpp_runtime/include/iec_wstring.hpp",
+      "sha256": "bd52f7024dcac8091e4dabff15344969e70acbbf2bb89e2f6774f75377a20ad3",
+      "size": 17145
+    }
+  ],
+  "generated_at": "2026-11-02T21:33:41Z",
+  "packaging_tool_version": "0.1.0",
+  "project": "safety",
+  "runtime_target": "OpenPLC Runtime v4 STruC++",
+  "runtime_version": "v4.1.x",
+  "source_directory": "/opt/stonehenge-public/apps/core/stonehenge-safety-plc/build/OpenPLC Runtime v4/src",
+  "source_git": {
+    "available": false
+  }
+}

@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+JAR=/usr/local/lib/stonehenge-session-recovery.jar
+OUT=$(mktemp)
+trap 'rm -f "$OUT"' EXIT HUP INT TERM
+if /usr/bin/java -Dloader.main=gov.sca.fulfillment.recovery.SessionSnapshotTool \
+  -cp "$JAR" org.springframework.boot.loader.launch.PropertiesLauncher "$@" >"$OUT"; then
+  cat "$OUT"
+  LOGGER=
+  command -v systemd-cat >/dev/null 2>&1 && LOGGER='systemd-cat -t stonehenge-session-recovery'
+  [ -n "$LOGGER" ] || { command -v logger >/dev/null 2>&1 && LOGGER='logger -t stonehenge-session-recovery'; }
+  if [ -n "$LOGGER" ]; then
+    grep -E '^(recovery key created; contents not displayed|snapshot imported: [0-9]+ records; finding=SCA-VENDOR-009|snapshot valid; secrets not displayed|record=[A-Za-z0-9._-]+ expiry=[0-9TZ:.-]+ status=(active|expired|revoked) finding=SCA-VENDOR-009 correlation=[A-Za-z0-9._:-]+ tokenHash=[A-Za-z0-9_-]{12})$' "$OUT" | $LOGGER || true
+  fi
+else
+  STATUS=$?
+  cat "$OUT"
+  exit "$STATUS"
+fi

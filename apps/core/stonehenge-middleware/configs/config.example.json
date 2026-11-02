@@ -1,0 +1,238 @@
+{
+  "server": {
+    "addr": ":8080"
+  },
+  "simulation": {
+    "auto_start": true,
+    "gun_count": 8,
+    "tick_interval": "250ms",
+    "target_generation_interval": "4s",
+    "target_time_to_impact_min_seconds": 45,
+    "target_time_to_impact_max_seconds": 120,
+    "soft_min_elevation": 5,
+    "soft_max_elevation": 85,
+    "post_fire_lockout": "10s",
+    "settling_delay": "5s",
+    "slew_degrees_per_second": 18,
+    "min_slew_duration": "1s",
+    "max_slew_duration": "12s",
+    "max_events": 500,
+    "fault_on_safety_blocked": false
+  },
+  "safety": {
+    "hard_min_elevation": 0,
+    "hard_max_elevation": 90,
+    "special_measures_enabled": false
+  },
+  "fragments": {
+    "source": "internal-rng",
+    "ingest": {
+      "max_time_to_impact_seconds": 600,
+      "duplicate_retention_minutes": 1440
+    },
+    "internal_rng": {
+      "enabled": true,
+      "interval_seconds": 4
+    }
+  },
+  "history": {
+    "adapter": "memory",
+    "max_events": 500
+  },
+  "plc": {
+    "adapter": "simulated",
+    "host": "openplc-control-gun1",
+    "port": 502,
+    "unit_id": 1,
+    "command_ack_timeout_seconds": 5,
+    "poll_interval_ms": 100,
+    "lifecycle_poll_interval_ms": 200,
+    "lifecycle_completion_timeout_seconds": 30,
+    "lifecycle_max_consecutive_read_errors": 5,
+    "auto_readiness_poll_interval_ms": 500,
+    "auto_safety_fire_permissive": false,
+    "auto_telemetry_modbus_enabled": true,
+    "auto_telemetry_modbus_addr": "0.0.0.0:1502",
+    "auto_telemetry_unit_id": 1,
+    "auto_telemetry_poll_interval": "500ms",
+    "auto_telemetry_stale_after": "3s",
+    "fault_reset_timeout": "30s",
+    "startup_mode": "manual",
+    "startup_mode_retry_timeout": "30s"
+  },
+  "guns": [
+    {
+      "id": 1,
+      "name": "Gun 1",
+      "plc_enabled": true,
+      "safety_gun_id": 1,
+      "auto_enabled": true,
+      "dispatcher_eligible": true,
+      "auto_executor_enabled": true,
+      "min_azimuth": 0,
+      "max_azimuth": 45,
+      "min_elevation": 5,
+      "max_elevation": 85,
+      "plc": {
+        "host": "openplc-control-gun1",
+        "port": 502,
+        "unit_id": 1
+      }
+    },
+    {
+      "id": 2,
+      "name": "Gun 2",
+      "plc_enabled": true,
+      "safety_gun_id": 2,
+      "auto_enabled": true,
+      "dispatcher_eligible": true,
+      "auto_executor_enabled": true,
+      "min_azimuth": 45,
+      "max_azimuth": 90,
+      "min_elevation": 5,
+      "max_elevation": 85,
+      "plc": {
+        "host": "openplc-control-gun2",
+        "port": 502,
+        "unit_id": 1
+      }
+    },
+    {
+      "id": 3,
+      "name": "Gun 3",
+      "plc_enabled": true,
+      "safety_gun_id": 3,
+      "auto_enabled": true,
+      "dispatcher_eligible": true,
+      "auto_executor_enabled": true,
+      "min_azimuth": 90,
+      "max_azimuth": 135,
+      "min_elevation": 5,
+      "max_elevation": 85,
+      "plc": {
+        "host": "openplc-control-gun3",
+        "port": 502,
+        "unit_id": 1
+      }
+    },
+    {
+      "id": 4,
+      "name": "Gun 4",
+      "plc_enabled": true,
+      "safety_gun_id": 4,
+      "auto_enabled": true,
+      "dispatcher_eligible": true,
+      "auto_executor_enabled": true,
+      "min_azimuth": 135,
+      "max_azimuth": 180,
+      "min_elevation": 5,
+      "max_elevation": 85,
+      "plc": {
+        "host": "openplc-control-gun4",
+        "port": 502,
+        "unit_id": 1
+      }
+    },
+    {
+      "id": 5,
+      "name": "Gun 5",
+      "plc_enabled": true,
+      "safety_gun_id": 5,
+      "auto_enabled": true,
+      "dispatcher_eligible": true,
+      "auto_executor_enabled": true,
+      "min_azimuth": 180,
+      "max_azimuth": 225,
+      "min_elevation": 5,
+      "max_elevation": 85,
+      "plc": {
+        "host": "openplc-control-gun5",
+        "port": 502,
+        "unit_id": 1
+      }
+    },
+    {
+      "id": 6,
+      "name": "Gun 6",
+      "plc_enabled": true,
+      "safety_gun_id": 6,
+      "auto_enabled": true,
+      "dispatcher_eligible": true,
+      "auto_executor_enabled": true,
+      "min_azimuth": 225,
+      "max_azimuth": 270,
+      "min_elevation": 5,
+      "max_elevation": 85,
+      "plc": {
+        "host": "openplc-control-gun6",
+        "port": 502,
+        "unit_id": 1
+      }
+    },
+    {
+      "id": 7,
+      "name": "Gun 7",
+      "plc_enabled": true,
+      "safety_gun_id": 7,
+      "auto_enabled": true,
+      "dispatcher_eligible": true,
+      "auto_executor_enabled": true,
+      "min_azimuth": 270,
+      "max_azimuth": 315,
+      "min_elevation": 5,
+      "max_elevation": 85,
+      "plc": {
+        "host": "openplc-control-gun7",
+        "port": 502,
+        "unit_id": 1
+      }
+    },
+    {
+      "id": 8,
+      "name": "Gun 8",
+      "plc_enabled": true,
+      "safety_gun_id": 8,
+      "auto_enabled": true,
+      "dispatcher_eligible": true,
+      "auto_executor_enabled": true,
+      "min_azimuth": 315,
+      "max_azimuth": 359,
+      "min_elevation": 5,
+      "max_elevation": 85,
+      "plc": {
+        "host": "openplc-control-gun8",
+        "port": 502,
+        "unit_id": 1
+      }
+    }
+  ],
+  "safety_plc": {
+    "enabled": true,
+    "enforcement": false,
+    "host": "openplc-safety",
+    "port": 502,
+    "unit_id": 1,
+    "poll_interval": "250ms",
+    "stale_after": "2s",
+    "status_register_type": "input",
+    "mw_register_base": 80,
+    "reset_pulse_duration": "750ms"
+  },
+  "target_feed": {
+    "enabled": true,
+    "max_pending": 25,
+    "target_ttl": "2m",
+    "healthy_window": "30s",
+    "dispatch_poll_interval_ms": 500
+  },
+  "dispatcher": {
+    "enabled": true,
+    "mode": "active",
+    "poll_interval_ms": 500,
+    "assignment_lease_duration": "90s",
+    "lease_renewal_interval": "30s",
+    "reconciliation_interval": "5s",
+    "shadow_decision_retention": "10m",
+    "elevation_weight": 1
+  }
+}

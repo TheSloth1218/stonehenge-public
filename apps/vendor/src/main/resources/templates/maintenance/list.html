@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head('Maintenance Requests')}"></head>
+<body>
+<div th:replace="~{common/nav :: nav}"></div>
+<main class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">Maintenance Request Queue</h1>
+        <div class="d-flex align-items-center gap-2">
+            <span class="text-muted small" th:text="${apiState.available ? 'Engineering API connected' : 'Engineering API unavailable'}"></span>
+            <form method="post" action="/requests/sync"><button class="btn btn-sm btn-outline-primary">Refresh</button></form>
+        </div>
+    </div>
+    <form class="row g-2 mb-3" method="get">
+        <div class="col-md-4"><input class="form-control" name="q" th:value="${q}" placeholder="Search request, title, or asset"></div>
+        <div class="col-md-3">
+            <select class="form-select" name="status">
+                <option value="">All statuses</option>
+                <option th:each="s : ${statuses}" th:value="${s}" th:selected="${s == status}" th:text="${s}"></option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" name="priority">
+                <option value="">All priorities</option>
+                <option th:each="p : ${priorities}" th:value="${p}" th:selected="${p == priority}" th:text="${p}"></option>
+            </select>
+        </div>
+        <div class="col-md-2"><button class="btn btn-primary w-100" type="submit">Filter</button></div>
+    </form>
+    <table class="table table-hover align-middle">
+        <thead><tr><th>Request</th><th>Summary</th><th>Asset</th><th>Priority</th><th>Imported</th><th>Status</th><th>Operator</th><th></th></tr></thead>
+        <tbody>
+        <tr th:each="r : ${requests.content}">
+            <td th:text="${r.externalRequestId}"></td>
+            <td th:text="${r.title}"></td>
+            <td th:text="${r.sourceAsset}"></td>
+            <td th:text="${r.priority}"></td>
+            <td th:text="${#temporals.format(r.importedAt, 'yyyy-MM-dd HH:mm')}"></td>
+            <td><span th:class="'status status-' + ${r.localStatus}" th:text="${r.localStatus}"></span></td>
+            <td th:text="${r.assignedUser != null ? r.assignedUser.displayName : 'Unassigned'}"></td>
+            <td><a class="btn btn-sm btn-outline-primary" th:href="@{/requests/{id}(id=${r.id})}">Open Request</a></td>
+        </tr>
+        <tr th:if="${requests.empty}"><td colspan="8" th:text="${apiState.available ? 'No approved requests are currently available.' : 'Requests could not be refreshed from Engineering.'}"></td></tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

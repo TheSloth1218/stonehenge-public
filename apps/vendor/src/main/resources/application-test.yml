@@ -1,0 +1,17 @@
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/stonehenge_vendor_test
+    username: stonehenge_vendor
+    password: change-me-local-dev
+  thymeleaf:
+    cache: false
+
+sca:
+  security:
+    development-auth: true
+
+stonehenge:
+  api:
+    polling-enabled: false

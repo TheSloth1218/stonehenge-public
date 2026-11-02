@@ -1,0 +1,20 @@
+#!/usr/bin/python3
+import json
+import os
+import shutil
+import subprocess
+
+java = subprocess.run(
+    ["/usr/bin/java", "-version"],
+    capture_output=True,
+    text=True,
+    timeout=5,
+    check=False,
+)
+disk = shutil.disk_usage("/var/lib/stonehenge-vendor")
+print(json.dumps({
+    "application": "stonehenge-vendor",
+    "java": (java.stderr or java.stdout).splitlines()[0][:160],
+    "diskFreeBytes": disk.free,
+    "profile": os.environ.get("VENDOR_SUPPORT_MODE", "unknown"),
+}))

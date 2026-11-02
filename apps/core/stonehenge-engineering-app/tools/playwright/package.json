@@ -1,0 +1,14 @@
+{
+  "name": "stonehenge-engineering-playwright",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "manual": "playwright test tests/manual.spec.js",
+    "maintenance": "playwright test tests/maintenance.spec.js",
+    "admin": "playwright test tests/admin.spec.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.45.3"
+  }
+}

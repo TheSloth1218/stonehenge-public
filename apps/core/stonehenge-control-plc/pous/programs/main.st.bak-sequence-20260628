@@ -1,0 +1,120 @@
+PROGRAM main
+  VAR
+    Gun1 : FB_GunControl;
+    GUN1_COMMAND_SEQUENCE_LOW : INT AT %MW0 := 0;
+    GUN1_COMMAND_SEQUENCE_HIGH : INT AT %MW1 := 0;
+    GUN1_MODE_COMMAND : INT AT %MW2 := 0;
+    GUN1_TARGET_AZIMUTH_X10 : INT AT %MW3 := 0;
+    GUN1_TARGET_ELEVATION_X10 : INT AT %MW4 := 50;
+    GUN1_ASSIGNED_FRAGMENT_ID_LOW : INT AT %MW5 := 0;
+    GUN1_ASSIGNED_FRAGMENT_ID_HIGH : INT AT %MW6 := 0;
+    GUN1_FIRE_REQUEST : INT AT %MW7 := 0;
+    GUN1_MAINTENANCE_ENABLED : INT AT %MW8 := 0;
+    GUN1_ADMIN_OVERRIDE_ACTIVE : INT AT %MW9 := 0;
+    GUN1_FAULT_RESET : INT AT %MW10 := 0;
+    GUN1_SAFETY_FIRE_PERMISSIVE_IN : INT AT %MW11 := 0;
+    GUN1_SAFETY_EXTENDED_MOTION_PERMISSIVE_IN : INT AT %MW12 := 0;
+    GUN1_ACCEPTED_COMMAND_SEQUENCE_LOW : INT AT %QW20 := 0;
+    GUN1_ACCEPTED_COMMAND_SEQUENCE_HIGH : INT AT %QW21 := 0;
+    GUN1_GUN_STATE : INT AT %QW22 := 0;
+    GUN1_CURRENT_AZIMUTH_X10 : INT AT %QW23 := 0;
+    GUN1_CURRENT_ELEVATION_X10 : INT AT %QW24 := 50;
+    GUN1_ACTIVE_FRAGMENT_ID_LOW : INT AT %QW25 := 0;
+    GUN1_ACTIVE_FRAGMENT_ID_HIGH : INT AT %QW26 := 0;
+    GUN1_TARGET_ACCEPTED : INT AT %QW27 := 0;
+    GUN1_ON_TARGET : INT AT %QW28 := 0;
+    GUN1_SETTLING : INT AT %QW29 := 0;
+    GUN1_FIRING : INT AT %QW30 := 0;
+    GUN1_POST_FIRE_LOCKOUT : INT AT %QW31 := 0;
+    GUN1_READY : INT AT %QW32 := 0;
+    GUN1_FAULT_ACTIVE : INT AT %QW33 := 0;
+    GUN1_FAULT_CODE : INT AT %QW34 := 0;
+    GUN1_SHOT_SEQUENCE_LOW : INT AT %QW35 := 0;
+    GUN1_SHOT_SEQUENCE_HIGH : INT AT %QW36 := 0;
+    GUN1_SETTLING_SECONDS_REMAINING : INT AT %QW37 := 0;
+    GUN1_LOCKOUT_SECONDS_REMAINING : INT AT %QW38 := 0;
+    GUN1_SAFETY_FIRE_PERMISSIVE_OUT : INT AT %QW39 := 0;
+    GUN1_SAFETY_EXTENDED_MOTION_PERMISSIVE_OUT : INT AT %QW40 := 0;
+    command_sequence_dint : DINT := 0;
+    assigned_fragment_dint : DINT := 0;
+    high_word : DINT := 0;
+    low_word : DINT := 0;
+  END_VAR
+
+command_sequence_dint := INT_TO_DINT(GUN1_COMMAND_SEQUENCE_LOW);
+IF GUN1_COMMAND_SEQUENCE_LOW < 0 THEN
+    command_sequence_dint := command_sequence_dint + 65536;
+END_IF;
+IF GUN1_COMMAND_SEQUENCE_HIGH > 0 THEN
+    command_sequence_dint := command_sequence_dint + (INT_TO_DINT(GUN1_COMMAND_SEQUENCE_HIGH) * 65536);
+END_IF;
+
+assigned_fragment_dint := INT_TO_DINT(GUN1_ASSIGNED_FRAGMENT_ID_LOW);
+IF GUN1_ASSIGNED_FRAGMENT_ID_LOW < 0 THEN
+    assigned_fragment_dint := assigned_fragment_dint + 65536;
+END_IF;
+IF GUN1_ASSIGNED_FRAGMENT_ID_HIGH > 0 THEN
+    assigned_fragment_dint := assigned_fragment_dint + (INT_TO_DINT(GUN1_ASSIGNED_FRAGMENT_ID_HIGH) * 65536);
+END_IF;
+
+Gun1(
+    command_sequence := command_sequence_dint,
+    mode_command := GUN1_MODE_COMMAND,
+    target_azimuth_x10 := GUN1_TARGET_AZIMUTH_X10,
+    target_elevation_x10 := GUN1_TARGET_ELEVATION_X10,
+    assigned_fragment_id := assigned_fragment_dint,
+    fire_request := GUN1_FIRE_REQUEST <> 0,
+    maintenance_enabled := GUN1_MAINTENANCE_ENABLED <> 0,
+    admin_override_active := GUN1_ADMIN_OVERRIDE_ACTIVE <> 0,
+    fault_reset := GUN1_FAULT_RESET <> 0,
+    safety_fire_permissive := GUN1_SAFETY_FIRE_PERMISSIVE_IN <> 0,
+    safety_extended_motion_permissive := GUN1_SAFETY_EXTENDED_MOTION_PERMISSIVE_IN <> 0
+);
+
+high_word := Gun1.accepted_command_sequence / 65536;
+low_word := Gun1.accepted_command_sequence - (high_word * 65536);
+IF low_word > 32767 THEN
+    GUN1_ACCEPTED_COMMAND_SEQUENCE_LOW := DINT_TO_INT(low_word - 65536);
+ELSE
+    GUN1_ACCEPTED_COMMAND_SEQUENCE_LOW := DINT_TO_INT(low_word);
+END_IF;
+GUN1_ACCEPTED_COMMAND_SEQUENCE_HIGH := DINT_TO_INT(high_word);
+
+GUN1_GUN_STATE := Gun1.gun_state;
+GUN1_CURRENT_AZIMUTH_X10 := Gun1.current_azimuth_x10;
+GUN1_CURRENT_ELEVATION_X10 := Gun1.current_elevation_x10;
+
+high_word := Gun1.active_fragment_id / 65536;
+low_word := Gun1.active_fragment_id - (high_word * 65536);
+IF low_word > 32767 THEN
+    GUN1_ACTIVE_FRAGMENT_ID_LOW := DINT_TO_INT(low_word - 65536);
+ELSE
+    GUN1_ACTIVE_FRAGMENT_ID_LOW := DINT_TO_INT(low_word);
+END_IF;
+GUN1_ACTIVE_FRAGMENT_ID_HIGH := DINT_TO_INT(high_word);
+
+IF Gun1.target_accepted THEN GUN1_TARGET_ACCEPTED := 1; ELSE GUN1_TARGET_ACCEPTED := 0; END_IF;
+IF Gun1.on_target THEN GUN1_ON_TARGET := 1; ELSE GUN1_ON_TARGET := 0; END_IF;
+IF Gun1.settling THEN GUN1_SETTLING := 1; ELSE GUN1_SETTLING := 0; END_IF;
+IF Gun1.firing THEN GUN1_FIRING := 1; ELSE GUN1_FIRING := 0; END_IF;
+IF Gun1.post_fire_lockout THEN GUN1_POST_FIRE_LOCKOUT := 1; ELSE GUN1_POST_FIRE_LOCKOUT := 0; END_IF;
+IF Gun1.ready THEN GUN1_READY := 1; ELSE GUN1_READY := 0; END_IF;
+IF Gun1.fault_active THEN GUN1_FAULT_ACTIVE := 1; ELSE GUN1_FAULT_ACTIVE := 0; END_IF;
+
+GUN1_FAULT_CODE := Gun1.fault_code;
+
+high_word := Gun1.shot_sequence / 65536;
+low_word := Gun1.shot_sequence - (high_word * 65536);
+IF low_word > 32767 THEN
+    GUN1_SHOT_SEQUENCE_LOW := DINT_TO_INT(low_word - 65536);
+ELSE
+    GUN1_SHOT_SEQUENCE_LOW := DINT_TO_INT(low_word);
+END_IF;
+GUN1_SHOT_SEQUENCE_HIGH := DINT_TO_INT(high_word);
+
+GUN1_SETTLING_SECONDS_REMAINING := Gun1.settling_seconds_remaining;
+GUN1_LOCKOUT_SECONDS_REMAINING := Gun1.lockout_seconds_remaining;
+GUN1_SAFETY_FIRE_PERMISSIVE_OUT := GUN1_SAFETY_FIRE_PERMISSIVE_IN;
+GUN1_SAFETY_EXTENDED_MOTION_PERMISSIVE_OUT := GUN1_SAFETY_EXTENDED_MOTION_PERMISSIVE_IN;
+
+END_PROGRAM

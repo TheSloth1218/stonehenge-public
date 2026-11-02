@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head('Shipments')}"></head>
+<body><div th:replace="~{common/nav :: nav}"></div>
+<main class="container-fluid">
+    <h1 class="h4">Shipments</h1>
+    <table class="table table-hover align-middle">
+        <thead><tr><th>Shipment</th><th>Order</th><th>Request</th><th>Carrier</th><th>Method</th><th>Tracking</th><th>Shipped</th><th>Notes</th></tr></thead>
+        <tbody>
+        <tr th:each="s : ${shipments.content}">
+            <td><a th:href="@{/orders/{id}/shipping-status(id=${s.fulfillmentOrder.id})}" th:text="${s.shipmentNumber}"></a></td>
+            <td th:text="${s.fulfillmentOrder.orderNumber}"></td>
+            <td th:text="${s.fulfillmentOrder.maintenanceRequest.externalRequestId}"></td>
+            <td th:text="${s.carrier}"></td>
+            <td th:text="${s.shippingMethod}"></td>
+            <td th:text="${s.trackingNumber}"></td>
+            <td th:text="${#temporals.format(s.shippedAt, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${s.notes}"></td>
+        </tr>
+        <tr th:if="${shipments.empty}"><td colspan="8">No shipments have been created.</td></tr>
+        </tbody>
+    </table>
+</main></body></html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stonehenge Middleware Dashboard</title>
+    <link rel="stylesheet" href="/dashboard/static/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Stonehenge Control</h1>
+        <p id="summary">Waiting for middleware status...</p>
+      </div>
+      <div id="connection" class="connection">CONNECTING</div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Gun Turrets</h2>
+        </div>
+        <div id="guns" class="guns-grid"></div>
+      </section>
+
+      <section class="layout">
+        <div class="panel map-panel">
+          <div class="panel-header">
+            <h2>Stonehenge Tactical Map</h2>
+          </div>
+          <div id="map" class="map" aria-label="Usea map with fragment markers">
+            <div id="mapCanvas" class="map-canvas">
+              <img class="tactical-map-image" src="/dashboard/images/Usean_continent.png" alt="Usea tactical map">
+              <div id="markerLayer" class="marker-layer"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Active Fragments</h2>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Priority</th>
+                  <th>Bearing</th>
+                  <th>Elev</th>
+                  <th>Terrain</th>
+                  <th>Zone</th>
+                  <th>TTI</th>
+                  <th>Status</th>
+                  <th>Gun</th>
+                </tr>
+              </thead>
+              <tbody id="fragments"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Recent Events</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Severity</th>
+                <th>Type</th>
+                <th>Gun</th>
+                <th>Fragment</th>
+                <th>Message</th>
+              </tr>
+            </thead>
+            <tbody id="events"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="/dashboard/static/app.js"></script>
+  </body>
+</html>

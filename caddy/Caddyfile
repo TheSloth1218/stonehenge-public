@@ -1,0 +1,31 @@
+{
+	admin off
+}
+
+http://{$LOGIN_HOSTNAME:login.stonehenge.test} {
+	@dex path /dex /dex/*
+	handle @dex {
+		reverse_proxy dex:5556
+	}
+	handle {
+		reverse_proxy login-portal:3002
+	}
+}
+
+http://{$ASTRO_HOSTNAME:sca.stonehenge.test} {
+	reverse_proxy astro-app:3000
+}
+
+http://{$ENGINEERING_HOSTNAME:engineering.stonehenge.test} {
+	@internal path /internal /internal/*
+	respond @internal 404
+	reverse_proxy engineering-app:8080
+}
+
+http://{$API_HOSTNAME:api.stonehenge.test} {
+	reverse_proxy stonehenge-api:8080
+}
+
+http://{$VENDOR_HOSTNAME:vendor.stonehenge.test} {
+	reverse_proxy vendor-app:8089
+}

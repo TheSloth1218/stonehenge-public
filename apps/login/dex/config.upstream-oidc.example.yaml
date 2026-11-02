@@ -1,0 +1,76 @@
+# Preferred when Active Directory is fronted by an OIDC provider such as AD FS.
+# The upstream provider owns the reusable browser SSO session; Dex remains the
+# one stable issuer trusted by every Stonehenge application.
+issuer: '{{ getenv "DEX_ISSUER" }}'
+
+storage:
+  type: sqlite3
+  config:
+    file: /var/dex/dex.db
+
+web:
+  http: 0.0.0.0:5556
+
+telemetry:
+  http: 0.0.0.0:5558
+
+oauth2:
+  skipApprovalScreen: true
+  alwaysShowLoginScreen: false
+  responseTypes: ["code"]
+
+expiry:
+  idTokens: 8h
+
+signer:
+  type: local
+  config:
+    keysRotationPeriod: 6h
+
+staticClients:
+  - id: login-portal
+    name: FCU Central Access Portal
+    secret: '{{ getenv "LOGIN_PORTAL_OIDC_CLIENT_SECRET" }}'
+    redirectURIs:
+      - '{{ getenv "LOGIN_PORTAL_PUBLIC_ORIGIN" }}/api/auth/callback'
+  - id: stonehenge-astro
+    name: Stonehenge Astro Public Interface
+    secret: '{{ getenv "ASTRO_OIDC_CLIENT_SECRET" }}'
+    redirectURIs:
+      - '{{ getenv "ASTRO_PUBLIC_ORIGIN" }}/api/auth/callback'
+  - id: stonehenge-vendor
+    name: SCA Parts Fulfillment Portal
+    secret: '{{ getenv "VENDOR_OIDC_CLIENT_SECRET" }}'
+    redirectURIs:
+      - '{{ getenv "VENDOR_PUBLIC_ORIGIN" }}/login/oauth2/code/dex'
+  - id: stonehenge-engineering
+    name: Stonehenge Engineering Console
+    secret: '{{ getenv "ENGINEERING_OIDC_CLIENT_SECRET" }}'
+    redirectURIs:
+      - '{{ getenv "ENGINEERING_PUBLIC_ORIGIN" }}/signin-oidc'
+
+enablePasswordDB: false
+connectors:
+  - type: oidc
+    id: fcu-active-directory-sso
+    name: FCU Active Directory
+    config:
+      issuer: '{{ getenv "DEX_UPSTREAM_OIDC_ISSUER" }}'
+      clientID: '{{ getenv "DEX_UPSTREAM_OIDC_CLIENT_ID" }}'
+      clientSecret: '{{ getenv "DEX_UPSTREAM_OIDC_CLIENT_SECRET" }}'
+      redirectURI: '{{ getenv "DEX_ISSUER" }}/callback'
+      scopes:
+        - profile
+        - email
+        - groups
+      getUserInfo: true
+      insecureEnableGroups: true
+      userNameKey: preferred_username
+      claimModifications:
+        filterGroupClaims:
+          groupsFilter: '^(SCA-Employees|SCA-Admins|SCA-Engineering-Users|SCA-Engineering-Admins)$'
+
+frontend:
+  dir: /srv/dex/web
+  issuer: Federation of Central Usea
+  theme: stonehenge

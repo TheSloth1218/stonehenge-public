@@ -1,0 +1,6 @@
+{
+  "plugins": [
+    "process-identity",
+    "runtime-summary"
+  ]
+}

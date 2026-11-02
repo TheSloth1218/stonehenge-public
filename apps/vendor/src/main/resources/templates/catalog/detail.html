@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/head :: head(${part.sku})}"></head>
+<body><div th:replace="~{common/nav :: nav}"></div>
+<main class="container">
+    <div class="panel">
+        <h1 class="h4" th:text="${part.name}"></h1>
+        <p><strong th:text="${part.sku}"></strong> <span th:text="${part.category}"></span></p>
+        <p th:text="${part.description}"></p>
+        <dl class="row">
+            <dt class="col-sm-3">Manufacturer</dt><dd class="col-sm-9" th:text="${part.manufacturer}"></dd>
+            <dt class="col-sm-3">Compatible asset class</dt><dd class="col-sm-9" th:text="${part.compatibleAssetClass}"></dd>
+            <dt class="col-sm-3">State</dt><dd class="col-sm-9" th:text="${part.active ? 'Active' : 'Inactive'}"></dd>
+            <dt class="col-sm-3">Warehouse bin</dt><dd class="col-sm-9" th:text="${inventory != null ? inventory.binLocation : 'No inventory record'}"></dd>
+            <dt class="col-sm-3">On hand</dt><dd class="col-sm-9" th:text="${inventory != null ? inventory.quantityOnHand : 0}"></dd>
+            <dt class="col-sm-3">Available</dt><dd class="col-sm-9" th:text="${inventory != null ? inventory.availableQuantity() : 0}"></dd>
+        </dl>
+        <a class="btn btn-outline-primary" href="/catalog">Back to catalog</a>
+    </div>
+</main></body></html>

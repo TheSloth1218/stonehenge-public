@@ -1,0 +1,566 @@
+[
+  {
+    "id": "0",
+    "name": "FUXA Server",
+    "type": "FuxaServer",
+    "property": {},
+    "polling": 1000,
+    "enabled": true,
+    "tags": {
+      "t_6a436926-27f7474b": {
+        "id": "t_6a436926-27f7474b",
+        "name": "Stonehenge Control PLC Connection Status",
+        "label": "Stonehenge Control PLC Connection Status",
+        "value": 0,
+        "type": "number",
+        "memaddress": "d_df067b5a-66524438",
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "init": "",
+        "sysType": 1,
+        "timestamp": 1782624478315
+      }
+    }
+  },
+  {
+    "id": "d_df067b5a-66524438",
+    "name": "Stonehenge Control PLC",
+    "enabled": true,
+    "property": {
+      "address": "172.18.0.2:502",
+      "port": null,
+      "slot": null,
+      "rack": null,
+      "slaveid": "1",
+      "baudrate": 9600,
+      "databits": 8,
+      "stopbits": 1,
+      "parity": "None",
+      "delay": 10,
+      "forceFC16": false
+    },
+    "type": "ModbusTCP",
+    "polling": 500,
+    "tags": {
+      "t_9f70462b-0d671d39": {
+        "id": "t_9f70462b-0d671d39",
+        "name": "Gun1_CommandSequenceLow",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 1025,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 command sequence low word"
+      },
+      "t_62971cff-57a2407d": {
+        "id": "t_62971cff-57a2407d",
+        "name": "Gun1_CommandSequenceHigh",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 1026,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 command sequence high word"
+      },
+      "t_36ca6aac-c2540c8e": {
+        "id": "t_36ca6aac-c2540c8e",
+        "name": "Gun1_Mode",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 1027,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 mode command"
+      },
+      "t_e7b2059f-207f3450": {
+        "id": "t_e7b2059f-207f3450",
+        "name": "Gun1_TargetAzimuth",
+        "value": 0,
+        "type": "Int16",
+        "memaddress": "400000",
+        "address": 1028,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 target azimuth x10"
+      },
+      "t_15f9931e-4d1a8e8d": {
+        "id": "t_15f9931e-4d1a8e8d",
+        "name": "Gun1_TargetElevation",
+        "value": 0,
+        "type": "Int16",
+        "memaddress": "400000",
+        "address": 1029,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 target elevation x10"
+      },
+      "t_eabf39d1-8be36cf6": {
+        "id": "t_eabf39d1-8be36cf6",
+        "name": "Gun1_FragmentLow",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 1030,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 assigned fragment low word"
+      },
+      "t_01d46ab3-e99b3224": {
+        "id": "t_01d46ab3-e99b3224",
+        "name": "Gun1_FragmentHigh",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 1031,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 assigned fragment high word"
+      },
+      "t_fe9a8cdf-0467891f": {
+        "id": "t_fe9a8cdf-0467891f",
+        "name": "Gun1_FireRequest",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 1032,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 fire request"
+      },
+      "t_266a18d6-b357ac77": {
+        "id": "t_266a18d6-b357ac77",
+        "name": "Gun1_Maintenance",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 1033,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 maintenance enabled"
+      },
+      "t_5a9c52a2-f3b0999e": {
+        "id": "t_5a9c52a2-f3b0999e",
+        "name": "Gun1_AdminOverride",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 1034,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 admin override active"
+      },
+      "t_07dad42a-2c307415": {
+        "id": "t_07dad42a-2c307415",
+        "name": "Gun1_FaultReset",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 1035,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 fault reset"
+      },
+      "t_bdd3062f-71869e9a": {
+        "id": "t_bdd3062f-71869e9a",
+        "name": "Gun1_SafetyFirePermissive",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 1036,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 safety fire permissive"
+      },
+      "t_2106d1b1-09c01420": {
+        "id": "t_2106d1b1-09c01420",
+        "name": "Gun1_SafetyExtendedPermissive",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 1037,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 safety extended-motion permissive"
+      },
+      "t_ba97782f-46184cc6": {
+        "id": "t_ba97782f-46184cc6",
+        "name": "Gun1_AcceptedSequenceLow",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 21,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 accepted command sequence low word"
+      },
+      "t_86b47626-c5608303": {
+        "id": "t_86b47626-c5608303",
+        "name": "Gun1_AcceptedSequenceHigh",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 22,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 accepted command sequence high word"
+      },
+      "t_70f1ce23-05e14b6c": {
+        "id": "t_70f1ce23-05e14b6c",
+        "name": "Gun1_State",
+        "value": 1,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 23,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 operating state",
+        "timestamp": 1782624699570
+      },
+      "t_4089b64e-40b04942": {
+        "id": "t_4089b64e-40b04942",
+        "name": "Gun1_CurrentAzimuth",
+        "value": 0,
+        "type": "Int16",
+        "memaddress": "400000",
+        "address": 24,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 current azimuth x10",
+        "timestamp": 1782624699570
+      },
+      "t_3a96decb-f4314fcd": {
+        "id": "t_3a96decb-f4314fcd",
+        "name": "Gun1_CurrentElevation",
+        "value": 50,
+        "type": "Int16",
+        "memaddress": "400000",
+        "address": 25,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 current elevation x10",
+        "timestamp": 1782624699570
+      },
+      "t_33f63987-7cfa8c81": {
+        "id": "t_33f63987-7cfa8c81",
+        "name": "Gun1_ActiveFragmentLow",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 26,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 active fragment low word"
+      },
+      "t_b77a1a8b-e9d12156": {
+        "id": "t_b77a1a8b-e9d12156",
+        "name": "Gun1_ActiveFragmentHigh",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 27,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 active fragment high word"
+      },
+      "t_f7c80ff4-42144645": {
+        "id": "t_f7c80ff4-42144645",
+        "name": "Gun1_TargetAccepted",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 28,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 target-accepted pulse"
+      },
+      "t_276afc10-f55bb375": {
+        "id": "t_276afc10-f55bb375",
+        "name": "Gun1_OnTarget",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 29,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 on-target status"
+      },
+      "t_08750b3e-ccc7b172": {
+        "id": "t_08750b3e-ccc7b172",
+        "name": "Gun1_Settling",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 30,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 settling status"
+      },
+      "t_aa633ad5-b9ca73b5": {
+        "id": "t_aa633ad5-b9ca73b5",
+        "name": "Gun1_Firing",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 31,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 firing status"
+      },
+      "t_0e538ad0-040808a5": {
+        "id": "t_0e538ad0-040808a5",
+        "name": "Gun1_Lockout",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 32,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 post-fire lockout status"
+      },
+      "t_1303f612-a7cbe941": {
+        "id": "t_1303f612-a7cbe941",
+        "name": "Gun1_Ready",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 33,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 ready status"
+      },
+      "t_c69f8d51-2a9fd6ec": {
+        "id": "t_c69f8d51-2a9fd6ec",
+        "name": "Gun1_FaultActive",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 34,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 fault-active status"
+      },
+      "t_d63a8eb8-21573b00": {
+        "id": "t_d63a8eb8-21573b00",
+        "name": "Gun1_FaultCode",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 35,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 fault code"
+      },
+      "t_fd528fa1-9415a60e": {
+        "id": "t_fd528fa1-9415a60e",
+        "name": "Gun1_ShotSequenceLow",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 36,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 shot sequence low word"
+      },
+      "t_66c55a6a-1c0da159": {
+        "id": "t_66c55a6a-1c0da159",
+        "name": "Gun1_ShotSequenceHigh",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 37,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 shot sequence high word"
+      },
+      "t_977d394e-7db44349": {
+        "id": "t_977d394e-7db44349",
+        "name": "Gun1_SettlingSeconds",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 38,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 settling seconds remaining"
+      },
+      "t_e4bd04ed-a5c09941": {
+        "id": "t_e4bd04ed-a5c09941",
+        "name": "Gun1_LockoutSeconds",
+        "value": 0,
+        "type": "UInt16",
+        "memaddress": "400000",
+        "address": 39,
+        "divisor": 1,
+        "daq": {
+          "enabled": false,
+          "interval": 60,
+          "changed": false,
+          "restored": false
+        },
+        "description": "Gun 1 lockout seconds remaining"
+      }
+    }
+  }
+]
