@@ -12,7 +12,8 @@ The four application snapshots came from these pinned source revisions:
 The ACES04 font files are included in Astro and Login. Credit for the Ace
 Combat 04 visual style and typefaces goes to Project Aces and the Ace Combat 04
 development team. The project owner confirmed redistribution rights for these
-font files. This credit is not an endorsement by Project Aces.
+font files. They are excluded from the MIT software license. This credit is not
+an endorsement by Project Aces.
 
 Runtime images and dependencies retain their own upstream licenses, including
 Dex, Caddy, PostgreSQL, OpenPLC Runtime, and FUXA. Review their license terms

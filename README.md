@@ -138,6 +138,6 @@ volumes resets the lab and loses that data; save anything needed first. The
 Windows DC script skips an already configured lab and never resets student
 passwords on rerun. Use a fresh VM snapshot for a full AD challenge reset.
 
-This export has no selected source-code license yet. The owner must choose one
-before public publication; the font rights and upstream dependencies are
-separate matters documented in `docs/ASSETS.md`.
+Original Stonehenge software and documentation are MIT licensed; see
+[LICENSE](LICENSE). Bundled fonts and third-party components retain their
+separate rights, as noted in [docs/ASSETS.md](docs/ASSETS.md).
